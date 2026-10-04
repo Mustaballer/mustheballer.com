@@ -24,19 +24,6 @@
 .hud-btn:hover { border-color: #e0313c; color: #fff; }
 .hud-btn--accent { background: #c8102e; border-color: #c8102e; }
 
-.hud--travel {
-  left: 1.25rem; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
-  display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem;
-}
-.hud__label { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(255 255 255 / 0.55); margin-bottom: 0.15rem; }
-.is-day .hud__label { color: rgb(40 30 20 / 0.6); }
-.hud--travel button {
-  font: 500 0.85rem var(--sans); color: rgb(255 255 255 / 0.85); cursor: pointer;
-  background: rgb(18 14 20 / 0.55); backdrop-filter: blur(8px);
-  border: 1px solid rgb(255 255 255 / 0.1); border-radius: 8px; padding: 0.4rem 0.75rem;
-}
-.hud--travel button:hover, .hud--travel button.is-on { border-color: #e0313c; color: #fff; }
-
 .hud--hint {
   left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
   margin: 0; font-size: 0.85rem; color: rgb(255 255 255 / 0.75);
@@ -124,7 +111,7 @@
 .musos__resume p { font: 600 1.5rem var(--serif); margin: 0; }
 .musos__resume .btn { text-decoration: none; padding: 0.8rem 1.2rem; }
 
-/* ---------------------------------------------------------------- boot + magic */
+/* ---------------------------------------------------------------- boot + transitions */
 .boot {
   position: absolute; inset: 0; z-index: 20; display: grid; place-items: center;
   background: #0c0a10; color: rgb(255 255 255 / 0.75); font: 400 0.9rem/1.8 ui-monospace, "Cascadia Code", Consolas, monospace;
@@ -137,14 +124,12 @@
 .boot__bar { margin-top: 1rem; height: 3px; background: rgb(255 255 255 / 0.1); border-radius: 2px; overflow: hidden; }
 .boot__bar span { display: block; height: 100%; width: 40%; background: #e0313c; animation: load 1.1s ease-in-out infinite; }
 
-.magic {
-  position: absolute; z-index: 4; left: 50%; top: 50%; width: min(70vmin, 560px); height: auto;
-  transform: translate(-50%, -50%); pointer-events: none; overflow: visible;
-  fill: none; stroke: #ffcf8a; stroke-width: 0.8; filter: drop-shadow(0 0 6px #ffb35c);
-  animation: cast 1.1s ease-out forwards;
+.blink {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 35%, rgb(10 8 14 / 0.75) 100%);
+  animation: blink 0.9s ease-out forwards;
 }
-.magic text { fill: #ffcf8a; stroke: none; font-size: 9px; text-anchor: middle; }
-.magic__runes { animation: spin 1.1s linear; transform-origin: center; }
+@keyframes blink { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
 
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes rise { from { opacity: 0; transform: translate(-50%, 8px); } }
@@ -152,12 +137,101 @@
 @keyframes pop { from { opacity: 0; transform: scale(0.96); } }
 @keyframes load { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
 @keyframes spin { to { transform: rotate(120deg); } }
-@keyframes cast {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-30deg); }
-  30% { opacity: 0.9; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15) rotate(20deg); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .magic { display: none; }
+  .blink { display: none; }
   .panel, .musos__window, .toast { animation: none; }
+}
+
+/* ---------------------------------------------------------------- markers */
+.marker {
+  display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; white-space: nowrap;
+  padding: 0.28rem 0.7rem 0.28rem 0.3rem; border-radius: 999px;
+  font: 600 0.85rem var(--sans); color: #fff;
+  background: rgb(18 14 20 / 0.78); border: 1px solid rgb(201 162 74 / 0.55);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.35); backdrop-filter: blur(6px);
+  transition: border-color 0.15s, background 0.15s;
+}
+.marker__icon {
+  width: 1.55rem; height: 1.55rem; display: grid; place-items: center; border-radius: 50%;
+  background: #c9a24a; color: #1a1416; font-size: 0.85rem; font-weight: 800;
+}
+.marker__label kbd, .menu kbd {
+  font: 600 0.68rem var(--sans); padding: 0.05rem 0.3rem; border-radius: 4px;
+  background: rgb(255 255 255 / 0.12); border: 1px solid rgb(255 255 255 / 0.18); margin-right: 0.15rem;
+}
+.marker--quest .marker__icon { background: #e0313c; color: #fff; font-size: 1rem; }
+.marker:hover, .marker.is-on { border-color: #ffcf8a; background: rgb(40 28 24 / 0.92); }
+.marker__icon { animation: bob 2.6s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+
+/* ---------------------------------------------------------------- menu */
+.menu {
+  position: absolute; z-index: 6; left: 1.25rem; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 0.3rem; padding: 0.5rem;
+  background: rgb(18 14 20 / 0.62); border: 1px solid rgb(255 255 255 / 0.08); border-radius: 14px; backdrop-filter: blur(10px);
+}
+.menu__item {
+  display: flex; align-items: center; gap: 0.55rem; text-align: left; cursor: pointer;
+  font: 500 0.9rem var(--sans); color: rgb(255 255 255 / 0.86);
+  background: transparent; border: 1px solid transparent; border-radius: 9px; padding: 0.42rem 0.7rem 0.42rem 0.45rem;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.menu__icon { width: 1.3rem; text-align: center; }
+.menu__item:hover, .menu__item:focus-visible { background: rgb(255 255 255 / 0.08); border-color: rgb(201 162 74 / 0.5); transform: translateX(3px); }
+.menu__item.is-on { background: rgb(224 49 60 / 0.18); border-color: #e0313c; color: #fff; }
+.menu__back { margin-top: 0.25rem; border-top: 1px solid rgb(255 255 255 / 0.08); border-radius: 0 0 9px 9px; color: rgb(255 255 255 / 0.65); }
+
+/* ---------------------------------------------------------------- stepper */
+.stepper {
+  position: absolute; z-index: 8; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.35rem;
+  background: rgb(18 14 20 / 0.75); border: 1px solid rgb(255 255 255 / 0.1); border-radius: 999px; backdrop-filter: blur(10px);
+  color: rgb(255 255 255 / 0.6); font-size: 0.8rem;
+}
+.stepper button {
+  font: 600 0.85rem var(--sans); color: #fff; cursor: pointer; white-space: nowrap;
+  background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.12); border-radius: 999px; padding: 0.45rem 0.9rem;
+}
+.stepper button:hover { border-color: #c9a24a; }
+.study:has(.panel) .stepper { left: calc((100% - min(44vw, 640px) - 1.25rem) / 2); }
+
+/* ---------------------------------------------------------------- easter eggs */
+.teleport {
+  position: absolute; inset: 0; z-index: 9; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #fff 0%, #ffb0b0 30%, #e0313c 60%, transparent 85%);
+  animation: teleport 0.9s ease-out forwards;
+}
+@keyframes teleport { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: 0; } }
+
+.dream {
+  position: absolute; inset: 0; z-index: 30; cursor: pointer;
+  display: grid; place-content: center; justify-items: center; gap: 0.6rem; text-align: center; padding: 2rem;
+  background: radial-gradient(circle at 50% 40%, #ffffff, #e9e9f2 60%, #cfcfdc);
+  color: #2a2630; animation: dream-in 1.6s ease both;
+}
+.dream__figure { display: grid; grid-template-columns: repeat(12, 14px); grid-auto-rows: 14px; margin-bottom: 1rem; filter: blur(0.4px); animation: drift 6s ease-in-out infinite; }
+.dream__figure i { display: block; }
+.dream__line { margin: 0; max-width: 32rem; font: italic 600 1.7rem/1.3 var(--serif); }
+.dream__who { margin: 0; font: 600 1rem var(--serif); color: #6a6475; letter-spacing: 0.08em; }
+.dream__wake { margin: 1.5rem 0 0; font-size: 0.8rem; color: #8a8496; }
+@keyframes dream-in { from { opacity: 0; filter: brightness(2); } }
+@keyframes drift { 50% { transform: translateY(-6px); } }
+
+.diary { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.diary li { border-left: 3px solid var(--gold); padding: 0.2rem 0 0.2rem 1rem; }
+.diary__date { font: 600 0.8rem var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+.diary p { margin: 0.3rem 0 0; font: 500 1.15rem/1.45 var(--serif); }
+.panel .signoff { margin-top: 1.5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marker, .dream__figure { animation: none; }
+  .teleport { display: none; }
+}
+
+.markers { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.markers .marker { position: absolute; left: 0; top: 0; pointer-events: auto; will-change: transform; }
+.cursor-label {
+  position: fixed; left: 0; top: 0; z-index: 12; pointer-events: none; white-space: nowrap;
+  font: 600 0.95rem var(--serif); color: #fff; background: rgb(18 14 20 / 0.85);
+  border: 1px solid #c9a24a; padding: 0.25rem 0.65rem; border-radius: 6px;
 }

@@ -1,88 +1,88 @@
-// Every clickable thing in the study: hover label, camera view, and what it opens.
+// Every clickable thing in the study.
+// Stations are the main navigation (markers, menu, keys 1–6, ← →); the rest are easter eggs.
 export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
-export type SpotId =
-  | "monitor"
-  | "tower"
-  | "board"
-  | "shelf"
-  | "eden"
-  | "montecristo"
-  | "diploma"
-  | "trophies"
-  | "phone"
-  | "character"
-  | "window"
-  | "blade"
-  | "goblet"
-  | "wand";
+export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "letter";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "roxy" | "relic" | "crystal" | "diary" | "tower";
+export type SpotId = StationId | EggId;
 
 type Spot = {
-  label: string; // hover label + quick travel
+  label: string; // hover label (+ marker / menu label for stations)
   title?: string; // panel heading
   view?: View; // camera move; omitted = in-place easter egg
-  focusAs?: SpotId; // reuse another spot's camera view
-  panel?: SpotId; // reuse another spot's panel
   toast?: string;
-  action?: "night";
+  action?: "chateau" | "teleport";
 };
 
-export const HOME: View = { pos: [4.3, 2.9, 4.1], target: [-0.7, 1.15, -1.9] };
+// Room interior: x ∈ [-2.3, 2.3], z ∈ [-2.1, 2.1]; back wall at z = -2.1, left wall at x = -2.3.
+export const HOME: View = { pos: [6.2, 4.6, 6.4], target: [-0.1, 0.75, -0.2] };
+
+export const STATIONS: { id: StationId; icon: string; marker: Vec3 }[] = [
+  { id: "character", icon: "✦", marker: [0.5, 1.72, -0.9] },
+  { id: "board", icon: "!", marker: [-1.3, 2.08, -2.0] },
+  { id: "monitor", icon: "⌨", marker: [0.95, 1.62, -1.9] },
+  { id: "chest", icon: "🏆", marker: [1.55, 0.78, 0.55] },
+  { id: "shelf", icon: "📚", marker: [-1.95, 1.35, -0.95] },
+  { id: "letter", icon: "✉", marker: [-1.95, 0.82, -0.35] },
+];
 
 export const SPOTS: Record<SpotId, Spot> = {
-  monitor: {
-    label: "Projects · MusOS",
-    title: "MusOS",
-    view: { pos: [1.3, 1.52, -2.5], target: [0.72, 1.2, -3.6] },
-  },
-  tower: {
-    label: "The Battlestation",
-    title: "Item: The Battlestation",
-    view: { pos: [1.2, 1.55, -1.8], target: [-0.62, 1.2, -3.35] },
+  character: {
+    label: "About",
+    title: "About me",
+    view: { pos: [2.9, 2.0, 0.8], target: [0.5, 1.1, -1.05] },
   },
   board: {
     label: "Experience",
     title: "Quest Log",
-    view: { pos: [-1.6, 1.75, -0.6], target: [-2.6, 1.7, -3.95] },
+    view: { pos: [-0.75, 1.6, 0.05], target: [-1.3, 1.5, -2.05] },
+  },
+  monitor: {
+    label: "Projects",
+    title: "MusOS",
+    view: { pos: [1.05, 1.45, -0.85], target: [0.5, 1.2, -1.95] },
+  },
+  chest: {
+    label: "Hackathons",
+    title: "Trophy Room",
+    view: { pos: [3.2, 2.0, 2.7], target: [1.5, 0.4, 0.5] },
   },
   shelf: {
     label: "Skills & Library",
     title: "The Library",
-    view: { pos: [-0.6, 1.6, -0.4], target: [-3.8, 1.25, -1.4] },
+    view: { pos: [1.0, 1.75, 0.2], target: [-2.1, 1.05, -1.4] },
   },
-  eden: {
-    label: "East of Eden — currently reading",
-    focusAs: "shelf",
-    panel: "shelf",
-    view: { pos: [-0.6, 1.6, -0.4], target: [-3.8, 1.25, -1.4] },
+  letter: {
+    label: "Contact",
+    title: "Send a letter",
+    view: { pos: [0.75, 1.5, -0.2], target: [-2.0, 0.6, -0.55] },
   },
+
   montecristo: {
     label: "The Count of Monte Cristo",
     toast: "“All human wisdom is contained in these two words: Wait and Hope.”",
   },
-  diploma: {
-    label: "Education",
-    title: "Education",
-    view: { pos: [2.4, 1.95, -1.9], target: [2.95, 1.95, -3.95] },
+  purse: {
+    label: "A red silk purse",
+    toast: "Inside: a settled debt, a diamond, and a note — “Julie's dowry.” Signed, Sinbad the Sailor.",
   },
-  trophies: {
-    label: "Hackathons",
-    title: "Trophy Room",
-    view: { pos: [2.35, 1.5, -2.0], target: [2.95, 1.42, -3.9] },
-  },
-  phone: {
-    label: "Contact",
-    title: "Send a raven",
-    view: { pos: [2.2, 1.6, -1.7], target: [1.55, 0.8, -3.0] },
-  },
-  character: {
-    label: "Mustafa",
-    title: "About me",
-    view: { pos: [2.6, 1.9, -0.4], target: [0.7, 1.2, -2.4] },
-  },
-  window: { label: "Window — toggle day / night", action: "night" },
-  blade: { label: "A Shardblade", toast: "“Journey before destination.” — the First Ideal" },
-  goblet: { label: "Stormlight spheres", toast: "Infused. (Words of Radiance is my favourite fantasy novel.)" },
+  window: { label: "The window", action: "chateau" },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
+  roxy: { label: "Roxy figurine", toast: "Hand-carved. Do not sell to Zanoba." },
+  relic: { label: "A sealed box", toast: "Some sacred relics are better left sealed." },
+  crystal: { label: "A red crystal", action: "teleport" },
+  diary: {
+    label: "A worn diary",
+    title: "Diary",
+    view: { pos: [1.75, 1.35, -0.85], target: [1.4, 0.78, -1.55] },
+  },
+  tower: {
+    label: "The Battlestation",
+    title: "Item: The Battlestation",
+    view: { pos: [0.55, 1.5, -0.55], target: [-0.4, 1.2, -1.75] },
+  },
 };
+
+export const STATION_IDS = STATIONS.map((s) => s.id);
+export const isStation = (id: SpotId): id is StationId => (STATION_IDS as string[]).includes(id);

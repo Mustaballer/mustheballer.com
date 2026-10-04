@@ -23,7 +23,7 @@ export function monitorTexture() {
     g.addColorStop(1, "#7a1b2a");
     c.fillStyle = g;
     c.fillRect(0, 0, 1024, 590);
-    // a faint magic circle as wallpaper
+    // faint rune rings as wallpaper
     c.strokeStyle = "rgba(255,210,170,0.18)";
     c.lineWidth = 2;
     for (const r of [190, 160, 70]) {
@@ -31,12 +31,13 @@ export function monitorTexture() {
       c.arc(640, 295, r, 0, Math.PI * 2);
       c.stroke();
     }
-    for (let k = 0; k < 2; k++) {
+    // tick marks around the outer ring
+    for (let i = 0; i < 48; i++) {
+      const ang = (i / 48) * Math.PI * 2;
+      const r1 = 190, r2 = i % 4 ? 182 : 172;
       c.beginPath();
-      for (let i = 0; i <= 3; i++) {
-        const a = -Math.PI / 2 + k * Math.PI + (i * 2 * Math.PI) / 3;
-        c.lineTo(640 + 160 * Math.cos(a), 295 + 160 * Math.sin(a));
-      }
+      c.moveTo(640 + r1 * Math.cos(ang), 295 + r1 * Math.sin(ang));
+      c.lineTo(640 + r2 * Math.cos(ang), 295 + r2 * Math.sin(ang));
       c.stroke();
     }
     c.fillStyle = "#fff";
@@ -148,17 +149,27 @@ export function noteTexture(rank: string, company: string, role: string, dates: 
     wrap(c, role, 180, 300, 300, 30);
     c.font = `500 20px ${SANS}`;
     c.fillStyle = "#6b4a2a";
-    c.fillText(dates, 180, 425);
+    c.fillText(dates, active ? 180 : 140, 425);
     if (!active) {
+      // red wax seal, stamped "MC"
       c.save();
-      c.translate(180, 372);
-      c.rotate(-0.12);
-      c.strokeStyle = "rgba(160,20,30,0.75)";
-      c.lineWidth = 4;
-      c.strokeRect(-62, -22, 124, 40);
-      c.fillStyle = "rgba(160,20,30,0.75)";
-      c.font = `700 22px ${SANS}`;
-      c.fillText("CLEARED", 0, 6);
+      c.translate(292, 392);
+      c.fillStyle = "#9b1b22";
+      c.beginPath();
+      for (let k = 0; k <= 24; k++) {
+        const a = (k / 24) * Math.PI * 2;
+        const r = 40 + (k % 2 ? 3 : -2);
+        c.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      c.fill();
+      c.strokeStyle = "rgba(255,200,190,0.35)";
+      c.lineWidth = 2;
+      c.beginPath();
+      c.arc(0, 0, 28, 0, Math.PI * 2);
+      c.stroke();
+      c.fillStyle = "rgba(255,215,205,0.85)";
+      c.font = `italic 700 30px ${SERIF}`;
+      c.fillText("MC", 0, 10);
       c.restore();
     }
   });
@@ -176,7 +187,7 @@ export function plaqueTexture() {
     c.font = `600 50px ${SERIF}`;
     c.fillText("ADVENTURER'S QUEST BOARD", 400, 64);
     c.font = `italic 500 28px ${SERIF}`;
-    c.fillText("Journey before destination", 400, 98);
+    c.fillText("Wait and hope.", 400, 98);
   });
 }
 
@@ -217,4 +228,51 @@ function wrap(c: CanvasRenderingContext2D, text: string, x: number, y: number, m
     } else line = test;
   }
   c.fillText(line, x, y);
+}
+
+export function chateauTexture() {
+  return make(512, 440, (c) => {
+    const g = c.createLinearGradient(0, 0, 0, 440);
+    g.addColorStop(0, "#0a1230");
+    g.addColorStop(0.55, "#23305a");
+    g.addColorStop(1, "#0d1a33");
+    c.fillStyle = g;
+    c.fillRect(0, 0, 512, 440);
+    c.fillStyle = "#fff";
+    for (let i = 0; i < 60; i++) {
+      c.globalAlpha = 0.25 + ((i * 7) % 10) / 14;
+      c.fillRect((i * 89) % 512, (i * 41) % 200, 2, 2);
+    }
+    c.globalAlpha = 1;
+    // moon + its path on the water
+    c.fillStyle = "#f4ead0";
+    c.beginPath();
+    c.arc(380, 85, 30, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = "#16264a";
+    c.fillRect(0, 290, 512, 150);
+    c.fillStyle = "rgba(244,234,208,0.35)";
+    for (let y = 300; y < 440; y += 9) c.fillRect(380 - (y - 290) * 0.4 + ((y * 13) % 17), y, 30 + (y - 290) * 0.5, 2);
+    // the rock and the fortress of If
+    c.fillStyle = "#0b0f1c";
+    c.beginPath();
+    c.moveTo(90, 300);
+    c.lineTo(130, 262);
+    c.lineTo(300, 258);
+    c.lineTo(340, 300);
+    c.fill();
+    c.fillRect(150, 196, 130, 66); // curtain wall
+    c.fillRect(160, 150, 46, 50); // towers
+    c.fillRect(232, 158, 40, 42);
+    c.fillRect(196, 172, 40, 30);
+    for (let x = 150; x < 280; x += 12) c.fillRect(x, 190, 7, 7); // crenellations
+    for (const [x, w] of [[160, 46], [232, 40]]) for (let k = x; k < x + w; k += 10) c.fillRect(k, 144, 6, 7);
+    c.fillStyle = "rgba(255,190,110,0.85)";
+    c.fillRect(178, 168, 4, 7);
+    c.fillRect(250, 176, 4, 6);
+    c.fillStyle = "rgba(244,234,208,0.8)";
+    c.font = `italic 600 22px ${SERIF}`;
+    c.textAlign = "center";
+    c.fillText("Château d'If", 256, 420);
+  });
 }

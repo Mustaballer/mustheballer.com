@@ -2,17 +2,24 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Room } from "./Room";
-import type { SpotId } from "./spots";
-import { HOME, SPOTS } from "./spots";
+import type { SpotId, StationId } from "./spots";
+import { HOME, SPOTS, STATIONS } from "./spots";
+
+export type MarkerEls = Partial<Record<StationId, HTMLElement | null>>;
 
 type Props = {
   focus: SpotId | null;
+  hovered: SpotId | null;
+  setHovered: (id: SpotId | null) => void;
+  markers: React.RefObject<MarkerEls>;
   night: boolean;
+  chateau: boolean;
+  panelOpen: boolean;
   onSelect: (id: SpotId) => void;
   onReady: () => void;
 };
 
-export default function Scene({ focus, night, onSelect, onReady }: Props) {
+export default function Scene({ focus, hovered, setHovered, markers, night, chateau, panelOpen, onSelect, onReady }: Props) {
   // Canvas textures draw text, so wait for the web fonts first.
   const [fonts, setFonts] = useState(false);
   useEffect(() => {
@@ -25,25 +32,26 @@ export default function Scene({ focus, night, onSelect, onReady }: Props) {
       .finally(() => setFonts(true));
   }, []);
 
+  const bg = night ? "#0f0c14" : "#e8dfd0";
   return (
     <Canvas
       className="study__canvas"
       shadows
       dpr={[1, 1.75]}
-      camera={{ fov: 38, near: 0.05, far: 60, position: [10, 7, 11] }}
+      camera={{ fov: 32, near: 0.05, far: 60, position: [9, 7, 9.5] }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
       onPointerMissed={() => (document.body.style.cursor = "")}
     >
-      <color attach="background" args={[night ? "#0c0a10" : "#e9e1d3"]} />
-      <fog attach="fog" args={[night ? "#0c0a10" : "#e9e1d3", 14, 26]} />
+      <color attach="background" args={[bg]} />
       <Lights night={night} />
       {fonts && (
         <>
-          <Room night={night} onSelect={onSelect} />
+          <Room night={night} chateau={chateau} focus={focus} hovered={hovered} setHovered={setHovered} onSelect={onSelect} />
           <Ready onReady={onReady} />
         </>
       )}
-      <Rig focus={focus} />
+      <Rig focus={focus} panelOpen={panelOpen} />
+      <Projector markers={markers} />
     </Canvas>
   );
 }
@@ -56,44 +64,31 @@ function Ready({ onReady }: { onReady: () => void }) {
   return null;
 }
 
+const shadowProps = {
+  castShadow: true,
+  "shadow-mapSize": [1024, 1024] as [number, number],
+  "shadow-bias": -0.0004,
+  "shadow-camera-left": -4,
+  "shadow-camera-right": 4,
+  "shadow-camera-top": 4,
+  "shadow-camera-bottom": -4,
+};
+
 function Lights({ night }: { night: boolean }) {
   return night ? (
     <>
-      <ambientLight intensity={0.35} color="#7d84b8" />
-      <hemisphereLight args={["#4a5590", "#2a1a14", 0.45]} />
+      <ambientLight intensity={0.42} color="#8a8fc0" />
+      <hemisphereLight args={["#5a65a0", "#2a1a14", 0.45]} />
       {/* moonlight through the window */}
-      <directionalLight
-        position={[-8, 5, 0.5]}
-        intensity={0.7}
-        color="#9db4ff"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0004}
-        shadow-camera-left={-6}
-        shadow-camera-right={6}
-        shadow-camera-top={6}
-        shadow-camera-bottom={-6}
-      />
-      {/* soft key so the room reads from the default camera */}
-      <directionalLight position={[6, 7, 6]} intensity={0.35} color="#ffd9b0" />
+      <directionalLight position={[-7, 4.5, 1.2]} intensity={0.65} color="#9db4ff" {...shadowProps} />
+      <directionalLight position={[6, 7, 6]} intensity={0.4} color="#ffd9b0" />
     </>
   ) : (
     <>
-      <ambientLight intensity={0.9} color="#fff1dd" />
+      <ambientLight intensity={0.95} color="#fff1dd" />
       <hemisphereLight args={["#fff6e8", "#8a6440", 0.7]} />
-      <directionalLight
-        position={[-8, 6, 1]}
-        intensity={2.4}
-        color="#ffe2b8"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0004}
-        shadow-camera-left={-6}
-        shadow-camera-right={6}
-        shadow-camera-top={6}
-        shadow-camera-bottom={-6}
-      />
-      <directionalLight position={[6, 7, 6]} intensity={0.6} color="#ffffff" />
+      <directionalLight position={[-7, 5.5, 1.2]} intensity={2.2} color="#ffe2b8" {...shadowProps} />
+      <directionalLight position={[6, 7, 6]} intensity={0.7} color="#ffffff" />
     </>
   );
 }
@@ -101,30 +96,47 @@ function Lights({ night }: { night: boolean }) {
 const tmpPos = new THREE.Vector3();
 const tmpTarget = new THREE.Vector3();
 
-// Eases the camera between the overview and each object, with gentle mouse parallax at home.
-// While a side panel is open, the view is shifted left so the object isn't hidden behind it.
-function Rig({ focus }: { focus: SpotId | null }) {
+// Eases the camera between the overview and each spot, with gentle mouse parallax at home.
+// While a side panel is open, the view shifts left so the object isn't hidden behind it.
+function Rig({ focus, panelOpen }: { focus: SpotId | null; panelOpen: boolean }) {
   const target = useRef(new THREE.Vector3(...HOME.target));
   const shift = useRef(0);
   const size = useThree((s) => s.size);
 
   useFrame((state, dt) => {
     const view = (focus && SPOTS[focus].view) || HOME;
-    const k = 1 - Math.exp(-dt * 2.4);
+    const k = 1 - Math.exp(-dt * 3);
     tmpPos.set(...view.pos);
     if (!focus) {
-      tmpPos.x += state.pointer.x * 0.4;
-      tmpPos.y += state.pointer.y * 0.25;
+      tmpPos.x += state.pointer.x * 0.3;
+      tmpPos.y += state.pointer.y * 0.18;
     }
     state.camera.position.lerp(tmpPos, k);
     target.current.lerp(tmpTarget.set(...view.target), k);
     state.camera.lookAt(target.current);
 
     const cam = state.camera as THREE.PerspectiveCamera;
-    const wantShift = focus && focus !== "monitor" && size.width > 900 ? size.width * 0.22 : 0;
+    const wantShift = focus && panelOpen && focus !== "monitor" && size.width > 900 ? size.width * 0.22 : 0;
     shift.current = THREE.MathUtils.lerp(shift.current, wantShift, k);
     if (shift.current > 0.5) cam.setViewOffset(size.width, size.height, shift.current, 0, size.width, size.height);
     else cam.clearViewOffset();
+  });
+  return null;
+}
+
+// Positions the DOM station markers over their 3D anchors every frame (no per-marker React roots).
+const proj = new THREE.Vector3();
+function Projector({ markers }: { markers: React.RefObject<MarkerEls> }) {
+  const size = useThree((s) => s.size);
+  useFrame(({ camera }) => {
+    for (const st of STATIONS) {
+      const el = markers.current?.[st.id];
+      if (!el) continue;
+      proj.set(...st.marker).project(camera);
+      const visible = proj.z < 1;
+      el.style.transform = `translate(-50%, -50%) translate(${((proj.x + 1) / 2) * size.width}px, ${((1 - proj.y) / 2) * size.height}px)`;
+      el.style.visibility = visible ? "" : "hidden";
+    }
   });
   return null;
 }

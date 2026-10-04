@@ -1,5 +1,5 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { battlestation, profile } from "../../data/profile";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { battlestation, diary, profile } from "../../data/profile";
 import {
   Achievements,
   Anime,
@@ -13,8 +13,9 @@ import {
   QuestLog,
   Spellbook,
 } from "../sections";
-import type { SpotId } from "./spots";
-import { SPOTS } from "./spots";
+import type { SpotId, StationId } from "./spots";
+import { isStation, SPOTS, STATION_IDS, STATIONS } from "./spots";
+import type { MarkerEls } from "./Scene";
 import "./study.css";
 
 // three.js only downloads when someone actually enters the study.
@@ -50,45 +51,119 @@ function useNight() {
   return [night, toggle] as const;
 }
 
+const IDLE_DREAM_MS = 60_000;
+
 function StudyRoom() {
   const [ready, setReady] = useState(false);
   const [focus, setFocus] = useState<SpotId | null>(null);
-  const [panel, setPanel] = useState<SpotId | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [cast, setCast] = useState(0); // bumps to replay the magic-circle transition
+  const [cast, setCast] = useState(0); // bumps to replay the travel transition
+  const [hovered, setHovered] = useState<SpotId | null>(null);
+  const markers = useRef<MarkerEls>({});
+  const cursorLabel = useRef<HTMLDivElement>(null);
+  const [chateau, setChateau] = useState(false);
+  const [teleport, setTeleport] = useState(0);
+  const [dream, setDream] = useState(false);
   const [night, toggleNight] = useNight();
   const toastTimer = useRef<number>(undefined);
+  const shift = useRef(false); // held = "silent casting": skip the transition
 
   const say = useCallback((text: string) => {
     setToast(text);
     window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast(null), 3800);
+    toastTimer.current = window.setTimeout(() => setToast(null), 4200);
+  }, []);
+
+  const go = useCallback((id: SpotId) => {
+    if (!shift.current) setCast((c) => c + 1);
+    setFocus(id);
   }, []);
 
   const select = useCallback(
     (id: SpotId) => {
       const spot = SPOTS[id];
-      if (spot.action === "night") return toggleNight();
+      if (spot.action === "chateau") {
+        setChateau((c) => {
+          say(c ? "Back to Toronto." : "The Château d'If, where Edmond Dantès learned to wait and hope.");
+          return !c;
+        });
+        return;
+      }
+      if (spot.action === "teleport") {
+        setTeleport((t) => t + 1);
+        say("Teleportation Incident! You've been displaced…");
+        const options = STATION_IDS.filter((s) => s !== focus);
+        const dest = options[Math.floor(Math.random() * options.length)];
+        window.setTimeout(() => {
+          shift.current = true; // the flash is the transition
+          go(dest);
+          shift.current = false;
+        }, 450);
+        return;
+      }
       if (spot.toast) say(spot.toast);
-      if (!spot.view) return;
-      setCast((c) => c + 1);
-      setPanel(null);
-      setFocus(spot.focusAs ?? id);
-      window.setTimeout(() => setPanel(spot.panel ?? id), 650);
+      if (spot.view) go(id);
     },
-    [say, toggleNight],
+    [focus, go, say],
   );
 
-  const close = useCallback(() => {
-    setPanel(null);
-    setFocus(null);
-  }, []);
+  const close = useCallback(() => setFocus(null), []);
+
+  // keyboard: Esc back, 1–6 stations, ← → cycle stations
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      shift.current = e.shiftKey;
+      if ((e.target as HTMLElement)?.closest?.("input, textarea")) return;
+      if (e.key === "Escape") return close();
+      const n = Number(e.key);
+      if (n >= 1 && n <= STATIONS.length) return go(STATION_IDS[n - 1]);
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        const i = focus && isStation(focus) ? STATION_IDS.indexOf(focus) : -1;
+        const step = e.key === "ArrowRight" ? 1 : -1;
+        go(STATION_IDS[(i + step + STATION_IDS.length) % STATION_IDS.length]);
+      }
+    };
+    const onUp = (e: KeyboardEvent) => (shift.current = e.shiftKey);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("keyup", onUp);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onUp);
+    };
+  }, [close, focus, go]);
+
+  // Hitogami visits idle dreamers, once per visit.
+  useEffect(() => {
+    if (!ready) return;
+    let seen = false;
+    try { seen = sessionStorage.getItem("hitogami") === "1"; } catch {}
+    if (seen) return;
+    let timer = window.setTimeout(fire, IDLE_DREAM_MS);
+    function fire() {
+      setDream(true);
+      try { sessionStorage.setItem("hitogami", "1"); } catch {}
+      stop();
+    }
+    function reset() {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(fire, IDLE_DREAM_MS);
+    }
+    const events = ["pointermove", "keydown", "wheel", "pointerdown"] as const;
+    events.forEach((ev) => window.addEventListener(ev, reset, { passive: true }));
+    function stop() {
+      window.clearTimeout(timer);
+      events.forEach((ev) => window.removeEventListener(ev, reset));
+    }
+    return stop;
+  }, [ready]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [close]);
+    const move = (e: PointerEvent) => {
+      if (cursorLabel.current) cursorLabel.current.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 18}px)`;
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
 
   const leave = () => {
     document.documentElement.dataset.mode = "recruiter";
@@ -96,14 +171,52 @@ function StudyRoom() {
     window.dispatchEvent(new CustomEvent("modechange", { detail: "recruiter" }));
   };
 
+  const stationIndex = focus && isStation(focus) ? STATION_IDS.indexOf(focus) : -1;
+  const step = (d: number) => go(STATION_IDS[(stationIndex + d + STATION_IDS.length) % STATION_IDS.length]);
+
   return (
     <div className={`study ${night ? "is-night" : "is-day"}`}>
       <Suspense fallback={null}>
-        <Scene focus={focus} night={night} onSelect={select} onReady={() => setReady(true)} />
+        <Scene
+          focus={focus}
+          hovered={hovered}
+          setHovered={setHovered}
+          markers={markers}
+          night={night}
+          chateau={chateau}
+          panelOpen={!!focus}
+          onSelect={select}
+          onReady={() => setReady(true)}
+        />
       </Suspense>
 
+      {ready && (
+        <div className="markers" hidden={!!focus}>
+          {STATIONS.map((s, i) => (
+            <button
+              key={s.id}
+              ref={(el) => { markers.current[s.id] = el; }}
+              type="button"
+              className={`marker ${s.id === "board" ? "marker--quest" : ""} ${hovered === s.id ? "is-on" : ""}`}
+              onClick={() => go(s.id)}
+              onPointerEnter={() => setHovered(s.id)}
+              onPointerLeave={() => setHovered(null)}
+            >
+              <span className="marker__icon" aria-hidden>{s.icon}</span>
+              <span className="marker__label">
+                <kbd>{i + 1}</kbd> {SPOTS[s.id].label}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+      <div ref={cursorLabel} className="cursor-label" hidden={!hovered || isStation(hovered)}>
+        {hovered ? SPOTS[hovered].label : ""}
+      </div>
+
       <Boot done={ready} />
-      {cast > 0 && <MagicCircle key={cast} />}
+      {cast > 0 && <div key={cast} className="blink" aria-hidden />}
+      {teleport > 0 && <div key={teleport} className="teleport" aria-hidden />}
 
       <header className="hud hud--top">
         <div className="hud__id">
@@ -115,40 +228,81 @@ function StudyRoom() {
             {night ? "☀ Day" : "☾ Night"}
           </button>
           <a className="hud-btn" href={profile.resume} target="_blank" rel="noopener noreferrer">Résumé</a>
-          <button type="button" className="hud-btn hud-btn--accent" onClick={leave}>
+          <button type="button" className="hud-btn hud-btn--accent" onClick={leave} title="Return to your world">
             Recruiter mode
           </button>
         </div>
       </header>
 
-      <nav className="hud hud--travel" aria-label="Quick travel">
-        <span className="hud__label">Quick travel</span>
-        {(["board", "monitor", "trophies", "shelf", "diploma", "phone"] as SpotId[]).map((id) => (
-          <button key={id} type="button" className={focus === id ? "is-on" : ""} onClick={() => select(id)}>
-            {SPOTS[id].label}
+      <nav className="menu" aria-label="Stations" onMouseLeave={() => setHovered(null)}>
+        {STATIONS.map((s, i) => (
+          <button
+            key={s.id}
+            type="button"
+            className={`menu__item ${focus === s.id ? "is-on" : ""}`}
+            onClick={() => go(s.id)}
+            onMouseEnter={() => setHovered(s.id)}
+            onFocus={() => setHovered(s.id)}
+            onBlur={() => setHovered(null)}
+          >
+            <kbd>{i + 1}</kbd>
+            <span className="menu__icon" aria-hidden>{s.icon}</span>
+            {SPOTS[s.id].label}
           </button>
         ))}
+        {focus && (
+          <button type="button" className="menu__item menu__back" onClick={close}>
+            <kbd>Esc</kbd> Back to the room
+          </button>
+        )}
       </nav>
 
-      {!focus && ready && <p className="hud hud--hint">Click anything that glows when you hover it.</p>}
+      {!focus && ready && (
+        <p className="hud hud--hint">Pick a station · keys 1–6 · some objects hide secrets</p>
+      )}
+      {stationIndex >= 0 && (
+        <div className="stepper" role="group" aria-label="Station navigation">
+          <button type="button" onClick={() => step(-1)} aria-label="Previous station">
+            ← {SPOTS[STATION_IDS[(stationIndex - 1 + STATION_IDS.length) % STATION_IDS.length]].label}
+          </button>
+          <span>{stationIndex + 1} / {STATION_IDS.length}</span>
+          <button type="button" onClick={() => step(1)} aria-label="Next station">
+            {SPOTS[STATION_IDS[(stationIndex + 1) % STATION_IDS.length]].label} →
+          </button>
+        </div>
+      )}
       {toast && <p className="toast" role="status">{toast}</p>}
 
-      {panel === "monitor" ? (
-        <MusOS onClose={close} />
-      ) : panel ? (
-        <Panel id={panel} onClose={close} />
-      ) : null}
+      {focus === "monitor" ? <MusOS onClose={close} /> : focus && SPOTS[focus].title ? <Panel id={focus} onClose={close} /> : null}
+
+      {dream && <Hitogami onWake={() => setDream(false)} />}
     </div>
   );
 }
 
 function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
   const spot = SPOTS[id];
-  const body = {
+  const body: Partial<Record<SpotId, React.ReactNode>> = {
+    character: (
+      <>
+        <p className="panel__lead">{profile.tagline}</p>
+        <p>
+          Computer Engineering grad from the University of Toronto, now a Software Engineer at Amazon. Off the clock:
+          The Count of Monte Cristo, 7,000+ episodes of anime, and a white AMD battlestation.
+        </p>
+        <Links />
+      </>
+    ),
     board: (
       <>
-        <p className="epigraph">Journey before destination.</p>
+        <p className="epigraph">Wait and hope.</p>
         <QuestLog />
+      </>
+    ),
+    chest: (
+      <>
+        <p className="epigraph">The treasure of Monte Cristo.</p>
+        <Hackathons />
       </>
     ),
     shelf: (
@@ -157,20 +311,25 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
         <h3 className="sub">Spellbook</h3>
         <p className="meta panel__note">Technical skills, ranked by Mushoku Tensei's seven tiers of magic.</p>
         <Spellbook />
+        <h3 className="sub">Education</h3>
+        <Education />
       </>
     ),
-    diploma: <Education />,
-    trophies: <Hackathons />,
-    phone: <Contact />,
-    character: (
+    letter: (
       <>
-        <p className="panel__lead">{profile.tagline}</p>
-        <p>
-          Computer Engineering grad from the University of Toronto, now a Software Engineer at Amazon. Off the clock:
-          fantasy novels, 7,000+ episodes of anime, and a white AMD battlestation.
-        </p>
-        <Links />
+        <Contact />
+        <p className="signoff">“Wait and hope.”</p>
       </>
+    ),
+    diary: (
+      <ol className="diary">
+        {diary.map((d, i) => (
+          <li key={i}>
+            <span className="diary__date">{d.date}</span>
+            <p>{d.entry}</p>
+          </li>
+        ))}
+      </ol>
     ),
     tower: (
       <div className="item-card">
@@ -180,7 +339,7 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
         <p className="item-card__flavor">“{battlestation.flavor}”</p>
       </div>
     ),
-  }[id as string];
+  };
 
   return (
     <aside className={`panel ${id === "tower" ? "panel--small" : ""}`} aria-label={spot.title}>
@@ -188,7 +347,7 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
         <h2>{spot.title}</h2>
         <button type="button" className="panel__close" onClick={onClose} aria-label="Close (Esc)">✕</button>
       </header>
-      <div className="panel__body">{body}</div>
+      <div className="panel__body">{body[id]}</div>
     </aside>
   );
 }
@@ -253,29 +412,37 @@ function Boot({ done }: { done: boolean }) {
     <div className={`boot ${done ? "is-done" : ""}`} aria-hidden>
       <div className="boot__inner">
         <p className="boot__logo">MusOS</p>
-        <p>Infusing stormlight…</p>
-        <p>Loading the study…</p>
+        <p>Charging mana…</p>
+        <p>Lighting the candles…</p>
         <div className="boot__bar"><span /></div>
       </div>
     </div>
   );
 }
 
-function MagicCircle() {
+// Hitogami, the Man-God: appears in dreams, face hidden behind a mosaic.
+function Hitogami({ onWake }: { onWake: () => void }) {
+  const tiles = useMemo(
+    () =>
+      Array.from({ length: 12 * 14 }, (_, i) => {
+        const x = i % 12;
+        const y = Math.floor(i / 12);
+        const inHead = (x - 5.5) ** 2 / 26 + (y - 5) ** 2 / 30 < 1;
+        const inBody = y > 9 && Math.abs(x - 5.5) < 2 + (y - 9) * 1.2;
+        if (!inHead && !inBody) return null;
+        const v = 150 + ((x * 37 + y * 91) % 70);
+        return `rgb(${v},${v},${v + 8})`;
+      }),
+    [],
+  );
   return (
-    <svg className="magic" viewBox="-100 -100 200 200" aria-hidden>
-      <circle r="90" />
-      <circle r="78" />
-      <circle r="40" />
-      <polygon points="0,-78 67.5,39 -67.5,39" />
-      <polygon points="0,78 67.5,-39 -67.5,-39" />
-      <g className="magic__runes">
-        {Array.from({ length: 16 }, (_, i) => (
-          <text key={i} transform={`rotate(${i * 22.5}) translate(0,-83)`}>
-            {"ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊ"[i]}
-          </text>
-        ))}
-      </g>
-    </svg>
+    <div className="dream" role="dialog" aria-label="A dream" onClick={onWake}>
+      <div className="dream__figure" aria-hidden>
+        {tiles.map((c, i) => <i key={i} style={c ? { background: c } : undefined} />)}
+      </div>
+      <p className="dream__line">“Heed my words, visitor… this engineer is worth hiring.”</p>
+      <p className="dream__who">— Hitogami</p>
+      <p className="dream__wake">Click anywhere to wake up</p>
+    </div>
   );
 }

@@ -42,7 +42,7 @@ export const experience: Quest[] = [
     end: "Present",
     active: true,
     rank: "S",
-    achievement: "Main Quest: The Radiant Path",
+    achievement: "Main Quest: Ship It",
     highlight: "Shipped an AI desktop assistant to 3,000+ finance analysts",
     bullets: [
       "Owned full continuous delivery for an Electron AI desktop assistant (Strands, Bedrock) rolled out to 3,000+ finance analysts — Playwright Windows E2E gates and daily prod canaries on EC2 (CDK), with zero manual approval steps.",
@@ -340,6 +340,23 @@ export const library: {
     cover: "/books/words-of-radiance.jpg",
     href: "https://openlibrary.org/isbn/9780765326362",
     spine: "#1f4a6b",
+  },
+];
+
+// Rudeus's Diary: a short changelog for the site, newest first.
+export const diary = [
+  {
+    date: "October 2026",
+    entry:
+      "Rebuilt the whole site as a little study: a quest board for work, a treasure chest for hackathons, and a bookshelf for the books that shaped me. The old 2020 Bootstrap site is retired with honours.",
+  },
+  {
+    date: "October 2026",
+    entry: "Hooked the anime shelf up to MyAnimeList and the games up to Steam. They resync every night, so the 10/10s stay honest.",
+  },
+  {
+    date: "February 2020",
+    entry: "Shipped MyJikanBot, my first project outside of school. Every quest since started here.",
   },
 ];
 
