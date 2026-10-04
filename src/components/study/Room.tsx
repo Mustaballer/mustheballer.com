@@ -305,11 +305,18 @@ function Battlestation() {
             <meshStandardMaterial color="#d6e6f0" transparent opacity={0.12} roughness={0.05} metalness={0.2} />
           </mesh>
           <Box p={[-0.19, 0.05, -0.02]} s={[0.01, 0.7, 0.62]} c="#e8e8e8" />
-          {/* RX 9070 XT */}
+          {/* white ASRock RX 9070 XT: white shroud, silver backplate, light strip, three fans underneath */}
           <group position={[0.02, -0.08, 0]}>
-            <Box p={[0, 0, 0]} s={[0.3, 0.13, 0.66]} c="#2a2a2e" rough={0.4} metal={0.5} />
-            <Box p={[0.152, 0, 0]} s={[0.004, 0.02, 0.6]} c={C.red} e={C.red} ei={3} shadow={false} />
-            <Box p={[0.152, 0.045, 0.1]} s={[0.004, 0.025, 0.24]} c="#eee" e="#fff" ei={0.6} shadow={false} />
+            <Box p={[0, 0, 0]} s={[0.3, 0.12, 0.66]} c="#f3f3f1" rough={0.35} />
+            <Box p={[0, 0.066, 0]} s={[0.29, 0.012, 0.64]} c="#d4d8de" rough={0.3} metal={0.4} />
+            <Box p={[0.152, 0.015, 0]} s={[0.004, 0.012, 0.56]} c="#fff" e="#ffffff" ei={1.4} shadow={false} />
+            <Box p={[0.152, -0.025, 0.16]} s={[0.004, 0.02, 0.2]} c="#c9ccd2" metal={0.5} rough={0.3} shadow={false} />
+            {[-0.21, 0, 0.21].map((z) => (
+              <mesh key={z} position={[0, -0.061, z]} rotation={[Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[0.085, 0.008, 6, 28]} />
+                <meshStandardMaterial color="#e6e6e3" emissive="#ffffff" emissiveIntensity={0.5} />
+              </mesh>
+            ))}
           </group>
           {/* Ryzen 9 7900X under an AIO pump */}
           <mesh position={[-0.13, 0.17, -0.06]} rotation={[0, 0, Math.PI / 2]}>
@@ -327,7 +334,7 @@ function Battlestation() {
               </mesh>
             ))}
           </group>
-          <pointLight position={[0.05, 0, 0]} color="#ff3040" intensity={0.7} distance={1.3} decay={2} />
+          <pointLight position={[0.05, 0.25, 0]} color="#ff3040" intensity={0.3} distance={1.3} decay={2} />
         </group>
       </Spot>
 

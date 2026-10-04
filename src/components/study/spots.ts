@@ -90,7 +90,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   tower: {
     label: "The Battlestation",
     title: "Item: The Battlestation",
-    view: { pos: [0.55, 1.5, -0.55], target: [-0.4, 1.2, -1.75] },
+    view: { pos: [1.3, 2.1, -0.2], target: [-0.4, 1.1, -1.72] },
   },
 };
 

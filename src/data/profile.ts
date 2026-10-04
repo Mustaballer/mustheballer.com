@@ -363,6 +363,6 @@ export const diary = [
 export const battlestation = {
   name: "The Battlestation",
   rarity: "Legendary",
-  specs: ["AMD Ryzen 9 7900X", "AMD Radeon RX 9070 XT", "All-white build"],
+  specs: ["AMD Ryzen 9 7900X", "ASRock Radeon RX 9070 XT (white)", "All-white build"],
   flavor: "Renders anime at 4K and AWS bills at 1:1.",
 };

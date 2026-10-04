@@ -57,7 +57,7 @@ function StudyRoom() {
   const [ready, setReady] = useState(false);
   const [focus, setFocus] = useState<SpotId | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [cast, setCast] = useState(0); // bumps to replay the travel transition
+  const [cast, setCast] = useState({ n: 0, label: "" }); // bumps to replay the travel transition
   const [hovered, setHovered] = useState<SpotId | null>(null);
   const markers = useRef<MarkerEls>({});
   const cursorLabel = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ function StudyRoom() {
   }, []);
 
   const go = useCallback((id: SpotId) => {
-    if (!shift.current) setCast((c) => c + 1);
+    if (!shift.current) setCast((c) => ({ n: c.n + 1, label: SPOTS[id].label }));
     setFocus(id);
   }, []);
 
@@ -222,7 +222,7 @@ function StudyRoom() {
       </div>
 
       <Boot done={ready} />
-      {cast > 0 && <div key={cast} className="blink" aria-hidden />}
+      {cast.n > 0 && <Slash key={cast.n} label={cast.label} />}
       {teleport > 0 && <div key={teleport} className="teleport" aria-hidden />}
 
       <header className="hud hud--top">
@@ -423,6 +423,18 @@ function Boot({ done }: { done: boolean }) {
         <p>Lighting the candles…</p>
         <div className="boot__bar"><span /></div>
       </div>
+    </div>
+  );
+}
+
+// Persona-style travel transition: a red and black diagonal slash that wipes across with the destination's name.
+function Slash({ label }: { label: string }) {
+  return (
+    <div className="slash" aria-hidden>
+      <div className="slash__black" />
+      <div className="slash__red" />
+      <div className="slash__stripe" />
+      <p className="slash__label">{label}</p>
     </div>
   );
 }
