@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "mask" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -68,13 +68,8 @@ export const SPOTS: Record<SpotId, Spot> = {
   montecristo: {
     label: "The Count of Monte Cristo",
     toast: "“All human wisdom is contained in these two words: Wait and Hope.”",
-  },
-  purse: {
-    label: "A red silk purse",
-    toast: "Inside: a settled debt, a diamond, and a note — “Julie's dowry.” Signed, Sinbad the Sailor.",
-  },
+   view: { pos: [1.5, 1.25, -1.02], target: [1.28, 0.8, -1.5] } },
   window: { label: "The window", action: "chateau" },
-  mask: { label: "A white mask", toast: "“Looking cool, Joker!” — Persona 5" },
   // close-ups: the camera glides in, a caption shows, no panel
   chocobo: {
     label: "A Chocobo plush",
@@ -106,14 +101,22 @@ export const SPOTS: Record<SpotId, Spot> = {
     toast: "University of Toronto — BASc, Computer Engineering (2026)",
     view: { pos: [-1.55, 1.45, -0.55], target: [-2.29, 1.45, -0.55] },
   },
-  racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." },
-  wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
-  dragonballs: { label: "The seven Dragon Balls", toast: "All seven. Shenron, I wish for… a 10 ft vertical. — Dragon Ball" },
+  racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." , view: { pos: [1.2, 1.3, -0.45], target: [2.12, 0.4, -1.85] } },
+  dragonballs: {
+    label: "The seven Dragon Balls",
+    toast: "All seven. Shenron, I wish for… a 10 ft vertical. — Dragon Ball",
+    view: { pos: [-0.22, 1.98, -1.42], target: [-0.3, 1.84, -1.97] },
+  },
   microwave: {
     label: "Phone Microwave (name subject to change)",
     toast: "D-Mail sent. Worldline divergence: 1.048596%. El Psy Kongroo. — Steins;Gate",
+    view: { pos: [0.1, 1.99, -1.4], target: [0.04, 1.86, -1.98] },
   },
-  headband: { label: "A Leaf headband", toast: "“I'm not gonna run away, I never go back on my word!” — Naruto" },
+  headband: {
+    label: "A Leaf headband",
+    toast: "“I'm not gonna run away, I never go back on my word!” — Naruto",
+    view: { pos: [0.4, 1.98, -1.45], target: [0.33, 1.83, -2.03] },
+  },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {
     label: "A worn diary",

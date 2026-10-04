@@ -407,35 +407,6 @@ function DeskItems({ night }: { night: boolean }) {
         <pointLight position={[0, 0.3, 0.12]} color="#ffc98a" intensity={night ? 1.3 : 0.3} distance={2} decay={1.8} />
       </group>
 
-      {/* Persona 5 nod: a white domino mask */}
-      <Spot id="mask">
-        <group position={[-0.22, 0.785, -1.3]} rotation={[-Math.PI / 2 + 0.25, 0, 0.35]}>
-          <mesh scale={[1, 0.55, 0.35]} castShadow>
-            <sphereGeometry args={[0.07, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-            <meshStandardMaterial color="#f6f4f0" roughness={0.35} side={THREE.DoubleSide} />
-          </mesh>
-          {[-0.032, 0.032].map((x) => (
-            <mesh key={x} position={[x, 0.004, 0.02]} rotation={[-Math.PI / 2, 0, x > 0 ? -0.3 : 0.3]}>
-              <circleGeometry args={[0.017, 14]} />
-              <meshBasicMaterial color="#111" />
-            </mesh>
-          ))}
-        </group>
-      </Spot>
-
-      {/* a wand */}
-      <Spot id="wand">
-        <group position={[-0.02, 0.78, -1.42]} rotation={[0, 0.5, Math.PI / 2]}>
-          <mesh>
-            <cylinderGeometry args={[0.008, 0.012, 0.34, 10]} />
-            <meshStandardMaterial color="#5a3a24" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0.19, 0]}>
-            <octahedronGeometry args={[0.025]} />
-            <meshStandardMaterial color="#6ec6ff" emissive="#2d9bff" emissiveIntensity={1.2} toneMapped={false} />
-          </mesh>
-        </group>
-      </Spot>
     </group>
   );
 }
@@ -653,8 +624,7 @@ function Bookshelf({ night }: { night: boolean }) {
     return [0.1, 0.58, 1.06, 1.54].map((y, row) => {
       const books: { z: number; w: number; h: number; c: string; tilt: number }[] = [];
       let z = -2.0;
-      // leave room for the purse on the second shelf
-      const end = row === 1 ? -1.3 : -1.0;
+      const end = -1.0;
       while (z < end) {
         const w = 0.04 + rnd() * 0.045;
         const h = 0.28 + rnd() * 0.13;
@@ -688,24 +658,6 @@ function Bookshelf({ night }: { night: boolean }) {
               />
             )),
           )}
-        </group>
-      </Spot>
-
-      {/* Sinbad the Sailor's red silk purse */}
-      <Spot id="purse">
-        <group position={[-2.06, 0.66, -1.15]}>
-          <mesh scale={[1, 1.15, 1]} castShadow>
-            <sphereGeometry args={[0.07, 18, 14]} />
-            <meshStandardMaterial color="#a3121c" roughness={0.45} metalness={0.1} />
-          </mesh>
-          <mesh position={[0, 0.075, 0]}>
-            <cylinderGeometry args={[0.022, 0.035, 0.03, 12]} />
-            <meshStandardMaterial color="#a3121c" roughness={0.45} />
-          </mesh>
-          <mesh position={[0, 0.06, 0]} rotation={[Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[0.03, 0.006, 6, 16]} />
-            <meshStandardMaterial color="#d9b45a" metalness={0.6} roughness={0.3} />
-          </mesh>
         </group>
       </Spot>
 
