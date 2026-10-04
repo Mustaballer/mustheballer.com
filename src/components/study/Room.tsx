@@ -560,13 +560,33 @@ function Character() {
   return (
     <group position={[0.5, 0, -0.9]}>
       <group ref={swivel}>
-      {/* gaming chair */}
-      <Box p={[0, 0.5, 0]} s={[0.52, 0.08, 0.5]} c={C.white} />
-      <Box p={[0, 0.84, 0.25]} s={[0.46, 0.58, 0.07]} c={C.white} r={[0.12, 0, 0]} />
-      <Box p={[0, 0.84, 0.29]} s={[0.09, 0.54, 0.01]} c="#c9a24a" r={[0.12, 0, 0]} shadow={false} />
-      <Box p={[0, 0.25, 0]} s={[0.05, 0.45, 0.05]} c="#bbb" metal={0.6} />
-      <Box p={[0, 0.04, 0]} s={[0.56, 0.04, 0.06]} c="#ccc" metal={0.6} />
-      <Box p={[0, 0.04, 0]} s={[0.06, 0.04, 0.56]} c="#ccc" metal={0.6} />
+      {/* black office chair: mesh back, padded seat, armrests, 5-star base on casters */}
+      <Box p={[0, 0.5, 0]} s={[0.5, 0.07, 0.48]} c="#1e1e22" rough={0.85} />
+      <Box p={[0, 0.88, 0.25]} s={[0.44, 0.62, 0.05]} c="#232327" rough={0.9} r={[0.12, 0, 0]} />
+      <Box p={[0, 0.88, 0.277]} s={[0.4, 0.56, 0.008]} c="#2e2e34" rough={1} r={[0.12, 0, 0]} shadow={false} />
+      <Box p={[0, 0.58, 0.22]} s={[0.04, 0.16, 0.03]} c="#141416" metal={0.4} rough={0.5} />
+      {[-1, 1].map((sx) => (
+        <group key={sx}>
+          <Box p={[sx * 0.26, 0.6, 0.02]} s={[0.03, 0.14, 0.03]} c="#141416" metal={0.4} rough={0.5} />
+          <Box p={[sx * 0.26, 0.68, 0.0]} s={[0.06, 0.025, 0.24]} c="#1a1a1d" rough={0.8} />
+        </group>
+      ))}
+      <mesh position={[0, 0.27, 0]} castShadow>
+        <cylinderGeometry args={[0.025, 0.03, 0.42, 12]} />
+        <meshStandardMaterial color="#141416" metalness={0.6} roughness={0.35} />
+      </mesh>
+      {Array.from({ length: 5 }, (_, i) => {
+        const ang = (i / 5) * Math.PI * 2;
+        return (
+          <group key={i} rotation={[0, ang, 0]}>
+            <Box p={[0.15, 0.06, 0]} s={[0.3, 0.03, 0.04]} c="#141416" metal={0.5} rough={0.4} />
+            <mesh position={[0.29, 0.025, 0]}>
+              <sphereGeometry args={[0.025, 10, 8]} />
+              <meshStandardMaterial color="#0e0e10" roughness={0.6} />
+            </mesh>
+          </group>
+        );
+      })}
 
       <Spot id="character">
         <Avatar look={look} />
