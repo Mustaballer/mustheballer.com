@@ -2,6 +2,6 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 
 export default defineConfig({
-  site: "https://mustaballer.github.io",
+  site: "https://mustheballer.com",
   integrations: [react()],
 });
