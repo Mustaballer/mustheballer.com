@@ -124,11 +124,26 @@
 .study:has(.panel) .stepper { left: 17rem; transform: none; }
 
 /* ---------------------------------------------------------------- panel */
+/* Panels and MusOS always read like soft paper, even in the night room. */
+.panel, .musos__window {
+  --paper: #f8f5ee;
+  --paper-2: #f0ebe0;
+  --card: #fffdf9;
+  --ink: #232a3b;
+  --ink-soft: #626a7e;
+  --line: #e6dfd1;
+  --accent: #4a63a0;
+  --accent-ink: #fbf9f4;
+  --gold: #a48446;
+  --gold-soft: #d8bf86;
+  --shadow: 0 1px 2px rgb(35 42 59 / 0.04), 0 6px 18px rgb(35 42 59 / 0.05);
+  color-scheme: light;
+}
 .panel {
   position: absolute; z-index: 7; top: 5.5rem; right: 1.6rem; bottom: 1.6rem;
   width: min(44vw, 640px); display: flex; flex-direction: column;
   background: var(--paper); color: var(--ink);
-  border: 3px solid var(--p5-navy); box-shadow: 10px 10px 0 var(--p5-gold);
+  border: 1px solid rgb(16 26 51 / 0.25); box-shadow: 5px 5px 0 rgb(201 162 74 / 0.45), 0 20px 50px rgb(0 0 0 / 0.25);
   animation: slide-in 0.3s cubic-bezier(.2,.8,.2,1) both;
 }
 .panel--small { bottom: auto; width: min(44vw, 380px); }
@@ -156,7 +171,7 @@
 .panel .quest__head h3 { font-size: 1.3rem; }
 .panel .signoff { margin-top: 1.5rem; }
 
-.item-card { border: 2px solid var(--p5-gold); padding: 1rem 1.1rem; background: linear-gradient(160deg, var(--card), var(--paper-2)); }
+.item-card { border: 1px solid var(--gold-soft); padding: 1rem 1.1rem; background: linear-gradient(160deg, var(--card), var(--paper-2)); }
 .item-card__rarity { font: italic 900 0.75rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: #b8862a; }
 .item-card h3 { font-size: 1.6rem; margin: 0.15rem 0 0.5rem; }
 .item-card ul { margin: 0; padding-left: 1.1rem; }
@@ -175,8 +190,8 @@
 }
 .musos__window {
   width: min(1100px, 100%); height: min(720px, 100%); display: flex; flex-direction: column; overflow: hidden;
-  background: var(--paper); color: var(--ink); border: 3px solid var(--p5-navy);
-  box-shadow: 12px 12px 0 var(--p5-gold); animation: pop 0.3s cubic-bezier(.2,.8,.2,1) both;
+  background: var(--paper); color: var(--ink); border: 1px solid rgb(16 26 51 / 0.25);
+  box-shadow: 6px 6px 0 rgb(201 162 74 / 0.45), 0 24px 60px rgb(0 0 0 / 0.3); animation: pop 0.3s cubic-bezier(.2,.8,.2,1) both;
 }
 .musos__bar {
   display: flex; align-items: center; gap: 1rem; padding: 0.55rem 0.75rem 0.55rem 1rem;
@@ -193,7 +208,7 @@
 }
 .musos__dock button span { width: 1.6rem; height: 1.6rem; display: grid; place-items: center; background: var(--card); border: 1px solid var(--line); font-size: 0.9rem; }
 .musos__dock button:hover { background: var(--card); }
-.musos__dock button.is-on { background: var(--p5-navy); color: var(--p5-cream); }
+.musos__dock button.is-on { background: var(--card); color: var(--ink); box-shadow: inset 3px 0 0 var(--gold-soft); clip-path: none; }
 .musos__app { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 2rem; overscroll-behavior: contain; }
 .musos__resume { display: grid; place-items: start; gap: 1rem; }
 .musos__resume p { font: 600 1.5rem var(--serif); margin: 0; }
