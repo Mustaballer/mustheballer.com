@@ -81,7 +81,8 @@ export function Projects() {
     <>
       <div className="projects">
         {projects.map((p) => (
-          <article key={p.name} className="card project">
+          <article key={p.name} className={`card project ${p.origin ? "project--origin" : ""}`}>
+            {p.badge && <span className="pill project__badge">{p.badge}</span>}
             <h3>{p.name}</h3>
             <p className="project__blurb">{p.blurb}</p>
             <ul className="bullets">

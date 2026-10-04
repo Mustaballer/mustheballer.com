@@ -107,13 +107,16 @@ export type Project = {
   bullets: string[];
   tags: string[];
   links: { label: string; href: string }[];
+  badge?: string; // e.g. "Capstone", "Hack the North 2025 · Semifinalist"
+  origin?: boolean; // the first project — styled as the start of the journey
 };
 
 export const projects: Project[] = [
   {
     name: "RabbitHole",
+    badge: "Capstone",
     blurb:
-      "Capstone: pick a seed paper and explore its citation neighbourhood as an interactive graph that ranks and explains how each paper relates.",
+      "Pick a seed paper and explore its citation neighbourhood as an interactive graph that ranks and explains how each paper relates.",
     bullets: [
       "Built the relevance engine: SPECTER2 embeddings of chunked full-text (max-pooled per paper) blended with year proximity and citation signals, with an embedding cache for fast re-runs.",
       "Implemented bidirectional citation-graph expansion (references and citations) and the Flask API + Celery/Redis task queue that ingests papers asynchronously, with Flower monitoring in Docker Compose.",
@@ -122,6 +125,21 @@ export const projects: Project[] = [
     ],
     tags: ["Python", "Flask", "Celery", "Redis", "Neo4j", "SPECTER2", "React", "React Flow", "Docker"],
     links: [{ label: "GitHub", href: "https://github.com/Ahmed-Labs/rabbithole" }],
+  },
+  {
+    name: "CaptureCube",
+    badge: "Hack the North 2025 · Semifinalist",
+    blurb:
+      "A motorized photo cube that shoots a product from every angle, then turns those shots into an AI-generated ad video.",
+    bullets: [
+      "Built the web app end to end: a React + TypeScript studio with an interactive three.js 3D product preview, video preview, and one-click download.",
+      "Wrote the Flask backend that pulls the Raspberry Pi's captures from S3 and drives Google Veo 2 (Vertex AI) image-to-video generation, polling long-running jobs to completion.",
+    ],
+    tags: ["React", "TypeScript", "three.js", "Flask", "AWS S3", "Vertex AI · Veo 2", "Raspberry Pi"],
+    links: [
+      { label: "GitHub", href: "https://github.com/PencilKnot/CaptureCube" },
+      { label: "Devpost", href: "https://devpost.com/software/capturecube" },
+    ],
   },
   {
     name: "Hardware Sign-out Site",
@@ -142,11 +160,23 @@ export const projects: Project[] = [
     tags: ["Python", "LLMs", "Automation"],
     links: [{ label: "GitHub", href: "https://github.com/OpenAdaptAI/OpenAdapt" }],
   },
+  {
+    name: "MyJikanBot",
+    badge: "Level 1 · 2020",
+    origin: true,
+    blurb:
+      "My first programming project outside of school: a Discord bot for finding anime and manga, built when I was just getting started.",
+    bullets: [
+      "Search any anime or manga, roll a random pick, check the weekly airing schedule, and browse top and seasonal charts — powered by the Jikan (MyAnimeList) API.",
+      "Taught me APIs, Gradle, and keeping a bot running 24/7 on Heroku. Every quest since started here.",
+    ],
+    tags: ["Java", "JDA", "Jikan API", "Gradle"],
+    links: [{ label: "GitHub", href: "https://github.com/Mustaballer/MyJikanBot" }],
+  },
 ];
 
 // Older projects from the original site — kept as a compact archive.
 export const archive = [
-  { name: "MyJikanBot", note: "Discord anime/manga bot", href: "https://github.com/Mustaballer/MyJikanBot" },
   { name: "EventNow", note: "Event booker · React, GraphQL", href: "https://github.com/Mustaballer/EVENTNOW" },
   { name: "ChillChat", note: "Chat rooms · Socket.io", href: "https://github.com/Mustaballer/ChillChat" },
   { name: "Winter Run", note: "2D arcade game · Phaser 3", href: "https://github.com/Mustaballer/winter_run" },

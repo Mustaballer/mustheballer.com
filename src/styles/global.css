@@ -166,6 +166,8 @@ html[data-mode="study"] .doc { display: none; }
 /* projects */
 .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 1.25rem; }
 .project h3 { font-size: 1.5rem; }
+.project__badge { margin: 0 0 0.5rem; border-color: var(--gold); color: var(--gold); }
+.project--origin { grid-column: 1 / -1; border-style: dashed; border-color: var(--gold); background: linear-gradient(160deg, var(--card), var(--paper-2)); }
 .project__blurb { color: var(--ink-soft); margin: 0.4rem 0 0; }
 .project__links { margin: 1rem 0 0; display: flex; gap: 1rem; }
 .project__links a { font-weight: 600; text-decoration: none; color: var(--accent); }
