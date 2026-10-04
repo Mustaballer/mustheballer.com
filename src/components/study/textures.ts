@@ -278,64 +278,89 @@ export function chateauTexture() {
 }
 
 // Anime face drawn on a transparent canvas, wrapped onto the front of the head.
+// Masculine shōnen styling: narrow eyes under a heavy flat lid, small irises, thick low brows, no lashes.
 export function faceTexture() {
   return make(256, 256, (c) => {
     c.clearRect(0, 0, 256, 256);
-    const eye = (x: number, flip: number) => {
-      const y = 136;
-      c.fillStyle = "#fbf8f2";
-      c.beginPath();
-      c.ellipse(x, y, 30, 27, 0, 0, Math.PI * 2);
+    c.lineCap = "round";
+    c.lineJoin = "round";
+    const eye = (x: number, side: number) => {
+      const y = 140;
+      c.save();
+      c.translate(x, y);
+      c.scale(1.25, 1.25);
+      c.translate(-x, -y);
+      // eye shape: flat top lid, gentle curve below, slightly narrower at the outer corner
+      const shape = () => {
+        c.beginPath();
+        c.moveTo(x - side * 28, y - 3);
+        c.lineTo(x + side * 26, y - 7);
+        c.quadraticCurveTo(x + side * 30, y + 6, x + side * 18, y + 11);
+        c.quadraticCurveTo(x, y + 15, x - side * 26, y + 6);
+        c.closePath();
+      };
+      c.fillStyle = "#f6f2ea";
+      shape();
       c.fill();
-      const g = c.createLinearGradient(0, y - 26, 0, y + 26);
-      g.addColorStop(0, "#1f120c");
-      g.addColorStop(1, "#8a5530");
-      c.fillStyle = g;
+      // iris + pupil, tucked up under the lid
+      c.save();
+      shape();
+      c.clip();
+      c.fillStyle = "#4a2c1a";
       c.beginPath();
-      c.ellipse(x + flip * 3, y + 2, 19, 25, 0, 0, Math.PI * 2);
+      c.ellipse(x + side * 2, y + 1, 12, 14, 0, 0, Math.PI * 2);
       c.fill();
-      c.fillStyle = "#0e0806";
+      c.fillStyle = "#120a07";
       c.beginPath();
-      c.ellipse(x + flip * 3, y + 4, 8, 12, 0, 0, Math.PI * 2);
+      c.ellipse(x + side * 2, y + 2, 5.5, 7, 0, 0, Math.PI * 2);
       c.fill();
-      c.fillStyle = "#fff";
+      c.fillStyle = "rgba(255,255,255,0.85)";
       c.beginPath();
-      c.arc(x + flip * 3 - 8, y - 9, 7, 0, Math.PI * 2);
+      c.arc(x + side * 2 - 5, y - 3, 2.6, 0, Math.PI * 2);
       c.fill();
+      c.restore();
+      // heavy, nearly straight upper lid
+      c.strokeStyle = "#150e10";
+      c.lineWidth = 7;
       c.beginPath();
-      c.arc(x + flip * 3 + 7, y + 12, 3, 0, Math.PI * 2);
-      c.fill();
-      c.strokeStyle = "#140d10";
-      c.lineCap = "round";
-      c.lineWidth = 8;
-      c.beginPath();
-      c.ellipse(x, y + 5, 32, 31, 0, Math.PI * 1.1, Math.PI * 1.9);
+      c.moveTo(x - side * 30, y - 2);
+      c.lineTo(x + side * 28, y - 8);
       c.stroke();
-      c.lineWidth = 5;
+      // faint lower lid
+      c.strokeStyle = "rgba(60,30,25,0.5)";
+      c.lineWidth = 2.5;
       c.beginPath();
-      c.moveTo(x + flip * 31, y - 9);
-      c.lineTo(x + flip * 41, y - 17);
+      c.moveTo(x - side * 10, y + 13);
+      c.lineTo(x + side * 16, y + 11);
       c.stroke();
-      c.lineWidth = 6;
+      // thick, straight brow, set low and angled down toward the nose
+      c.fillStyle = "#17110f";
       c.beginPath();
-      c.moveTo(x - flip * 22, y - 46);
-      c.quadraticCurveTo(x, y - 56, x + flip * 28, y - 48);
-      c.stroke();
+      c.moveTo(x - side * 30, y - 20);
+      c.lineTo(x + side * 30, y - 31);
+      c.lineTo(x + side * 30, y - 23);
+      c.lineTo(x - side * 30, y - 13);
+      c.closePath();
+      c.fill();
+      c.restore();
     };
     eye(80, -1);
     eye(176, 1);
-    // nose hint + small smile
-    c.strokeStyle = "rgba(120,60,40,0.55)";
+    // nose: a small shadow line
+    c.strokeStyle = "rgba(110,55,35,0.55)";
     c.lineWidth = 3;
     c.beginPath();
-    c.moveTo(130, 175);
-    c.lineTo(126, 186);
+    c.moveTo(131, 166);
+    c.lineTo(126, 190);
+    c.lineTo(133, 191);
     c.stroke();
+    // mouth: short, flat, a hint of a smirk
     c.strokeStyle = "#5a2a22";
     c.lineWidth = 3.5;
     c.beginPath();
-    c.moveTo(114, 212);
-    c.quadraticCurveTo(128, 220, 142, 211);
+    c.moveTo(114, 219);
+    c.lineTo(140, 218);
+    c.quadraticCurveTo(146, 217, 149, 213);
     c.stroke();
   });
 }

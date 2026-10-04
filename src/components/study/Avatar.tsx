@@ -139,9 +139,11 @@ export function Avatar({ look }: { look: boolean }) {
 
       <group ref={head} position={[0, 1.36, -0.04]} scale={1.14}>
         {/* slightly tall anime head */}
-        <Part ramp={ramp} color={SKIN} s={[1, 1.08, 1]} geom={<sphereGeometry args={[0.13, 28, 22]} />} />
+        <Part ramp={ramp} color={SKIN} s={[0.95, 1.1, 1]} geom={<sphereGeometry args={[0.13, 28, 22]} />} />
+        {/* jaw and chin */}
+        <Part ramp={ramp} color={SKIN} p={[0, -0.085, -0.005]} s={[0.78, 0.6, 0.8]} geom={<sphereGeometry args={[0.11, 20, 16]} />} />
         {/* drawn face on the front (-z) */}
-        <mesh scale={[1, 1.08, 1]}>
+        <mesh scale={[0.95, 1.1, 1]}>
           <sphereGeometry args={[0.1315, 32, 20, Math.PI * 1.5 - 0.82, 1.64, Math.PI / 2 - 0.62, 1.3]} />
           <meshBasicMaterial map={face} transparent depthWrite={false} />
         </mesh>
