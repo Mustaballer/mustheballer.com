@@ -302,27 +302,44 @@ export const education = {
   graduated: "May 2026",
 };
 
-export const library = [
+// Covers via Open Library (openlibrary.org), saved under public/books/.
+export const library: {
+  title: string;
+  author: string;
+  edition?: string;
+  status: string;
+  quote?: string;
+  cover: string;
+  href: string;
+  spine: string;
+}[] = [
   {
     title: "The Count of Monte Cristo",
     author: "Alexandre Dumas",
+    edition: "Penguin Classics · trans. Robin Buss",
     status: "All-time favourite",
     quote: "All human wisdom is contained in these two words: Wait and Hope.",
+    cover: "/books/monte-cristo.jpg",
+    href: "https://openlibrary.org/books/OL7355484M",
     spine: "#7a1f24",
-  },
-  {
-    title: "Words of Radiance",
-    author: "Brandon Sanderson",
-    status: "Favourite fantasy",
-    quote: "Journey before destination.",
-    spine: "#1f4a6b",
   },
   {
     title: "East of Eden",
     author: "John Steinbeck",
+    edition: "Penguin",
     status: "Currently reading",
     quote: "And now that you don't have to be perfect, you can be good.",
+    cover: "/books/east-of-eden.jpg",
+    href: "https://openlibrary.org/isbn/9780142004234",
     spine: "#3f5a2c",
+  },
+  {
+    title: "Words of Radiance",
+    author: "Brandon Sanderson",
+    status: "An old favourite",
+    cover: "/books/words-of-radiance.jpg",
+    href: "https://openlibrary.org/isbn/9780765326362",
+    spine: "#1f4a6b",
   },
 ];
 

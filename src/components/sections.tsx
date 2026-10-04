@@ -195,10 +195,15 @@ export function Library() {
     <div className="library">
       {library.map((b) => (
         <article key={b.title} className="book" style={{ ["--spine" as string]: b.spine }}>
-          <span className="pill">{b.status}</span>
-          <h3>{b.title}</h3>
-          <p className="meta">{b.author}</p>
-          <blockquote>“{b.quote}”</blockquote>
+          <a href={b.href} {...ext} className="book__cover" aria-label={`${b.title} on Open Library`}>
+            <img src={b.cover} alt="" loading="lazy" width={180} height={276} />
+          </a>
+          <div>
+            <span className="pill">{b.status}</span>
+            <h3>{b.title}</h3>
+            <p className="meta">{b.author}{b.edition ? ` · ${b.edition}` : ""}</p>
+            {b.quote && <blockquote>“{b.quote}”</blockquote>}
+          </div>
         </article>
       ))}
     </div>

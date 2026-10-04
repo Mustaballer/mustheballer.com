@@ -204,8 +204,18 @@ html[data-mode="study"] .doc { display: none; }
 .education p { margin: 0.25rem 0 0; }
 
 /* library */
-.library { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1.25rem; }
-.book { position: relative; background: var(--card); border: 1px solid var(--line); border-left: 10px solid var(--spine); border-radius: 6px var(--radius) var(--radius) 6px; padding: 1.1rem 1.25rem; box-shadow: var(--shadow); }
+.library { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+.book { position: relative; display: flex; gap: 1rem; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
+.book__cover { flex: none; width: 92px; }
+.book .pill { white-space: nowrap; }
+@media (min-width: 700px) {
+  .library { grid-template-columns: repeat(2, 1fr); }
+  .book:first-child { grid-row: span 2; flex-direction: column; }
+  .book:first-child .book__cover { width: 150px; }
+  .book:first-child h3 { font-size: 1.8rem; }
+}
+.book__cover img { width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 3px 6px 6px 3px; box-shadow: -3px 0 0 var(--spine), 0 6px 16px rgb(0 0 0 / 0.25); transition: transform 0.2s; }
+.book__cover:hover img { transform: translateY(-3px) rotate(-1.5deg); }
 .book .pill { margin: 0 0 0.6rem; }
 .book h3 { font-size: 1.4rem; }
 .book blockquote { margin: 0.75rem 0 0; font: italic 500 1.1rem/1.4 var(--serif); color: var(--ink-soft); }
