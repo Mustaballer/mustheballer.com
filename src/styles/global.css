@@ -295,6 +295,7 @@ html[data-mode="study"] .doc { display: none; }
 .signoff cite { display: block; margin-top: 0.3rem; font: normal 500 0.75rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
 
 /* ---------------------------------------------------------------- study */
-.study { position: fixed; inset: 0; z-index: 50; background: #0c0a10; color: #f2ece2; }
+/* Sized to the *visible* viewport (dvh), so phone browser toolbars don't cover the bottom UI. */
+.study { position: fixed; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; z-index: 50; background: #0c0a10; color: #f2ece2; }
 html[data-mode="recruiter"] .study { display: none; }
 html[data-mode="study"] body { overflow: hidden; }

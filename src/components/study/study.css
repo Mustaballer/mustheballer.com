@@ -192,7 +192,7 @@
   transition: background 0.12s;
 }
 .panel__close:hover { background: var(--p5-cream); }
-.panel__body { overflow-y: auto; padding: 1rem 1.25rem 1.5rem; overscroll-behavior: contain; }
+.panel__body { flex: 1; min-height: 0; overflow-y: auto; padding: 1rem 1.25rem 1.5rem; overscroll-behavior: contain; }
 .panel__body > .epigraph { margin-bottom: 1rem; }
 .panel__body .sub:first-child { margin-top: 0; }
 .panel__lead { font: 600 1.35rem/1.35 var(--serif); margin-top: 0; }
@@ -356,8 +356,14 @@
 
   /* side panel becomes a bottom sheet above the menu strip */
   .panel, .panel--small {
-    top: auto; left: 0.5rem; right: 0.5rem; bottom: calc(3.4rem + env(safe-area-inset-bottom, 0px));
-    width: auto; max-height: 52vh; box-shadow: 0 -10px 40px rgb(0 0 0 / 0.35);
+    top: auto; left: 0.5rem; right: 0.5rem; bottom: calc(3.6rem + env(safe-area-inset-bottom, 0px));
+    width: auto; max-height: 60vh; max-height: 60dvh; box-shadow: 0 -10px 40px rgb(0 0 0 / 0.35);
+  }
+  /* fade the last few pixels so it's obvious the sheet scrolls; extra bottom padding keeps the end readable */
+  .panel__body {
+    padding-bottom: 2.5rem;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
   }
   .panel__head h2 { font-size: 1.35rem; }
   .stepper { display: none; }
