@@ -124,7 +124,7 @@
 .study:has(.panel) .stepper { left: 17rem; transform: none; }
 
 /* ---------------------------------------------------------------- panel */
-/* Panels and MusOS always read like soft paper, even in the night room. */
+/* Panels and MusOS use a calm palette: soft paper in light mode, muted slate in dark mode. */
 .panel, .musos__window {
   --paper: #f8f5ee;
   --paper-2: #f0ebe0;
@@ -138,6 +138,36 @@
   --gold-soft: #d8bf86;
   --shadow: 0 1px 2px rgb(35 42 59 / 0.04), 0 6px 18px rgb(35 42 59 / 0.05);
   color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :is(.panel, .musos__window) {
+    --paper: #1c2233;
+    --paper-2: #232a3d;
+    --card: #252d42;
+    --ink: #e7e3da;
+    --ink-soft: #a4aab9;
+    --line: #353e57;
+    --accent: #a9bce8;
+    --accent-ink: #1c2233;
+    --gold: #cdb47c;
+    --gold-soft: #a88f5a;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 6px 18px rgb(0 0 0 / 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] :is(.panel, .musos__window) {
+  --paper: #1c2233;
+  --paper-2: #232a3d;
+  --card: #252d42;
+  --ink: #e7e3da;
+  --ink-soft: #a4aab9;
+  --line: #353e57;
+  --accent: #a9bce8;
+  --accent-ink: #1c2233;
+  --gold: #cdb47c;
+  --gold-soft: #a88f5a;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 6px 18px rgb(0 0 0 / 0.25);
+  color-scheme: dark;
 }
 .panel {
   position: absolute; z-index: 7; top: 5.5rem; right: 1.6rem; bottom: 1.6rem;
