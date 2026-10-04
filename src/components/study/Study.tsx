@@ -427,12 +427,12 @@ function Boot({ done }: { done: boolean }) {
   );
 }
 
-// Persona-style travel transition: a red and black diagonal slash that wipes across with the destination's name.
+// Persona-style travel transition: a navy and gold diagonal slash that wipes across with the destination's name.
 function Slash({ label }: { label: string }) {
   return (
     <div className="slash" aria-hidden>
-      <div className="slash__black" />
-      <div className="slash__red" />
+      <div className="slash__back" />
+      <div className="slash__band" />
       <div className="slash__stripe" />
       <p className="slash__label">{label}</p>
     </div>
