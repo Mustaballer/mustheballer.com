@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -75,6 +75,8 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   window: { label: "The window", action: "chateau" },
   mask: { label: "A white mask", toast: "“Looking cool, Joker!” — Persona 5" },
+  chocobo: { label: "A Chocobo plush", toast: "Kweh! — Final Fantasy XV" },
+  manga: { label: "Slam Dunk, vol. 1–4", toast: "“Coach Anzai… I want to play basketball.” — Slam Dunk" },
   racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
   chess: {

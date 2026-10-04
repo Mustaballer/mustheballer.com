@@ -361,3 +361,23 @@ export function uoftPrintTexture() {
     c.fillText("E N G I N E E R I N G", 256, 214);
   });
 }
+
+// Blanket: deep red with a navy and gold tartan check.
+export function blanketTexture() {
+  return make(256, 256, (c) => {
+    c.fillStyle = "#7a1f24";
+    c.fillRect(0, 0, 256, 256);
+    const band = (pos: number, w: number, color: string, alpha: number) => {
+      c.globalAlpha = alpha;
+      c.fillStyle = color;
+      c.fillRect(pos, 0, w, 256);
+      c.fillRect(0, pos, 256, w);
+    };
+    for (const p of [0, 128]) {
+      band(p + 40, 26, "#101a33", 0.45);
+      band(p + 58, 4, "#c9a24a", 0.9);
+      band(p + 100, 3, "#e9c76f", 0.6);
+    }
+    c.globalAlpha = 1;
+  });
+}

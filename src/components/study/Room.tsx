@@ -12,6 +12,7 @@ import { Avatar } from "./Avatar";
 import type { SpotId, Vec3 } from "./spots";
 import {
   basketballTexture,
+  blanketTexture,
   chateauTexture,
   diplomaTexture,
   jumpTapeTexture,
@@ -198,7 +199,7 @@ export function Room({
       <Bookshelf night={night} />
       <Nightstand night={night} />
       <Diploma />
-      <Bed />
+      <Bed night={night} />
       <Window night={night} chateau={chateau} />
       <TreasureChest />
       <Clutter />
@@ -740,22 +741,170 @@ function Diploma() {
   );
 }
 
-function Bed() {
+// The bed nook: tartan blanket, PS5 controller, a Chocobo plush, Slam Dunk, slippers, warm under-bed glow.
+function Bed({ night }: { night: boolean }) {
+  const blanket = useMemo(() => {
+    const t = blanketTexture();
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(2, 2);
+    return t;
+  }, []);
+  const slamDunk = useImage("/books/slam-dunk.jpg");
   return (
     <group position={[-1.62, 0, 0.95]}>
+      {/* frame, mattress, headboard */}
       <Box p={[0, 0.16, 0]} s={[1.3, 0.24, 2.2]} c={C.white} />
       <Box p={[0, 0.34, 0]} s={[1.22, 0.14, 2.12]} c="#f6f3ee" rough={1} />
-      <Box p={[0.02, 0.42, 0.35]} s={[1.26, 0.04, 1.42]} c="#7a1f24" rough={1} />
+      <Box p={[0, 0.5, -1.08]} s={[1.3, 0.8, 0.06]} c={C.white} />
+      {/* tartan blanket with the sheet folded back over it at the top */}
+      <mesh position={[0.02, 0.42, 0.35]} castShadow receiveShadow>
+        <boxGeometry args={[1.26, 0.04, 1.42]} />
+        <meshStandardMaterial map={blanket} roughness={1} />
+      </mesh>
+      <Box p={[0.02, 0.428, -0.36]} s={[1.26, 0.05, 0.1]} c="#f3ede0" rough={1} />
+      {/* pillows + a gold throw pillow */}
       <Box p={[-0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />
       <Box p={[0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />
-      <Box p={[0, 0.5, -1.08]} s={[1.3, 0.8, 0.06]} c={C.white} />
+      <Box p={[0.1, 0.52, -0.6]} s={[0.26, 0.2, 0.08]} c="#c9a24a" rough={1} r={[-0.35, 0.25, 0.08]} />
+
+      {/* Chocobo plush */}
+      <Spot id="chocobo">
+        <group position={[0.38, 0.44, -0.45]} rotation={[0, 0.9, 0]}>
+          <mesh position={[0, 0.08, 0]} scale={[1, 0.9, 1.2]} castShadow>
+            <sphereGeometry args={[0.08, 20, 16]} />
+            <meshStandardMaterial color="#f2c230" roughness={0.95} />
+          </mesh>
+          <mesh position={[0, 0.19, 0.06]} castShadow>
+            <sphereGeometry args={[0.055, 20, 16]} />
+            <meshStandardMaterial color="#f2c230" roughness={0.95} />
+          </mesh>
+          <mesh position={[0, 0.185, 0.12]} rotation={[Math.PI / 2, 0, 0]}>
+            <coneGeometry args={[0.018, 0.05, 10]} />
+            <meshStandardMaterial color="#e08a2a" roughness={0.8} />
+          </mesh>
+          {[-0.022, 0.022].map((x) => (
+            <mesh key={x} position={[x, 0.205, 0.105]}>
+              <sphereGeometry args={[0.008, 8, 8]} />
+              <meshStandardMaterial color="#1a1412" />
+            </mesh>
+          ))}
+          {/* crest */}
+          {[-0.2, 0.15, 0.45].map((rz, i) => (
+            <mesh key={i} position={[0, 0.25, 0.03 - i * 0.02]} rotation={[-0.6, 0, rz]}>
+              <coneGeometry args={[0.012, 0.06, 6]} />
+              <meshStandardMaterial color="#f2c230" roughness={0.95} />
+            </mesh>
+          ))}
+          {/* wings + tail */}
+          {[-1, 1].map((sx) => (
+            <mesh key={sx} position={[sx * 0.075, 0.09, -0.01]} rotation={[0.3, 0, sx * 0.5]} scale={[0.4, 1, 1]}>
+              <sphereGeometry args={[0.045, 12, 10]} />
+              <meshStandardMaterial color="#e6b42a" roughness={0.95} />
+            </mesh>
+          ))}
+          <mesh position={[0, 0.1, -0.1]} rotation={[-1.1, 0, 0]}>
+            <coneGeometry args={[0.03, 0.07, 8]} />
+            <meshStandardMaterial color="#e6b42a" roughness={0.95} />
+          </mesh>
+        </group>
+      </Spot>
+
+      {/* white PS5 DualSense on the blanket */}
+      <group position={[0.15, 0.452, 0.3]} rotation={[0, 0.5, 0]}>
+        <Box p={[0, 0, 0]} s={[0.15, 0.025, 0.07]} c="#f4f4f2" rough={0.4} />
+        {[-1, 1].map((sx) => (
+          <mesh key={sx} position={[sx * 0.065, -0.002, 0.04]} rotation={[Math.PI / 2 - 0.3, 0, sx * 0.25]}>
+            <capsuleGeometry args={[0.022, 0.04, 6, 10]} />
+            <meshStandardMaterial color="#f4f4f2" roughness={0.4} />
+          </mesh>
+        ))}
+        <Box p={[0, 0.014, -0.005]} s={[0.07, 0.004, 0.045]} c="#1b1b20" rough={0.3} shadow={false} />
+        <Box p={[0, 0.014, 0.03]} s={[0.05, 0.003, 0.006]} c="#5b8cff" e="#5b8cff" ei={0.8} shadow={false} />
+      </group>
+
+      {/* phone charging by the pillow */}
+      <Box p={[-0.42, 0.448, -0.48]} s={[0.075, 0.009, 0.15]} c="#1c1b1f" rough={0.3} r={[0, 0.3, 0]} />
+      <mesh position={[-0.47, 0.446, -0.6]} rotation={[Math.PI / 2, 0, 0.6]}>
+        <torusGeometry args={[0.05, 0.003, 4, 16, Math.PI]} />
+        <meshStandardMaterial color="#f4f4f2" />
+      </mesh>
+
+      {/* Slam Dunk, a small stack with volume 1 on top */}
+      <Spot id="manga">
+        <group position={[-0.28, 0.44, 0.78]}>
+          {["#d8d2c4", "#e6dfcf", "#d2cbbb"].map((c, i) => (
+            <Box key={c} p={[0, 0.012 + i * 0.022, 0]} s={[0.12, 0.02, 0.18]} r={[0, i * 0.16 - 0.16, 0]} c={c} rough={0.9} />
+          ))}
+          <group position={[0, 0.078, 0]} rotation={[0, 0.12, 0]}>
+            <Box p={[0, 0, 0]} s={[0.12, 0.02, 0.18]} c="#e9e4d8" rough={0.9} />
+            {slamDunk && (
+              <mesh position={[0, 0.0105, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[0.12, 0.18]} />
+                <meshStandardMaterial map={slamDunk} roughness={0.8} />
+              </mesh>
+            )}
+          </group>
+        </group>
+      </Spot>
+
+      {/* slippers by the bed */}
+      {[-0.08, 0.06].map((z, i) => (
+        <mesh key={z} position={[0.78, 0.025, z - 0.2]} rotation={[0, 0.3 + i * 0.15, 0]} scale={[1, 0.5, 2.2]}>
+          <sphereGeometry args={[0.045, 14, 10]} />
+          <meshStandardMaterial color="#101a33" roughness={1} />
+        </mesh>
+      ))}
+
+      {/* warm LED strip under the bed frame */}
+      <Box p={[0.66, 0.03, 0]} s={[0.012, 0.012, 2.1]} c="#ffb36b" e="#ffb36b" ei={night ? 2.2 : 0.4} shadow={false} />
+      <pointLight position={[0.85, 0.12, 0.2]} color="#ffb36b" intensity={night ? 0.9 : 0.15} distance={1.6} decay={1.8} />
     </group>
+  );
+}
+
+// Falling snow drawn just in front of the window's view.
+function Snow({ w, h }: { w: number; h: number }) {
+  const { geo, speed } = useMemo(() => {
+    const n = 70;
+    const pos = new Float32Array(n * 3);
+    const speed = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * w;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * h;
+      pos[i * 3 + 2] = 0.036;
+      speed[i] = 0.05 + Math.random() * 0.07;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    return { geo, speed };
+  }, [w, h]);
+  useFrame(({ clock }, dt) => {
+    const a = geo.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < speed.length; i++) {
+      let y = a.getY(i) - speed[i] * dt;
+      if (y < -h / 2) y += h;
+      const x = a.getX(i) + Math.sin(clock.elapsedTime * 0.8 + i) * 0.0006;
+      a.setXY(i, Math.max(-w / 2, Math.min(w / 2, x)), y);
+    }
+    a.needsUpdate = true;
+  });
+  return (
+    <points geometry={geo}>
+      <pointsMaterial color="#ffffff" size={0.012} sizeAttenuation transparent opacity={0.85} depthWrite={false} />
+    </points>
   );
 }
 
 function Window({ night, chateau }: { night: boolean; chateau: boolean }) {
   const city = useMemo(() => windowTexture(night), [night]);
   const ifView = useMemo(() => chateauTexture(), []);
+  const curtains = useRef<THREE.Group>(null!);
+  // the curtains sway a little, pivoting from the rail
+  useFrame(({ clock }) => {
+    curtains.current.children.forEach((c, i) => {
+      c.rotation.x = Math.sin(clock.elapsedTime * 0.6 + i * 1.7) * 0.035;
+    });
+  });
   return (
     <Spot id="window">
       <group position={[-2.29, 1.6, 0.85]} rotation={[0, Math.PI / 2, 0]}>
@@ -764,11 +913,18 @@ function Window({ night, chateau }: { night: boolean; chateau: boolean }) {
           <planeGeometry args={[1.0, 0.85]} />
           <meshBasicMaterial map={chateau ? ifView : city} toneMapped={false} />
         </mesh>
+        <Snow w={1.0} h={0.85} />
         <Box p={[0, 0, 0.045]} s={[0.025, 0.85, 0.02]} c={C.white} />
         <Box p={[0, 0, 0.045]} s={[1.0, 0.025, 0.02]} c={C.white} />
         <Box p={[0, -0.5, 0.07]} s={[1.2, 0.035, 0.14]} c={C.white} />
-        <Box p={[-0.66, 0.0, 0.09]} s={[0.18, 1.15, 0.025]} c="#8a2a30" rough={1} />
-        <Box p={[0.66, 0.0, 0.09]} s={[0.18, 1.15, 0.025]} c="#8a2a30" rough={1} />
+        <Box p={[0, 0.6, 0.1]} s={[1.6, 0.02, 0.02]} c="#3b281c" />
+        <group ref={curtains}>
+          {[-0.66, 0.66].map((x) => (
+            <group key={x} position={[x, 0.58, 0.09]}>
+              <Box p={[0, -0.58, 0]} s={[0.18, 1.15, 0.025]} c="#8a2a30" rough={1} />
+            </group>
+          ))}
+        </group>
       </group>
     </Spot>
   );
@@ -857,12 +1013,6 @@ function TreasureChest() {
 function Clutter() {
   return (
     <group>
-      {/* backpack by the desk */}
-      <group position={[-0.85, 0, -1.15]} rotation={[0, 0.4, 0.05]}>
-        <Box p={[0, 0.2, 0]} s={[0.32, 0.4, 0.18]} c="#2a2830" rough={0.95} />
-        <Box p={[0, 0.13, 0.1]} s={[0.24, 0.18, 0.05]} c="#3a3842" rough={0.95} />
-        <Box p={[0, 0.3, 0.115]} s={[0.05, 0.03, 0.01]} c={C.red} shadow={false} />
-      </group>
       {/* a few books stacked by the chest */}
       {[0, 1, 2].map((i) => (
         <Box key={i} p={[2.0, 0.03 + i * 0.055, 1.35]} s={[0.24 - i * 0.02, 0.05, 0.32 - i * 0.03]} r={[0, i * 0.25, 0]} c={BOOK_COLORS[i * 3]} />
