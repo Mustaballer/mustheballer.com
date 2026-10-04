@@ -452,24 +452,32 @@ export function leafPlateTexture() {
       c.lineTo(256, y);
       c.stroke();
     }
-    // Hidden Leaf: a spiral that unwinds into a pointed leaf tip at the top-right
+    // Hidden Leaf, traced from the reference (330px frame, scaled onto the plate):
+    // stem out at the top-right, outer line over the top to a point at the bottom-left,
+    // back along the bottom, then a spiral winding inward.
     c.save();
-    c.translate(256, 0);
-    c.scale(-1, 1); // mirror: tip on the upper right, spiral turning the right way
+    const k = 0.36;
+    c.translate(128 - 172 * k, 64 - 165 * k);
+    c.scale(k, k);
     c.strokeStyle = "#2f3440";
-    c.lineWidth = 7;
+    c.lineWidth = 22;
     c.lineCap = "round";
-    c.lineJoin = "round";
+    c.lineJoin = "miter";
+    const C = { x: 180, y: 180 };
     c.beginPath();
-    for (let t = 0.3; t < Math.PI * 3.1; t += 0.08) {
-      const r = 3 + t * 7.2;
-      c.lineTo(128 + Math.cos(t) * r * 0.95, 70 + Math.sin(t) * r * 0.78);
+    c.moveTo(286, 72);
+    c.lineTo(240, 122);
+    c.arc(C.x, C.y, 83, Math.atan2(122 - C.y, 240 - C.x), (190 * Math.PI) / 180 - Math.PI * 2, true);
+    c.lineTo(48, 250);
+    c.lineTo(182, 252);
+    // spiral inward: from the bottom, round the right side, ~1.6 turns, radius 72 → 10
+    const turns = 1.6, steps = 120;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const ang = Math.PI / 2 - t * turns * Math.PI * 2;
+      const r = 72 - t * 62;
+      c.lineTo(C.x + Math.cos(ang) * r, C.y + Math.sin(ang) * r);
     }
-    c.stroke();
-    c.beginPath();
-    c.moveTo(158, 48);
-    c.lineTo(96, 12);
-    c.lineTo(110, 50);
     c.stroke();
     c.restore();
     // screws
