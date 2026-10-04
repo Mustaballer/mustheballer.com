@@ -102,12 +102,19 @@ const tmpTarget = new THREE.Vector3();
 function Rig({ focus, panelOpen }: { focus: SpotId | null; panelOpen: boolean }) {
   const target = useRef(new THREE.Vector3(...HOME.target));
   const shift = useRef(0);
+  const lift = useRef(0);
   const size = useThree((s) => s.size);
 
   useFrame((state, dt) => {
     const view = (focus && SPOTS[focus].view) || HOME;
     const k = 1 - Math.exp(-dt * 3);
     tmpPos.set(...view.pos);
+    // Narrow / portrait screens see less of the room sideways, so back the camera off along its view line.
+    const aspect = size.width / size.height;
+    const pull = focus
+      ? THREE.MathUtils.clamp(Math.pow(1.55 / aspect, 0.55), 1, 1.7)
+      : THREE.MathUtils.clamp(1.55 / aspect, 1, 2.5);
+    if (pull > 1) tmpPos.sub(tmpTarget.set(...view.target)).multiplyScalar(pull).add(tmpTarget);
     if (!focus) {
       tmpPos.x += state.pointer.x * 0.3;
       tmpPos.y += state.pointer.y * 0.18;
@@ -117,9 +124,16 @@ function Rig({ focus, panelOpen }: { focus: SpotId | null; panelOpen: boolean })
     state.camera.lookAt(target.current);
 
     const cam = state.camera as THREE.PerspectiveCamera;
-    const wantShift = focus && panelOpen && focus !== "monitor" && size.width > 900 ? size.width * 0.22 : 0;
+    // Keep the focused object visible beside the panel: side panel on desktop (shift left),
+    // bottom sheet on phones (shift up).
+    const wide = size.width > 900;
+    const open = !!focus && panelOpen && focus !== "monitor";
+    const wantShift = open && wide ? size.width * 0.22 : 0;
+    const wantLift = open && !wide ? size.height * 0.24 : 0;
     shift.current = THREE.MathUtils.lerp(shift.current, wantShift, k);
-    if (shift.current > 0.5) cam.setViewOffset(size.width, size.height, shift.current, 0, size.width, size.height);
+    lift.current = THREE.MathUtils.lerp(lift.current, wantLift, k);
+    if (shift.current > 0.5 || lift.current > 0.5)
+      cam.setViewOffset(size.width, size.height, shift.current, lift.current, size.width, size.height);
     else cam.clearViewOffset();
   });
   return null;

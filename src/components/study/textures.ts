@@ -138,7 +138,7 @@ export function noteTexture(rank: string, company: string, role: string, dates: 
     c.textAlign = "center";
     c.fillStyle = "#4a3320";
     c.font = `600 26px ${SERIF}`;
-    c.fillText(active ? "— ACTIVE QUEST —" : "— QUEST —", 180, 60);
+    c.fillText(active ? "ACTIVE QUEST" : "QUEST", 180, 60);
     c.fillStyle = active ? "#b3121f" : "#6b4a2a";
     c.font = `700 120px ${SERIF}`;
     c.fillText(rank, 180, 190);

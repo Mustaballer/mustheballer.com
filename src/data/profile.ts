@@ -45,7 +45,7 @@ export const experience: Quest[] = [
     achievement: "Main Quest: Ship It",
     highlight: "Shipped an AI desktop assistant to 3,000+ finance analysts",
     bullets: [
-      "Owned full continuous delivery for an Electron AI desktop assistant (Strands, Bedrock) rolled out to 3,000+ finance analysts — Playwright Windows E2E gates and daily prod canaries on EC2 (CDK), with zero manual approval steps.",
+      "Owned full continuous delivery for an Electron AI desktop assistant (Strands, Bedrock) rolled out to 3,000+ finance analysts, with Playwright Windows E2E gates, daily prod canaries on EC2 (CDK), and zero manual approval steps.",
       "Drove AppSec certification of a high-risk GenAI agent across 28+ security CRs, fixing 4 threat-model findings and 8 production risks via Bedrock Guardrails, per-user S3/IAM session isolation, a read-only SQL allowlist, and a sandboxed Python runtime.",
       "Resolved Sev-2 incidents on call (silent Kinesis record loss) and root-caused a startup deadlock causing 0/18 successful launches by moving serial agent rehydration off a 90s readiness path into a worker pool.",
       "Migrated Promise-to-Pay and Dispute workflows on a collections platform used by ~1,000 analysts from Redux-Saga to TanStack Query, and built group-level tasks for resellers with hundreds of linked accounts.",
@@ -79,7 +79,7 @@ export const experience: Quest[] = [
     highlight: "GPU kernels in HIP 35% faster",
     bullets: [
       "Engineered a system using the GitHub GraphQL API to extract and store 2M+ entries in PostgreSQL with daily updates, visualized in Power BI reports shared weekly with upper management.",
-      "Optimized GPU kernel code in HIP — efficient matrix addition and moving-average filters — improving data processing speed by 35% and reducing compute time by 20%.",
+      "Optimized GPU kernel code in HIP (matrix addition and moving-average filters), improving data processing speed by 35% and reducing compute time by 20%.",
     ],
     tags: ["HIP", "C++", "GraphQL", "PostgreSQL", "Power BI"],
   },
@@ -145,7 +145,7 @@ export const projects: Project[] = [
     name: "Hardware Sign-out Site",
     blurb: "Open-source inventory & applications platform for Canada's largest Makeathon.",
     bullets: [
-      "Directed a 15+ person team building an open-source inventory system for 5,000+ components — hardware wait times went from 4 hours to 10 minutes.",
+      "Directed a 15+ person team building an open-source inventory system for 5,000+ components, cutting hardware wait times from 4 hours to 10 minutes.",
       "Built an application review portal that cut screening time from 20 hours to 2 hours for 1,500+ applicants.",
     ],
     tags: ["React", "Redux", "Django", "PostgreSQL", "Docker"],
@@ -167,7 +167,7 @@ export const projects: Project[] = [
     blurb:
       "My first programming project outside of school: a Discord bot for finding anime and manga, built when I was just getting started.",
     bullets: [
-      "Search any anime or manga, roll a random pick, check the weekly airing schedule, and browse top and seasonal charts — powered by the Jikan (MyAnimeList) API.",
+      "Search any anime or manga, roll a random pick, check the weekly airing schedule, and browse top and seasonal charts, all powered by the Jikan (MyAnimeList) API.",
       "Taught me APIs, Gradle, and keeping a bot running 24/7 on Heroku. Every quest since started here.",
     ],
     tags: ["Java", "JDA", "Jikan API", "Gradle"],
@@ -364,14 +364,14 @@ export const diary = [
 export const training = {
   goal: {
     title: "Touch ten feet",
-    detail: "Get a hand on a 10 ft mark — regulation rim height — by the end of 2026.",
+    detail: "Get a hand on a 10 ft mark (regulation rim height) by the end of 2026.",
     deadline: "December 2026",
     // Optional progress, e.g. "9'6\"" — set this to show a progress bar.
     currentTouch: null as string | null,
   },
   plays: [
     { sport: "Basketball", icon: "🏀", note: "Pickup runs and the reason for the vertical-jump grind." },
-    { sport: "Volleyball", icon: "🏐", note: "Hitting and blocking — another excuse to jump higher." },
+    { sport: "Volleyball", icon: "🏐", note: "Hitting and blocking. Another excuse to jump higher." },
   ],
   watches: { sport: "Tennis", icon: "🎾", note: "Big fan. Favourite player: Carlos Alcaraz." },
 };

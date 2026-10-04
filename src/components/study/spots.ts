@@ -73,47 +73,47 @@ export const SPOTS: Record<SpotId, Spot> = {
   // close-ups: the camera glides in, a caption shows, no panel
   chocobo: {
     label: "A Chocobo plush",
-    toast: "Kweh! — Final Fantasy XV",
+    toast: "Kweh! (Final Fantasy XV)",
     view: { pos: [-0.62, 0.88, 1.0], target: [-1.24, 0.56, 0.5] },
   },
   manga: {
     label: "Slam Dunk, vol. 1–4",
-    toast: "“Coach Anzai… I want to play basketball.” — Slam Dunk",
+    toast: "Slam Dunk: “Coach Anzai… I want to play basketball.”",
     view: { pos: [-1.45, 1.1, 2.25], target: [-1.9, 0.52, 1.73] },
   },
   posterMushoku: {
     label: "Mushoku Tensei poster",
-    toast: "Mushoku Tensei: Jobless Reincarnation — a 10/10 on my MyAnimeList",
+    toast: "Mushoku Tensei: Jobless Reincarnation, one of my 10/10s on MyAnimeList",
     view: { pos: [1.25, 1.92, -0.8], target: [1.25, 1.94, -2.09] },
   },
   posterTrunks: {
     label: "Future Trunks poster",
-    toast: "Future Trunks — the warrior from a ruined future. Dragon Ball Z",
+    toast: "Future Trunks, the warrior from a ruined future (Dragon Ball Z)",
     view: { pos: [1.8, 1.9, -0.8], target: [1.8, 1.92, -2.09] },
   },
   posterFF: {
     label: "Final Fantasy XV poster",
-    toast: "Final Fantasy XV — Noctis, Gladio, Ignis & Prompto on the road trip",
+    toast: "Final Fantasy XV: Noctis, Gladio, Ignis and Prompto on the road trip",
     view: { pos: [-1.35, 1.72, 1.84], target: [-2.29, 1.72, 1.84] },
   },
   diploma: {
     label: "Diploma",
-    toast: "University of Toronto — BASc, Computer Engineering (2026)",
+    toast: "University of Toronto, BASc in Computer Engineering (2026)",
     view: { pos: [-1.55, 1.45, -0.55], target: [-2.29, 1.45, -0.55] },
   },
   dragonballs: {
     label: "The seven Dragon Balls",
-    toast: "All seven. Shenron, I wish for… a 10 ft vertical. — Dragon Ball",
+    toast: "All seven Dragon Balls. Shenron, I wish for a 10 ft vertical.",
     view: { pos: [-0.27, 1.99, -1.5], target: [-0.3, 1.82, -1.98] },
   },
   microwave: {
     label: "Phone Microwave (name subject to change)",
-    toast: "D-Mail sent. Worldline divergence: 1.048596%. El Psy Kongroo. — Steins;Gate",
+    toast: "Steins;Gate: D-Mail sent. Worldline divergence 1.048596%. El Psy Kongroo.",
     view: { pos: [0.1, 1.99, -1.4], target: [0.04, 1.86, -1.98] },
   },
   headband: {
     label: "A Leaf headband",
-    toast: "“I'm not gonna run away, I never go back on my word!” — Naruto",
+    toast: "Naruto: “I'm not gonna run away, I never go back on my word!”",
     view: { pos: [0.36, 1.98, -1.5], target: [0.33, 1.83, -2.03] },
   },
   crystal: { label: "A red crystal", action: "teleport" },

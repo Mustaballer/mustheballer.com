@@ -147,7 +147,7 @@ export function Projects({ professional = false }: { professional?: boolean }) {
         <ul>
           {archive.map((a) => (
             <li key={a.name}>
-              <a href={a.href} {...ext}>{a.name}</a> <span>— {a.note}</span>
+              <a href={a.href} {...ext}>{a.name}</a> <span>· {a.note}</span>
             </li>
           ))}
         </ul>
@@ -224,7 +224,7 @@ export function Anime({ limit }: { limit?: number }) {
         <div><dt>Mean score</dt><dd>{s.meanScore}</dd></div>
         <div><dt>Top genres</dt><dd className="small">{s.topGenres.slice(0, 3).map((g) => g.name).join(" · ")}</dd></div>
       </dl>
-      <h3 className="sub">Hall of Fame <span className="meta">— rated 10/10</span></h3>
+      <h3 className="sub">Hall of Fame <span className="meta">(rated 10/10)</span></h3>
       <ul className="covers">
         {anime.hallOfFame.slice(0, limit).map((a) => (
           <li key={a.id}>

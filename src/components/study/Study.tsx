@@ -473,7 +473,7 @@ function Hitogami({ onWake }: { onWake: () => void }) {
         {tiles.map((c, i) => <i key={i} style={c ? { background: c } : undefined} />)}
       </div>
       <p className="dream__line">“Heed my words, visitor… this engineer is worth hiring.”</p>
-      <p className="dream__who">— Hitogami</p>
+      <p className="dream__who">Hitogami</p>
       <p className="dream__wake">Click anywhere to wake up</p>
     </div>
   );
