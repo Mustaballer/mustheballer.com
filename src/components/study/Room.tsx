@@ -766,10 +766,9 @@ function Bed({ night }: { night: boolean }) {
         <meshStandardMaterial map={blanket} roughness={1} />
       </mesh>
       <Box p={[0.02, 0.43, -0.36]} s={[1.28, 0.05, 0.1]} c="#f3ede0" rough={1} />
-      {/* pillows + a gold throw pillow */}
+      {/* pillows */}
       <Box p={[-0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />
       <Box p={[0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />
-      <Box p={[0.1, 0.52, -0.6]} s={[0.26, 0.2, 0.08]} c="#c9a24a" rough={1} r={[-0.35, 0.25, 0.08]} />
 
       {/* Chocobo plush */}
       <Spot id="chocobo">
