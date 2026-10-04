@@ -111,6 +111,19 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "RabbitHole",
+    blurb:
+      "Capstone: pick a seed paper and explore its citation neighbourhood as an interactive graph that ranks and explains how each paper relates.",
+    bullets: [
+      "Built the relevance engine: SPECTER2 embeddings of chunked full-text (max-pooled per paper) blended with year proximity and citation signals, with an embedding cache for fast re-runs.",
+      "Implemented bidirectional citation-graph expansion (references and citations) and the Flask API + Celery/Redis task queue that ingests papers asynchronously, with Flower monitoring in Docker Compose.",
+      "Designed the React Flow graph UI (dagre layout, relevance-coloured nodes, LLM explanations per edge) with live polling for background scoring jobs.",
+      "Benchmarked GPU (ROCm) vs CPU embedding throughput to size the ingestion workers.",
+    ],
+    tags: ["Python", "Flask", "Celery", "Redis", "Neo4j", "SPECTER2", "React", "React Flow", "Docker"],
+    links: [{ label: "GitHub", href: "https://github.com/Ahmed-Labs/rabbithole" }],
+  },
+  {
     name: "Hardware Sign-out Site",
     blurb: "Open-source inventory & applications platform for Canada's largest Makeathon.",
     bullets: [
