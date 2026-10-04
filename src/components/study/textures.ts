@@ -18,13 +18,13 @@ function make(w: number, h: number, draw: (c: CanvasRenderingContext2D) => void)
 export function monitorTexture() {
   return make(1024, 590, (c) => {
     const g = c.createLinearGradient(0, 0, 1024, 590);
-    g.addColorStop(0, "#1b1530");
-    g.addColorStop(0.55, "#3a1a2c");
-    g.addColorStop(1, "#7a1b2a");
+    g.addColorStop(0, "#0b1226");
+    g.addColorStop(0.55, "#16264d");
+    g.addColorStop(1, "#2c4478");
     c.fillStyle = g;
     c.fillRect(0, 0, 1024, 590);
     // faint rune rings as wallpaper
-    c.strokeStyle = "rgba(255,210,170,0.18)";
+    c.strokeStyle = "rgba(226,189,98,0.22)";
     c.lineWidth = 2;
     for (const r of [190, 160, 70]) {
       c.beginPath();
@@ -49,7 +49,7 @@ export function monitorTexture() {
     const icons = ["Projects", "Achievements", "Anime", "Games", "resume.pdf"];
     icons.forEach((name, i) => {
       const y = 210 + i * 70;
-      c.fillStyle = i === 0 ? "#e0313c" : "rgba(255,255,255,0.14)";
+      c.fillStyle = i === 0 ? "#c9a24a" : "rgba(244,234,208,0.14)";
       c.beginPath();
       c.roundRect(60, y, 46, 46, 10);
       c.fill();
