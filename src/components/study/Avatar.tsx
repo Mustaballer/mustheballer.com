@@ -157,17 +157,18 @@ export function Avatar({ look }: { look: boolean }) {
         {[-1, 1].map((sx) => (
           <Part key={sx} ramp={ramp} color={SKIN} p={[sx * 0.121, -0.008, 0.005]} s={[0.45, 1, 0.75]} geom={<sphereGeometry args={[0.03, 14, 12]} />} />
         ))}
-        {/* hair: a combover — tapered sides, side part on his left, top swept up and over to the right */}
-        {/* short tapered base: hairline raised at the front and sides */}
-        <Part ramp={ramp} color={HAIR} p={[0, 0.03, 0.014]} r={[0.42, 0, 0]} s={[0.96, 1.0, 1.04]} outline={1.03} geom={<sphereGeometry args={[0.135, 48, 28, 0, Math.PI * 2, 0, Math.PI * 0.4]} />} />
-        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.02]} s={[0.95, 1.04, 0.98]} outline={1.03} geom={<sphereGeometry args={[0.133, 40, 24, 0, Math.PI, Math.PI * 0.3, Math.PI * 0.28]} />} />
+        {/* hair: a combover — side part on his left, top swept over to the right.
+            The cap's edge sits level at y≈0.035: low enough to cover the forehead, high enough to clear the ears. */}
+        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.004]} s={[0.97, 1.13, 1.05]} outline={1.03} geom={<sphereGeometry args={[0.135, 48, 28, 0, Math.PI * 2, 0, Math.PI * 0.418]} />} />
+        {/* back of the head, down to the nape — kept off the sides so the ears stay visible */}
+        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.012]} s={[0.96, 1.04, 1.0]} outline={1.03} geom={<sphereGeometry args={[0.134, 40, 24, Math.PI * 0.2, Math.PI * 0.6, Math.PI * 0.35, Math.PI * 0.27]} />} />
         {/* the swept top: a long volume running front to back, leaning right */}
-        <Part ramp={ramp} color={HAIR} p={[0.02, 0.122, 0.0]} r={[0.05, 0, -0.28]} s={[0.95, 0.42, 1.25]} outline={1.04} geom={<sphereGeometry args={[0.1, 36, 22]} />} />
-        {/* the front: lifted and swept over to the right */}
-        <Part ramp={ramp} color={HAIR} p={[0.03, 0.13, -0.088]} r={[-0.55, 0.15, -0.38]} s={[1.15, 0.5, 0.7]} outline={1.05} geom={<sphereGeometry args={[0.072, 30, 20]} />} />
+        <Part ramp={ramp} color={HAIR} p={[0.02, 0.118, 0.0]} r={[0.05, 0, -0.28]} s={[0.95, 0.42, 1.25]} outline={1.04} geom={<sphereGeometry args={[0.1, 36, 22]} />} />
+        {/* the front: swept over the forehead toward the right, a little lift at the front */}
+        <Part ramp={ramp} color={HAIR} p={[0.025, 0.085, -0.1]} r={[-0.75, 0.1, -0.42]} s={[1.3, 0.55, 0.62]} outline={1.05} geom={<sphereGeometry args={[0.07, 30, 20]} />} />
         {/* side part on his left */}
-        <mesh position={[-0.06, 0.126, -0.01]} rotation={[0.06, 0, 0.5]}>
-          <boxGeometry args={[0.005, 0.008, 0.17]} />
+        <mesh position={[-0.06, 0.122, -0.015]} rotation={[0.06, 0, 0.5]}>
+          <boxGeometry args={[0.005, 0.008, 0.16]} />
           <meshBasicMaterial color="#120c0a" />
         </mesh>
         {/* sunglasses: two dark glossy lenses in black frames, angled to wrap the face, plus a bridge */}
