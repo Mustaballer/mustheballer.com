@@ -452,22 +452,26 @@ export function leafPlateTexture() {
       c.lineTo(256, y);
       c.stroke();
     }
-    c.strokeStyle = "#3a3f4a";
-    c.lineWidth = 6;
+    // Hidden Leaf: a spiral that unwinds into a pointed leaf tip at the top-right
+    c.save();
+    c.translate(256, 0);
+    c.scale(-1, 1); // mirror: tip on the upper right, spiral turning the right way
+    c.strokeStyle = "#2f3440";
+    c.lineWidth = 7;
     c.lineCap = "round";
-    // spiral
+    c.lineJoin = "round";
     c.beginPath();
-    for (let t = 0; t < Math.PI * 3.2; t += 0.1) {
-      const r = 4 + t * 7.5;
-      c.lineTo(128 + Math.cos(t) * r * 0.9, 70 + Math.sin(t) * r * 0.75);
+    for (let t = 0.3; t < Math.PI * 3.1; t += 0.08) {
+      const r = 3 + t * 7.2;
+      c.lineTo(128 + Math.cos(t) * r * 0.95, 70 + Math.sin(t) * r * 0.78);
     }
     c.stroke();
-    // the leaf's point, up and to the left
     c.beginPath();
-    c.moveTo(166, 52);
-    c.lineTo(92, 14);
-    c.lineTo(104, 46);
+    c.moveTo(158, 48);
+    c.lineTo(96, 12);
+    c.lineTo(110, 50);
     c.stroke();
+    c.restore();
     // screws
     c.fillStyle = "#7d8592";
     for (const x of [16, 240]) for (const y of [16, 112]) {

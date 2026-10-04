@@ -419,7 +419,7 @@ function FigureShelf() {
 
       {/* Dragon Ball: all seven, in a little cluster */}
       <Spot id="dragonballs">
-        <DragonBalls position={[-0.3, 1.795, -1.97]} />
+        <DragonBalls position={[-0.3, 1.795, -1.98]} />
       </Spot>
 
       {/* Steins;Gate: the Phone Microwave (name subject to change) */}
@@ -442,7 +442,7 @@ function FigureShelf() {
 
       {/* Naruto: a Hidden Leaf headband propped on the shelf, cloth tails draping down */}
       <Spot id="headband">
-        <Headband position={[0.32, 1.795, -2.04]} />
+        <Headband position={[0.38, 2.0, -2.088]} />
       </Spot>
     </group>
   );
@@ -450,47 +450,58 @@ function FigureShelf() {
 
 function DragonBalls({ position }: { position: Vec3 }) {
   const stars = useMemo(() => Array.from({ length: 7 }, (_, i) => dragonStarsTexture(i + 1)), []);
-  // 4 on the shelf, 3 stacked on top
+  const R = 0.021;
+  // a small display tray: 4 balls at the back, 3 in front
   const spots: Vec3[] = [
-    [-0.05, 0.024, 0.01], [0.0, 0.024, 0.03], [0.05, 0.024, 0.01], [0.0, 0.024, -0.025],
-    [-0.025, 0.06, 0.012], [0.025, 0.06, 0.012], [0.0, 0.094, 0.005],
+    [-0.066, R + 0.012, -0.022], [-0.022, R + 0.012, -0.022], [0.022, R + 0.012, -0.022], [0.066, R + 0.012, -0.022],
+    [-0.044, R + 0.012, 0.022], [0.0, R + 0.012, 0.022], [0.044, R + 0.012, 0.022],
   ];
   return (
     <group position={position}>
+      <Box p={[0, 0.006, 0]} s={[0.17, 0.012, 0.09]} c="#2a1a12" rough={0.6} />
+      <Box p={[0, 0.0125, 0]} s={[0.16, 0.002, 0.08]} c="#5a1a22" rough={1} shadow={false} />
       {spots.map((p, i) => (
-        <group key={i} position={p}>
+        <group key={i} position={p} rotation={[-0.25, 0, 0]}>
           <mesh castShadow>
-            <sphereGeometry args={[0.024, 24, 18]} />
-            <meshStandardMaterial color="#ff9a1f" emissive="#ff7a00" emissiveIntensity={0.18} roughness={0.1} metalness={0.1} />
+            <sphereGeometry args={[R, 28, 20]} />
+            <meshStandardMaterial color="#f7951e" emissive="#ff8a00" emissiveIntensity={0.08} roughness={0.25} />
           </mesh>
-          <mesh position={[0, 0, 0.0245]} renderOrder={2}>
-            <circleGeometry args={[0.017, 20]} />
+          <mesh position={[0, 0, R + 0.0004]} renderOrder={2}>
+            <circleGeometry args={[R * 0.82, 24]} />
             <meshBasicMaterial map={stars[i]} transparent depthWrite={false} toneMapped={false} />
           </mesh>
         </group>
       ))}
-      <pointLight position={[0, 0.06, 0.08]} color="#ffa040" intensity={0.12} distance={0.5} decay={2} />
     </group>
   );
 }
 
+// Naruto: a Hidden Leaf headband hung on the wall, tails hanging from the knot.
 function Headband({ position }: { position: Vec3 }) {
   const plate = useMemo(() => leafPlateTexture(), []);
-  const cloth = "#1d2a4f";
+  const cloth = "#22325e";
   return (
     <group position={position}>
-      {/* plate + band, leaning back against the wall */}
-      <group position={[0, 0.032, 0]} rotation={[-0.25, 0, 0]}>
-        <Box p={[0, 0, 0]} s={[0.17, 0.05, 0.006]} c={cloth} rough={1} />
-        <Box p={[0, 0, 0.005]} s={[0.11, 0.045, 0.004]} c="#c9ced6" metal={0.6} rough={0.3} />
-        <mesh position={[0, 0, 0.0075]}>
-          <planeGeometry args={[0.105, 0.042]} />
-          <meshStandardMaterial map={plate} metalness={0.5} roughness={0.35} />
-        </mesh>
-      </group>
-      {/* the two cloth tails lying across the shelf */}
-      <Box p={[0.12, 0.003, 0.03]} s={[0.1, 0.004, 0.022]} r={[0, -0.35, 0]} c={cloth} rough={1} />
-      <Box p={[0.11, 0.006, 0.06]} s={[0.09, 0.004, 0.022]} r={[0, -0.7, 0]} c={cloth} rough={1} />
+      {/* the band, slightly bowed */}
+      <Box p={[0, 0, 0]} s={[0.36, 0.04, 0.005]} c={cloth} rough={1} />
+      {/* metal plate with the Leaf symbol */}
+      <Box p={[0, 0, 0.005]} s={[0.12, 0.05, 0.005]} c="#c9ced6" metal={0.6} rough={0.3} />
+      <mesh position={[0, 0, 0.0081]}>
+        <planeGeometry args={[0.116, 0.047]} />
+        <meshStandardMaterial map={plate} metalness={0.45} roughness={0.35} />
+      </mesh>
+      {/* knot on the right, with two tails hanging down */}
+      <mesh position={[0.175, -0.002, 0.004]} scale={[1, 0.8, 0.6]}>
+        <sphereGeometry args={[0.014, 12, 10]} />
+        <meshStandardMaterial color={cloth} roughness={1} />
+      </mesh>
+      <Box p={[0.185, -0.06, 0.004]} s={[0.022, 0.11, 0.004]} r={[0, 0, 0.12]} c={cloth} rough={1} />
+      <Box p={[0.165, -0.07, 0.006]} s={[0.022, 0.13, 0.004]} r={[0, 0, -0.08]} c={cloth} rough={1} />
+      {/* small nail it hangs from */}
+      <mesh position={[0, 0.03, 0.002]}>
+        <sphereGeometry args={[0.004, 8, 8]} />
+        <meshStandardMaterial color="#8a8f99" metalness={0.7} roughness={0.3} />
+      </mesh>
     </group>
   );
 }
@@ -830,14 +841,6 @@ function Bed({ night }: { night: boolean }) {
         </group>
       </Spot>
 
-      {/* slippers by the bed */}
-      {[-0.08, 0.06].map((z, i) => (
-        <mesh key={z} position={[0.78, 0.025, z - 0.2]} rotation={[0, 0.3 + i * 0.15, 0]} scale={[1, 0.5, 2.2]}>
-          <sphereGeometry args={[0.045, 14, 10]} />
-          <meshStandardMaterial color="#101a33" roughness={1} />
-        </mesh>
-      ))}
-
       {/* warm LED strip under the bed frame */}
       <Box p={[0.66, 0.03, 0]} s={[0.012, 0.012, 2.1]} c="#ffb36b" e="#ffb36b" ei={night ? 2.2 : 0.4} shadow={false} />
       <pointLight position={[0.85, 0.12, 0.2]} color="#ffb36b" intensity={night ? 0.9 : 0.15} distance={1.6} decay={1.8} />
@@ -1037,27 +1040,32 @@ function SportsCorner() {
         </group>
       </Spot>
 
-      {/* tennis racket + ball, for Alcaraz */}
-      <Spot id="racket">
-        <group position={[2.22, 0, -1.95]} rotation={[0.12, -0.6, -0.08]}>
-          <mesh position={[0, 0.16, 0]}>
-            <cylinderGeometry args={[0.014, 0.016, 0.3, 10]} />
-            <meshStandardMaterial color="#1d1d24" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0.5, 0]} scale={[0.8, 1.1, 1]}>
-            <torusGeometry args={[0.12, 0.01, 8, 32]} />
+      {/* tennis racket + ball, leaning in the corner */}
+      <group position={[2.22, 0, -1.95]} rotation={[0.12, -0.6, -0.08]}>
+        <mesh position={[0, 0.14, 0]}>
+          <cylinderGeometry args={[0.014, 0.016, 0.28, 10]} />
+          <meshStandardMaterial color="#1d1d24" roughness={0.6} />
+        </mesh>
+        {/* throat: two arms from the handle up into the frame */}
+        {[-1, 1].map((sx) => (
+          <mesh key={sx} position={[sx * 0.022, 0.31, 0]} rotation={[0, 0, sx * -0.35]}>
+            <cylinderGeometry args={[0.007, 0.007, 0.08, 8]} />
             <meshStandardMaterial color="#2a4fa0" roughness={0.4} />
           </mesh>
-          <mesh position={[0, 0.5, 0]} scale={[0.8, 1.1, 1]}>
-            <circleGeometry args={[0.115, 24]} />
-            <meshStandardMaterial color="#e9e6dc" transparent opacity={0.35} side={THREE.DoubleSide} />
-          </mesh>
-        </group>
-        <mesh position={[1.88, 0.033, -1.45]} castShadow>
-          <sphereGeometry args={[0.033, 16, 12]} />
-          <meshStandardMaterial color="#d7e84a" roughness={0.9} />
+        ))}
+        <mesh position={[0, 0.47, 0]} scale={[0.8, 1.1, 1]}>
+          <torusGeometry args={[0.12, 0.01, 8, 32]} />
+          <meshStandardMaterial color="#2a4fa0" roughness={0.4} />
         </mesh>
-      </Spot>
+        <mesh position={[0, 0.47, 0]} scale={[0.8, 1.1, 1]}>
+          <circleGeometry args={[0.115, 24]} />
+          <meshStandardMaterial color="#e9e6dc" transparent opacity={0.35} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+      <mesh position={[1.88, 0.033, -1.45]} castShadow>
+        <sphereGeometry args={[0.033, 16, 12]} />
+        <meshStandardMaterial color="#d7e84a" roughness={0.9} />
+      </mesh>
     </group>
   );
 }

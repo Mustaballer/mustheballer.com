@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -101,11 +101,10 @@ export const SPOTS: Record<SpotId, Spot> = {
     toast: "University of Toronto — BASc, Computer Engineering (2026)",
     view: { pos: [-1.55, 1.45, -0.55], target: [-2.29, 1.45, -0.55] },
   },
-  racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." , view: { pos: [1.2, 1.3, -0.45], target: [2.12, 0.4, -1.85] } },
   dragonballs: {
     label: "The seven Dragon Balls",
     toast: "All seven. Shenron, I wish for… a 10 ft vertical. — Dragon Ball",
-    view: { pos: [-0.22, 1.98, -1.42], target: [-0.3, 1.84, -1.97] },
+    view: { pos: [-0.27, 1.99, -1.5], target: [-0.3, 1.82, -1.98] },
   },
   microwave: {
     label: "Phone Microwave (name subject to change)",
@@ -115,7 +114,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   headband: {
     label: "A Leaf headband",
     toast: "“I'm not gonna run away, I never go back on my word!” — Naruto",
-    view: { pos: [0.4, 1.98, -1.45], target: [0.33, 1.83, -2.03] },
+    view: { pos: [0.42, 2.02, -1.45], target: [0.4, 1.98, -2.08] },
   },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {
