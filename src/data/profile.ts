@@ -360,6 +360,22 @@ export const diary = [
   },
 ];
 
+// Training Arc: sports and fitness.
+export const training = {
+  goal: {
+    title: "Touch ten feet",
+    detail: "Get a hand on a 10 ft mark — regulation rim height — by the end of 2026.",
+    deadline: "December 2026",
+    // Optional progress, e.g. "9'6\"" — set this to show a progress bar.
+    currentTouch: null as string | null,
+  },
+  plays: [
+    { sport: "Basketball", icon: "🏀", note: "Pickup runs and the reason for the vertical-jump grind." },
+    { sport: "Volleyball", icon: "🏐", note: "Hitting and blocking — another excuse to jump higher." },
+  ],
+  watches: { sport: "Tennis", icon: "🎾", note: "Big fan. Favourite player: Carlos Alcaraz." },
+};
+
 export const battlestation = {
   name: "The Battlestation",
   rarity: "Legendary",

@@ -11,11 +11,14 @@ import { experience, hackathons } from "../../data/profile";
 import { Avatar } from "./Avatar";
 import type { SpotId, Vec3 } from "./spots";
 import {
+  basketballTexture,
   chateauTexture,
   diplomaTexture,
+  jumpTapeTexture,
   monitorTexture,
   noteTexture,
   plaqueTexture,
+  volleyballTexture,
   windowTexture,
 } from "./textures";
 
@@ -199,6 +202,7 @@ export function Room({
       <Window night={night} chateau={chateau} />
       <TreasureChest />
       <Clutter />
+      <SportsCorner />
     </SpotCtx.Provider>
   );
 }
@@ -506,37 +510,37 @@ function FigureShelf() {
         </group>
       </Spot>
 
-      {/* small succulent */}
-      <mesh position={[0.58, 1.83, -1.99]}>
-        <cylinderGeometry args={[0.04, 0.03, 0.07, 14]} />
-        <meshStandardMaterial color={C.white} />
-      </mesh>
-      <mesh position={[0.58, 1.88, -1.99]}>
-        <icosahedronGeometry args={[0.045, 0]} />
-        <meshStandardMaterial color="#4f7a3a" flatShading />
-      </mesh>
     </group>
   );
 }
 
-// Posters pulled from the MyAnimeList Hall of Fame.
+// Posters: two from the MyAnimeList Hall of Fame, one game (Final Fantasy XV, cover art from Steam).
 function Posters() {
   const pick = (re: RegExp) => anime.hallOfFame.find((a) => re.test(a.title))?.image;
   const a = useImage(pick(/Mushoku Tensei/) ?? anime.hallOfFame[0]?.image);
   const b = useImage(pick(/Steins;Gate/) ?? anime.hallOfFame[1]?.image);
-  const c = useImage(pick(/Cowboy Bebop/) ?? anime.hallOfFame[2]?.image);
-  const poster = (t: THREE.Texture | null, p: Vec3, r: Vec3 = [0, 0, 0]) =>
+  // Final Fantasy XV: Steam's wide hero art, cropped to the four bros (≈18–83% of the width)
+  const ff = useImage("/posters/final-fantasy-xv-bros.jpg");
+  useMemo(() => {
+    if (!ff) return;
+    ff.repeat.set(0.65, 1);
+    ff.offset.set(0.175, 0);
+  }, [ff]);
+  const poster = (t: THREE.Texture | null, p: Vec3, r: Vec3 = [0, 0, 0], w = 0.41, h = 0.58) =>
     t && (
       <group position={p} rotation={r}>
-        <Box p={[0, 0, 0]} s={[0.44, 0.62, 0.015]} c="#111" shadow={false} />
-        <Plane p={[0, 0, 0.009]} s={[0.41, 0.58]} map={t} />
+        <Box p={[0, 0, 0]} s={[w + 0.03, h + 0.04, 0.015]} c="#111" shadow={false} />
+        <mesh position={[0, 0, 0.009]}>
+          <planeGeometry args={[w, h]} />
+          <meshStandardMaterial map={t} emissiveMap={t} emissive="#ffffff" emissiveIntensity={0.45} roughness={0.9} />
+        </mesh>
       </group>
     );
   return (
     <>
       {poster(a, [1.25, 1.95, -2.09], [0, 0, 0.02])}
       {poster(b, [1.8, 1.92, -2.09], [0, 0, -0.025])}
-      {poster(c, [-2.29, 1.6, 1.78], [0, Math.PI / 2, 0.02])}
+      {poster(ff, [-2.29, 1.72, 1.84], [0, Math.PI / 2, 0.015], 0.46, 0.22)}
     </>
   );
 }
@@ -859,23 +863,68 @@ function Clutter() {
         <Box p={[0, 0.13, 0.1]} s={[0.24, 0.18, 0.05]} c="#3a3842" rough={0.95} />
         <Box p={[0, 0.3, 0.115]} s={[0.05, 0.03, 0.01]} c={C.red} shadow={false} />
       </group>
-      {/* floor plant */}
-      <group position={[2.0, 0, -1.85]}>
-        <mesh position={[0, 0.16, 0]} castShadow>
-          <cylinderGeometry args={[0.15, 0.11, 0.32, 20]} />
-          <meshStandardMaterial color={C.white} />
-        </mesh>
-        {[[0, 0.52, 0, 0.2], [0.09, 0.68, 0.05, 0.14], [-0.08, 0.64, -0.06, 0.13]].map(([x, y, z, r], i) => (
-          <mesh key={i} position={[x, y, z]} castShadow>
-            <icosahedronGeometry args={[r, 0]} />
-            <meshStandardMaterial color={i ? "#4f7a3a" : "#3f6a30"} roughness={0.9} flatShading />
-          </mesh>
-        ))}
-      </group>
       {/* a few books stacked by the chest */}
       {[0, 1, 2].map((i) => (
         <Box key={i} p={[2.0, 0.03 + i * 0.055, 1.35]} s={[0.24 - i * 0.02, 0.05, 0.32 - i * 0.03]} r={[0, i * 0.25, 0]} c={BOOK_COLORS[i * 3]} />
       ))}
+    </group>
+  );
+}
+
+// Training Arc: a jump-touch tape up the wall, balls on the floor, a tennis racket leaning on the wall.
+function SportsCorner() {
+  const tape = useMemo(() => jumpTapeTexture(), []);
+  const bball = useMemo(() => basketballTexture(), []);
+  const vball = useMemo(() => volleyballTexture(), []);
+  return (
+    <group>
+      <pointLight position={[1.7, 1.9, -1.4]} color="#ffd9a8" intensity={1.1} distance={2.6} decay={1.6} />
+      <Spot id="court">
+        <group>
+          {/* jump tape on the back wall, floor to ceiling */}
+          <mesh position={[2.08, 1.325, -2.095]}>
+            <planeGeometry args={[0.1, 2.65]} />
+            <meshStandardMaterial map={tape} roughness={0.9} />
+          </mesh>
+          {/* chalk swipes where jumps have landed */}
+          {[2.42, 2.5, 2.46].map((y, i) => (
+            <mesh key={i} position={[2.0 + i * 0.02, y, -2.093]} rotation={[0, 0, 0.4 - i * 0.3]}>
+              <planeGeometry args={[0.07, 0.012]} />
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
+            </mesh>
+          ))}
+          <mesh position={[1.95, 0.12, -1.75]} rotation={[0.3, 0.8, 0]} castShadow>
+            <sphereGeometry args={[0.12, 28, 20]} />
+            <meshStandardMaterial map={bball} roughness={0.7} />
+          </mesh>
+          <mesh position={[2.15, 0.105, -1.45]} rotation={[0.2, 1.4, 0.4]} castShadow>
+            <sphereGeometry args={[0.105, 28, 20]} />
+            <meshStandardMaterial map={vball} roughness={0.55} />
+          </mesh>
+        </group>
+      </Spot>
+
+      {/* tennis racket + ball, for Alcaraz */}
+      <Spot id="racket">
+        <group position={[2.22, 0, -1.95]} rotation={[0.12, -0.6, -0.08]}>
+          <mesh position={[0, 0.16, 0]}>
+            <cylinderGeometry args={[0.014, 0.016, 0.3, 10]} />
+            <meshStandardMaterial color="#1d1d24" roughness={0.6} />
+          </mesh>
+          <mesh position={[0, 0.5, 0]} scale={[0.8, 1.1, 1]}>
+            <torusGeometry args={[0.12, 0.01, 8, 32]} />
+            <meshStandardMaterial color="#2a4fa0" roughness={0.4} />
+          </mesh>
+          <mesh position={[0, 0.5, 0]} scale={[0.8, 1.1, 1]}>
+            <circleGeometry args={[0.115, 24]} />
+            <meshStandardMaterial color="#e9e6dc" transparent opacity={0.35} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+        <mesh position={[1.88, 0.033, -1.45]} castShadow>
+          <sphereGeometry args={[0.033, 16, 12]} />
+          <meshStandardMaterial color="#d7e84a" roughness={0.9} />
+        </mesh>
+      </Spot>
     </group>
   );
 }

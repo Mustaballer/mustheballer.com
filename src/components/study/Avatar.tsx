@@ -4,14 +4,14 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, type ReactElement } from "react";
 import * as THREE from "three";
 import type { Vec3 } from "./spots";
-import { faceTexture } from "./textures";
+import { uoftPrintTexture } from "./textures";
 
 const INK = "#16121c";
 
 // Three hard bands of light, the classic anime look.
 function useToonRamp() {
   return useMemo(() => {
-    const t = new THREE.DataTexture(new Uint8Array([90, 170, 255]), 3, 1, THREE.RedFormat);
+    const t = new THREE.DataTexture(new Uint8Array([150, 205, 255]), 3, 1, THREE.RedFormat);
     t.minFilter = t.magFilter = THREE.NearestFilter;
     t.generateMipmaps = false;
     t.needsUpdate = true;
@@ -49,14 +49,14 @@ function Part({ geom, color, ramp, p, r, s, q, outline = 1.06 }: PartProps) {
   );
 }
 
-const SKIN = "#c9956f";
-const HAIR = "#1b1620";
-const HOODIE = "#2b2d3a";
+const SKIN = "#b47c55"; // warm tan
+const HAIR = "#2e211b"; // dark brown so the toon shading shows the shape
+const HOODIE = "#14305f"; // U of T blue
 const PANTS = "#3a3f52";
 
 export function Avatar({ look }: { look: boolean }) {
   const ramp = useToonRamp();
-  const face = useMemo(() => faceTexture(), []);
+  const print = useMemo(() => uoftPrintTexture(), []);
   const head = useRef<THREE.Group>(null!);
   const body = useRef<THREE.Group>(null!);
 
@@ -93,33 +93,46 @@ export function Avatar({ look }: { look: boolean }) {
     [look],
   );
 
-  // messy, swept hair: tufts around the crown plus a fringe over the forehead
-  const tufts = useMemo(() => {
-    const out: { p: Vec3; r: Vec3; s: number }[] = [];
-    for (let i = 0; i < 11; i++) {
-      const a = (i / 11) * Math.PI * 2;
-      out.push({
-        p: [Math.cos(a) * 0.1, 0.07 + (i % 3) * 0.012, Math.sin(a) * 0.1 + 0.015],
-        r: [Math.sin(a) * 1.1, 0, -Math.cos(a) * 1.1],
-        s: 0.8 + (i % 4) * 0.12,
-      });
-    }
-    // fringe (front is -z)
-    [-0.07, -0.025, 0.025, 0.07].forEach((x, i) =>
-      out.push({ p: [x, 0.075, -0.1], r: [-2.55, 0, (i - 1.5) * 0.3], s: 0.6 + (i % 2) * 0.12 }),
-    );
-    return out;
+  // wayfarer-style lens outline (lens-local, metres), extruded into a thin 3D lens
+  const lensGeo = useMemo(() => {
+    const sh = new THREE.Shape();
+    sh.moveTo(-0.038, 0.019);
+    sh.lineTo(0.038, 0.022);
+    sh.quadraticCurveTo(0.041, -0.004, 0.022, -0.022);
+    sh.lineTo(-0.018, -0.023);
+    sh.quadraticCurveTo(-0.04, -0.016, -0.038, 0.019);
+    return sh;
   }, []);
+
+  // sunglasses arms: from each lens' outer edge back along the side of the head to the ear
+  const glassArms = useMemo(
+    () =>
+      [-1, 1].map((sx) => {
+        const a = new THREE.Vector3(sx * 0.088, 0.0, -0.118);
+        const b = new THREE.Vector3(sx * 0.13, -0.004, -0.008);
+        return {
+          mid: a.clone().add(b).multiplyScalar(0.5).toArray() as Vec3,
+          len: a.distanceTo(b),
+          q: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), b.clone().sub(a).normalize()),
+        };
+      }),
+    [],
+  );
 
   return (
     <group ref={body}>
       {/* hoodie torso + hood bunched at the back */}
       <Part ramp={ramp} color={HOODIE} p={[0, 0.88, -0.02]} geom={<capsuleGeometry args={[0.16, 0.3, 8, 16]} />} />
       <Part ramp={ramp} color={HOODIE} p={[0, 1.13, 0.1]} s={[1.2, 0.7, 0.8]} geom={<sphereGeometry args={[0.11, 16, 12]} />} />
+      {/* TORONTO / ENGINEERING chest print, on the front (-z) of the torso */}
+      <mesh position={[0, 0.945, -0.181]} rotation={[0, Math.PI, 0]}>
+        <planeGeometry args={[0.24, 0.12]} />
+        <meshBasicMaterial map={print} transparent depthWrite={false} side={THREE.DoubleSide} />
+      </mesh>
       {/* drawstrings */}
       {[-0.04, 0.04].map((x) => (
-        <mesh key={x} position={[x, 1.02, -0.17]}>
-          <cylinderGeometry args={[0.005, 0.005, 0.12, 6]} />
+        <mesh key={x} position={[x * 1.6, 1.075, -0.168]}>
+          <cylinderGeometry args={[0.005, 0.005, 0.06, 6]} />
           <meshToonMaterial color="#e8e4dc" gradientMap={ramp} />
         </mesh>
       ))}
@@ -138,29 +151,66 @@ export function Avatar({ look }: { look: boolean }) {
       <Part ramp={ramp} color={SKIN} p={[0, 1.2, -0.03]} outline={0} geom={<cylinderGeometry args={[0.045, 0.05, 0.1, 12]} />} />
 
       <group ref={head} position={[0, 1.36, -0.04]} scale={1.14}>
-        {/* slightly tall anime head */}
-        <Part ramp={ramp} color={SKIN} s={[0.95, 1.1, 1]} geom={<sphereGeometry args={[0.13, 28, 22]} />} />
-        {/* jaw and chin */}
-        <Part ramp={ramp} color={SKIN} p={[0, -0.085, -0.005]} s={[0.78, 0.6, 0.8]} geom={<sphereGeometry args={[0.11, 20, 16]} />} />
-        {/* drawn face on the front (-z) */}
-        <mesh scale={[0.95, 1.1, 1]}>
-          <sphereGeometry args={[0.1315, 32, 20, Math.PI * 1.5 - 0.82, 1.64, Math.PI / 2 - 0.62, 1.3]} />
-          <meshBasicMaterial map={face} transparent depthWrite={false} />
-        </mesh>
+        {/* head: smooth, slightly long */}
+        <Part ramp={ramp} color={SKIN} s={[0.93, 1.1, 0.98]} geom={<sphereGeometry args={[0.13, 48, 36]} />} />
         {/* ears */}
         {[-1, 1].map((sx) => (
-          <Part key={sx} ramp={ramp} color={SKIN} p={[sx * 0.128, -0.005, 0]} s={[0.5, 1, 0.8]} geom={<sphereGeometry args={[0.03, 10, 10]} />} />
+          <Part key={sx} ramp={ramp} color={SKIN} p={[sx * 0.121, -0.008, 0.005]} s={[0.45, 1, 0.75]} geom={<sphereGeometry args={[0.03, 14, 12]} />} />
         ))}
-        {/* hair: cap + tufts */}
-        <Part ramp={ramp} color={HAIR} p={[0, 0.045, 0.015]} s={[1.08, 0.95, 1.1]} geom={<sphereGeometry args={[0.135, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.42]} />} />
-        <Part ramp={ramp} color={HAIR} p={[0, -0.01, 0.03]} s={[1.06, 1, 0.95]} geom={<sphereGeometry args={[0.135, 20, 14, 0, Math.PI, Math.PI * 0.25, Math.PI * 0.5]} />} />
-        {tufts.map((t, i) => (
-          <Part key={i} ramp={ramp} color={HAIR} p={t.p} r={t.r} s={[t.s, t.s, t.s]} outline={1.12} geom={<coneGeometry args={[0.04, 0.11, 6]} />} />
+        {/* hair: a combover — tapered sides, side part on his left, top swept up and over to the right */}
+        {/* short tapered base: hairline raised at the front and sides */}
+        <Part ramp={ramp} color={HAIR} p={[0, 0.03, 0.014]} r={[0.42, 0, 0]} s={[0.96, 1.0, 1.04]} outline={1.03} geom={<sphereGeometry args={[0.135, 48, 28, 0, Math.PI * 2, 0, Math.PI * 0.4]} />} />
+        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.02]} s={[0.95, 1.04, 0.98]} outline={1.03} geom={<sphereGeometry args={[0.133, 40, 24, 0, Math.PI, Math.PI * 0.3, Math.PI * 0.28]} />} />
+        {/* the swept top: a long volume running front to back, leaning right */}
+        <Part ramp={ramp} color={HAIR} p={[0.02, 0.122, 0.0]} r={[0.05, 0, -0.28]} s={[0.95, 0.42, 1.25]} outline={1.04} geom={<sphereGeometry args={[0.1, 36, 22]} />} />
+        {/* the front: lifted and swept over to the right */}
+        <Part ramp={ramp} color={HAIR} p={[0.03, 0.13, -0.088]} r={[-0.55, 0.15, -0.38]} s={[1.15, 0.5, 0.7]} outline={1.05} geom={<sphereGeometry args={[0.072, 30, 20]} />} />
+        {/* side part on his left */}
+        <mesh position={[-0.06, 0.126, -0.01]} rotation={[0.06, 0, 0.5]}>
+          <boxGeometry args={[0.005, 0.008, 0.17]} />
+          <meshBasicMaterial color="#120c0a" />
+        </mesh>
+        {/* sunglasses: two dark glossy lenses in black frames, angled to wrap the face, plus a bridge */}
+        {[-1, 1].map((sx) => (
+          <group key={sx} position={[sx * 0.047, -0.008, -0.133]} rotation={[0.05, sx * -0.32, 0]} scale={[sx, 1, 1]}>
+            <mesh position={[0, 0, -0.0025]} scale={[1.14, 1.2, 1]}>
+              <extrudeGeometry args={[lensGeo, { depth: 0.004, bevelEnabled: false }]} />
+              <meshBasicMaterial color="#0b0b10" side={THREE.DoubleSide} />
+            </mesh>
+            <mesh position={[0, 0, -0.0045]}>
+              <extrudeGeometry args={[lensGeo, { depth: 0.002, bevelEnabled: false }]} />
+              <meshStandardMaterial color="#25223a" roughness={0.08} metalness={0.4} side={THREE.DoubleSide} />
+            </mesh>
+            {/* glint */}
+            <mesh position={[-0.012, 0.008, -0.0048]} rotation={[0, Math.PI, -0.4]}>
+              <planeGeometry args={[0.022, 0.0035]} />
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.75} side={THREE.DoubleSide} />
+            </mesh>
+          </group>
         ))}
-        {/* white headphones */}
-        <Part ramp={ramp} color="#f4f2ee" p={[0, 0.03, 0.01]} outline={1.04} geom={<torusGeometry args={[0.152, 0.013, 8, 28, Math.PI]} />} />
-        {[-0.142, 0.142].map((x) => (
-          <Part key={x} ramp={ramp} color="#f4f2ee" p={[x, -0.01, 0.005]} r={[0, 0, Math.PI / 2]} geom={<cylinderGeometry args={[0.05, 0.05, 0.04, 18]} />} />
+        <mesh position={[0, 0.006, -0.142]}>
+          <boxGeometry args={[0.03, 0.007, 0.006]} />
+          <meshBasicMaterial color="#0b0b10" />
+        </mesh>
+        {/* sunglasses arms */}
+        {glassArms.map((g, i) => (
+          <mesh key={i} position={g.mid} quaternion={g.q}>
+            <boxGeometry args={[0.007, 0.011, g.len]} />
+            <meshBasicMaterial color="#0b0b10" />
+          </mesh>
+        ))}
+        {/* AirPods: bud tucked into each ear, short stem angled down toward the jaw */}
+        {[-1, 1].map((sx) => (
+          <group key={sx} position={[sx * 0.133, -0.012, -0.004]}>
+            <mesh scale={[0.8, 1, 1]}>
+              <sphereGeometry args={[0.011, 14, 12]} />
+              <meshToonMaterial color="#fbfbf9" gradientMap={ramp} />
+            </mesh>
+            <mesh position={[0, -0.018, -0.006]} rotation={[0.35, 0, 0]}>
+              <capsuleGeometry args={[0.0042, 0.022, 4, 10]} />
+              <meshToonMaterial color="#fbfbf9" gradientMap={ramp} />
+            </mesh>
+          </group>
         ))}
       </group>
     </group>

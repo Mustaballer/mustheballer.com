@@ -10,6 +10,7 @@ import {
   projects,
   RANKS,
   skills,
+  training,
 } from "../data/profile";
 import anime from "../data/generated/anime.json";
 import games from "../data/generated/games.json";
@@ -268,6 +269,46 @@ export function Games() {
         {games.source === "recent" ? "Recently played, synced" : "Synced"} from{" "}
         <a href={profile.links.steam} {...ext}>Steam</a>.
       </p>
+    </div>
+  );
+}
+
+// "10'2\"" -> inches
+const toInches = (h: string) => {
+  const m = h.match(/(d+)'s*(d+)?/);
+  return m ? Number(m[1]) * 12 + Number(m[2] ?? 0) : null;
+};
+
+export function Training() {
+  const { goal, plays, watches } = training;
+  const now = goal.currentTouch ? toInches(goal.currentTouch) : null;
+  const pct = now ? Math.min(100, Math.round((now / 120) * 100)) : null;
+  return (
+    <div className="training">
+      <article className="card training__goal">
+        <span className="pill pill--live">Current quest</span>
+        <h3>{goal.title}</h3>
+        <p>{goal.detail}</p>
+        {pct !== null ? (
+          <div className="training__bar" role="img" aria-label={`${goal.currentTouch} of 10 feet`}>
+            <span style={{ width: `${pct}%` }} />
+            <em>{goal.currentTouch} / 10'0"</em>
+          </div>
+        ) : null}
+        <p className="meta">Deadline: {goal.deadline}</p>
+      </article>
+      <ul className="training__list">
+        {plays.map((p) => (
+          <li key={p.sport}>
+            <span aria-hidden>{p.icon}</span>
+            <div><strong>{p.sport}</strong> <span className="meta">· plays</span><p>{p.note}</p></div>
+          </li>
+        ))}
+        <li>
+          <span aria-hidden>{watches.icon}</span>
+          <div><strong>{watches.sport}</strong> <span className="meta">· watches</span><p>{watches.note}</p></div>
+        </li>
+      </ul>
     </div>
   );
 }

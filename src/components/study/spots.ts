@@ -1,10 +1,10 @@
 // Every clickable thing in the study.
-// Stations are the main navigation (markers, menu, keys 1–6, ← →); the rest are easter eggs.
+// Stations are the main navigation (markers, menu, number keys, ← →); the rest are easter eggs.
 export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
-export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
+export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -24,6 +24,7 @@ export const STATIONS: { id: StationId; icon: string; marker: Vec3 }[] = [
   { id: "monitor", icon: "⌨", marker: [0.95, 1.62, -1.9] },
   { id: "chest", icon: "🏆", marker: [1.55, 0.78, 0.55] },
   { id: "shelf", icon: "📚", marker: [-1.95, 1.35, -0.95] },
+  { id: "court", icon: "🏀", marker: [2.05, 1.25, -1.95] },
   { id: "letter", icon: "✉", marker: [-1.95, 0.82, -0.35] },
 ];
 
@@ -53,6 +54,11 @@ export const SPOTS: Record<SpotId, Spot> = {
     title: "The Library",
     view: { pos: [1.0, 1.75, 0.2], target: [-2.1, 1.05, -1.4] },
   },
+  court: {
+    label: "Training",
+    title: "Training Arc",
+    view: { pos: [1.45, 2.35, 1.75], target: [1.95, 0.85, -1.95] },
+  },
   letter: {
     label: "Contact",
     title: "Send a letter",
@@ -69,6 +75,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   window: { label: "The window", action: "chateau" },
   mask: { label: "A white mask", toast: "“Looking cool, Joker!” — Persona 5" },
+  racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
   chess: {
     label: "A black king",

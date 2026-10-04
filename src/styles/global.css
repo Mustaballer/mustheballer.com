@@ -220,6 +220,20 @@ html[data-mode="study"] .doc { display: none; }
 .book h3 { font-size: 1.4rem; }
 .book blockquote { margin: 0.75rem 0 0; font: italic 500 1.1rem/1.4 var(--serif); color: var(--ink-soft); }
 
+/* training arc */
+.training { display: grid; gap: 1rem; }
+.training__goal h3 { font-size: 1.6rem; margin: 0.6rem 0 0.2rem; }
+.training__goal p { margin: 0.3rem 0 0; }
+.training__goal .pill { margin-left: 0; }
+.training__bar { position: relative; height: 1.5rem; margin: 0.9rem 0 0.2rem; background: var(--paper-2); border-radius: 999px; overflow: hidden; }
+.training__bar span { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--gold), var(--accent)); }
+.training__bar em { position: relative; display: block; text-align: center; font: 600 0.8rem/1.5rem var(--sans); font-style: normal; }
+.training__list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0.75rem; }
+.training__list li { display: flex; gap: 0.75rem; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0.8rem 1rem; }
+.training__list li > span { font-size: 1.6rem; line-height: 1; }
+.training__list strong { font-family: var(--serif); font-size: 1.2rem; }
+.training__list p { margin: 0.2rem 0 0; color: var(--ink-soft); font-size: 0.9rem; }
+
 /* anime */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin: 0 0 0.5rem; }
 .stats div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0.75rem 1rem; }

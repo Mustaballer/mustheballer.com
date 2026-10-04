@@ -277,90 +277,87 @@ export function chateauTexture() {
   });
 }
 
-// Anime face drawn on a transparent canvas, wrapped onto the front of the head.
-// Masculine shōnen styling: narrow eyes under a heavy flat lid, small irises, thick low brows, no lashes.
-export function faceTexture() {
-  return make(256, 256, (c) => {
-    c.clearRect(0, 0, 256, 256);
-    c.lineCap = "round";
-    c.lineJoin = "round";
-    const eye = (x: number, side: number) => {
-      const y = 140;
-      c.save();
-      c.translate(x, y);
-      c.scale(1.25, 1.25);
-      c.translate(-x, -y);
-      // eye shape: flat top lid, gentle curve below, slightly narrower at the outer corner
-      const shape = () => {
-        c.beginPath();
-        c.moveTo(x - side * 28, y - 3);
-        c.lineTo(x + side * 26, y - 7);
-        c.quadraticCurveTo(x + side * 30, y + 6, x + side * 18, y + 11);
-        c.quadraticCurveTo(x, y + 15, x - side * 26, y + 6);
-        c.closePath();
-      };
-      c.fillStyle = "#f6f2ea";
-      shape();
-      c.fill();
-      // iris + pupil, tucked up under the lid
-      c.save();
-      shape();
-      c.clip();
-      c.fillStyle = "#4a2c1a";
-      c.beginPath();
-      c.ellipse(x + side * 2, y + 1, 12, 14, 0, 0, Math.PI * 2);
-      c.fill();
-      c.fillStyle = "#120a07";
-      c.beginPath();
-      c.ellipse(x + side * 2, y + 2, 5.5, 7, 0, 0, Math.PI * 2);
-      c.fill();
-      c.fillStyle = "rgba(255,255,255,0.85)";
-      c.beginPath();
-      c.arc(x + side * 2 - 5, y - 3, 2.6, 0, Math.PI * 2);
-      c.fill();
-      c.restore();
-      // heavy, nearly straight upper lid
-      c.strokeStyle = "#150e10";
-      c.lineWidth = 7;
-      c.beginPath();
-      c.moveTo(x - side * 30, y - 2);
-      c.lineTo(x + side * 28, y - 8);
-      c.stroke();
-      // faint lower lid
-      c.strokeStyle = "rgba(60,30,25,0.5)";
-      c.lineWidth = 2.5;
-      c.beginPath();
-      c.moveTo(x - side * 10, y + 13);
-      c.lineTo(x + side * 16, y + 11);
-      c.stroke();
-      // thick, straight brow, set low and angled down toward the nose
-      c.fillStyle = "#17110f";
-      c.beginPath();
-      c.moveTo(x - side * 30, y - 20);
-      c.lineTo(x + side * 30, y - 31);
-      c.lineTo(x + side * 30, y - 23);
-      c.lineTo(x - side * 30, y - 13);
-      c.closePath();
-      c.fill();
-      c.restore();
-    };
-    eye(80, -1);
-    eye(176, 1);
-    // nose: a small shadow line
-    c.strokeStyle = "rgba(110,55,35,0.55)";
+// Jump-touch tape: a strip of feet/inch marks running up the wall (1 px = 1/256 m of a 2.65 m strip).
+// 10 ft (3.05 m) is above the 2.7 m ceiling, so the top just points up at it.
+export function jumpTapeTexture() {
+  const H = 1024;
+  const mPerPx = 2.65 / H;
+  return make(96, H, (c) => {
+    c.fillStyle = "#f1ece0";
+    c.fillRect(0, 0, 96, H);
+    c.fillStyle = "#1b1b22";
+    c.textAlign = "left";
+    for (let inch = 0; inch <= 104; inch++) {
+      const y = H - (inch * 0.0254) / mPerPx;
+      const foot = inch % 12 === 0;
+      c.fillRect(0, y - (foot ? 2 : 1), foot ? 44 : inch % 6 === 0 ? 28 : 16, foot ? 4 : 2);
+      if (foot && inch > 0) {
+        c.font = `800 26px ${SANS}`;
+        c.fillText(`${inch / 12}'`, 50, y + 9);
+      }
+    }
+    // the goal, above the ceiling
+    c.fillStyle = "#c9a24a";
+    c.fillRect(0, 0, 96, 70);
+    c.fillStyle = "#101a33";
+    c.font = `900 22px ${SANS}`;
+    c.textAlign = "center";
+    c.fillText("10 FT", 48, 34);
+    c.beginPath();
+    c.moveTo(48, 40);
+    c.lineTo(36, 58);
+    c.lineTo(60, 58);
+    c.fill();
+  });
+}
+
+// Basketball and volleyball skins.
+export function basketballTexture() {
+  return make(256, 128, (c) => {
+    c.fillStyle = "#d8641e";
+    c.fillRect(0, 0, 256, 128);
+    c.strokeStyle = "#2a1408";
     c.lineWidth = 3;
     c.beginPath();
-    c.moveTo(131, 166);
-    c.lineTo(126, 190);
-    c.lineTo(133, 191);
+    c.moveTo(0, 64); c.lineTo(256, 64);
+    c.moveTo(64, 0); c.lineTo(64, 128);
+    c.moveTo(192, 0); c.lineTo(192, 128);
     c.stroke();
-    // mouth: short, flat, a hint of a smirk
-    c.strokeStyle = "#5a2a22";
-    c.lineWidth = 3.5;
     c.beginPath();
-    c.moveTo(114, 219);
-    c.lineTo(140, 218);
-    c.quadraticCurveTo(146, 217, 149, 213);
+    c.ellipse(128, 64, 40, 64, 0, 0, Math.PI * 2);
     c.stroke();
+  });
+}
+
+export function volleyballTexture() {
+  return make(256, 128, (c) => {
+    const bands = ["#f5f2ea", "#f2c230", "#2b5fb4"];
+    for (let i = 0; i < 9; i++) {
+      c.fillStyle = bands[i % 3];
+      c.fillRect((i * 256) / 9, 0, 256 / 9 + 1, 128);
+    }
+    c.strokeStyle = "rgba(0,0,0,0.25)";
+    c.lineWidth = 1.5;
+    for (let i = 0; i <= 9; i++) {
+      c.beginPath();
+      c.moveTo((i * 256) / 9, 0);
+      c.lineTo((i * 256) / 9, 128);
+      c.stroke();
+    }
+  });
+}
+
+// Chest print for a U of T hoodie (plain lettering, not the official crest).
+export function uoftPrintTexture() {
+  return make(512, 256, (c) => {
+    c.clearRect(0, 0, 512, 256);
+    c.textAlign = "center";
+    c.fillStyle = "#ffffff";
+    c.font = `800 38px ${SANS}`;
+    c.fillText("U N I V E R S I T Y   O F", 256, 52);
+    c.font = `900 92px ${SERIF}`;
+    c.fillText("TORONTO", 256, 152);
+    c.font = `700 30px ${SANS}`;
+    c.fillText("E N G I N E E R I N G", 256, 214);
   });
 }

@@ -12,6 +12,7 @@ import {
   Projects,
   QuestLog,
   Spellbook,
+  Training,
 } from "../sections";
 import type { SpotId, StationId } from "./spots";
 import { isStation, SPOTS, STATION_IDS, STATIONS } from "./spots";
@@ -116,7 +117,7 @@ function StudyRoom() {
     if (id in SPOTS && SPOTS[id].view) setFocus(id);
   }, [ready]);
 
-  // keyboard: Esc back, 1–6 stations, ← → cycle stations
+  // keyboard: Esc back, number keys for stations, ← → cycle stations
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       shift.current = e.shiftKey;
@@ -265,7 +266,7 @@ function StudyRoom() {
       </nav>
 
       {!focus && ready && (
-        <p className="hud hud--hint">Pick a station · keys 1–6 · some objects hide secrets</p>
+        <p className="hud hud--hint">Pick a station · keys 1–{STATIONS.length} · some objects hide secrets</p>
       )}
       {stationIndex >= 0 && (
         <div className="stepper" role="group" aria-label="Station navigation">
@@ -320,6 +321,12 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
         <Spellbook />
         <h3 className="sub">Education</h3>
         <Education />
+      </>
+    ),
+    court: (
+      <>
+        <p className="epigraph">Every protagonist gets one.</p>
+        <Training />
       </>
     ),
     letter: (
