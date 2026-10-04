@@ -365,13 +365,24 @@
   .toast { top: auto; bottom: calc(4.2rem + env(safe-area-inset-bottom, 0px)); font-size: 1rem; padding: 0.6rem 1rem; }
   .cursor-label { display: none; }
 
-  /* MusOS: full screen, apps across the top */
+  /* MusOS: full screen, with a phone-style tab bar along the bottom */
   .musos { padding: calc(3.6rem + env(safe-area-inset-top, 0px)) 0.5rem calc(3.6rem + env(safe-area-inset-bottom, 0px)); }
   .musos__window { height: 100%; box-shadow: 0 10px 40px rgb(0 0 0 / 0.4); }
   .musos__main { flex-direction: column; }
-  .musos__dock { width: auto; flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 0.4rem; }
-  .musos__dock button { flex: none; font-size: 0.8rem; padding: 0.45rem 0.6rem; }
-  .musos__app { padding: 1rem; }
+  .musos__app { order: 1; padding: 1rem; }
+  .musos__dock {
+    order: 2; width: auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+    border-right: 0; border-top: 1px solid var(--line); padding: 0.3rem 0.2rem;
+  }
+  .musos__dock button {
+    flex-direction: column; justify-content: center; gap: 0.2rem; padding: 0.4rem 0.1rem;
+    font-size: 0.66rem; text-align: center; clip-path: none; border-radius: 8px;
+  }
+  .musos__dock button span:first-child { width: 1.9rem; height: 1.9rem; font-size: 1rem; }
+  .musos__dock button.is-on { box-shadow: none; background: var(--card); color: var(--ink); font-weight: 700; }
+  .musos__dock button.is-on span:first-child { border-color: var(--gold-soft); background: color-mix(in srgb, var(--gold-soft) 22%, var(--card)); }
+  .musos__dock button .musos__name { display: none; }
+  .musos__dock button .musos__short { display: block; }
 
   .slash__label { font-size: 2rem; }
 }
@@ -394,4 +405,14 @@
 @media (max-width: 700px) {
   .char-card__photo { width: 84px; height: 84px; }
   .char-card__name { font-size: 1.1rem; }
+}
+
+/* tab labels are plain text, not icon boxes */
+.musos__dock button .musos__name, .musos__dock button .musos__short {
+  width: auto; height: auto; background: none; border: 0; font-size: inherit; display: inline;
+}
+@media (min-width: 701px) { .musos__dock button .musos__short { display: none; } }
+@media (max-width: 700px) {
+  .musos__dock button .musos__name { display: none; }
+  .musos__dock button .musos__short { display: block; white-space: nowrap; }
 }

@@ -382,15 +382,19 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
 }
 
 const APPS = [
-  { id: "projects", icon: "⌨", name: "Projects" },
-  { id: "achievements", icon: "🏆", name: "Achievements" },
-  { id: "anime", icon: "📺", name: "Anime" },
-  { id: "games", icon: "🎮", name: "Games" },
-  { id: "resume", icon: "📄", name: "resume.pdf" },
+  { id: "projects", icon: "⌨", name: "Projects", short: "Projects" },
+  { id: "achievements", icon: "🏆", name: "Achievements", short: "Awards" },
+  { id: "anime", icon: "📺", name: "Anime", short: "Anime" },
+  { id: "games", icon: "🎮", name: "Games", short: "Games" },
+  { id: "resume", icon: "📄", name: "resume.pdf", short: "Résumé" },
 ] as const;
 
 function MusOS({ onClose }: { onClose: () => void }) {
   const [app, setApp] = useState<(typeof APPS)[number]["id"]>("projects");
+  const appRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    appRef.current?.scrollTo({ top: 0 });
+  }, [app]);
   const current = APPS.find((a) => a.id === app)!;
   return (
     <div className="musos" role="dialog" aria-label="MusOS desktop">
@@ -405,11 +409,12 @@ function MusOS({ onClose }: { onClose: () => void }) {
             {APPS.map((a) => (
               <button key={a.id} type="button" className={a.id === app ? "is-on" : ""} onClick={() => setApp(a.id)}>
                 <span aria-hidden>{a.icon}</span>
-                {a.name}
+                <span className="musos__name">{a.name}</span>
+                <span className="musos__short">{a.short}</span>
               </button>
             ))}
           </nav>
-          <div className="musos__app">
+          <div className="musos__app" ref={appRef}>
             {app === "projects" && <Projects />}
             {app === "achievements" && <Achievements />}
             {app === "anime" && <Anime />}
