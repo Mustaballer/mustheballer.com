@@ -1,0 +1,45 @@
+---
+import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/600-italic.css";
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import { profile } from "../data/profile";
+
+const title = `${profile.name} — ${profile.title}`;
+const description = `${profile.name} is a ${profile.title} at ${profile.company} in ${profile.location}. ${profile.tagline}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="google-site-verification" content="o3gbYgfcBaRSoRqfMQkogqJDYuk0UseSjLBduP7SA24" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Pick the starting mode before first paint so there's no flash.
+      // Study (3D) on capable desktops; recruiter mode on phones, reduced motion, or by choice.
+      (function () {
+        var d = document.documentElement;
+        var q = new URLSearchParams(location.search).get("mode");
+        var saved, theme;
+        try { saved = localStorage.getItem("mode"); theme = localStorage.getItem("theme"); } catch (e) {}
+        var capable =
+          matchMedia("(min-width: 900px) and (pointer: fine)").matches &&
+          !matchMedia("(prefers-reduced-motion: reduce)").matches &&
+          !!window.WebGLRenderingContext;
+        d.dataset.mode = q === "recruiter" || q === "study" ? q : saved || (capable ? "study" : "recruiter");
+        if (theme) d.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

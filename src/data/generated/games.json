@@ -1,0 +1,29 @@
+{
+  "source": "recent",
+  "games": [
+    {
+      "appid": 2531310,
+      "name": "The Last of Us™ Part II Remastered",
+      "hours": 9.7,
+      "lastPlayed": "3 Oct",
+      "image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2531310/header.jpg",
+      "url": "https://store.steampowered.com/app/2531310"
+    },
+    {
+      "appid": 1627720,
+      "name": "Lies of P",
+      "hours": 36,
+      "lastPlayed": "23 Sep",
+      "image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1627720/header.jpg",
+      "url": "https://store.steampowered.com/app/1627720"
+    },
+    {
+      "appid": 1128810,
+      "name": "RISK: Global Domination",
+      "hours": 0.2,
+      "lastPlayed": "20 Sep",
+      "image": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1128810/header.jpg",
+      "url": "https://store.steampowered.com/app/1128810"
+    }
+  ]
+}

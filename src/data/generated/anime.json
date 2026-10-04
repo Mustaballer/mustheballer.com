@@ -1,0 +1,426 @@
+{
+  "profileUrl": "https://myanimelist.net/profile/mus_theballer",
+  "fetchedAt": "2026-10-04T02:29:58.902Z",
+  "stats": {
+    "total": 418,
+    "completed": 292,
+    "watching": 4,
+    "episodes": 7246,
+    "meanScore": 8.22,
+    "topGenres": [
+      {
+        "name": "Action",
+        "count": 113
+      },
+      {
+        "name": "Drama",
+        "count": 112
+      },
+      {
+        "name": "Comedy",
+        "count": 91
+      },
+      {
+        "name": "Romance",
+        "count": 70
+      },
+      {
+        "name": "Fantasy",
+        "count": 69
+      },
+      {
+        "name": "Adventure",
+        "count": 57
+      }
+    ]
+  },
+  "hallOfFame": [
+    {
+      "id": 1535,
+      "title": "Death Note",
+      "score": 10,
+      "episodes": 37,
+      "image": "https://cdn.myanimelist.net/images/anime/1079/138100.jpg",
+      "url": "https://myanimelist.net/anime/1535",
+      "genres": [
+        "Supernatural",
+        "Suspense"
+      ],
+      "updatedAt": 1484089101
+    },
+    {
+      "id": 5114,
+      "title": "Fullmetal Alchemist: Brotherhood",
+      "score": 10,
+      "episodes": 64,
+      "image": "https://cdn.myanimelist.net/images/anime/1208/94745.jpg",
+      "url": "https://myanimelist.net/anime/5114",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "updatedAt": 1484089184
+    },
+    {
+      "id": 11061,
+      "title": "Hunter x Hunter",
+      "score": 10,
+      "episodes": 148,
+      "image": "https://cdn.myanimelist.net/images/anime/1337/99013.jpg",
+      "url": "https://myanimelist.net/anime/11061",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+      ],
+      "updatedAt": 1484089189
+    },
+    {
+      "id": 9253,
+      "title": "Steins;Gate",
+      "score": 10,
+      "episodes": 24,
+      "image": "https://cdn.myanimelist.net/images/anime/1935/127974.jpg",
+      "url": "https://myanimelist.net/anime/9253",
+      "genres": [
+        "Drama",
+        "Sci-Fi",
+        "Suspense"
+      ],
+      "updatedAt": 1740707322
+    },
+    {
+      "id": 38524,
+      "title": "Attack on Titan Season 3 Part 2",
+      "score": 10,
+      "episodes": 10,
+      "image": "https://cdn.myanimelist.net/images/anime/1517/100633.jpg",
+      "url": "https://myanimelist.net/anime/38524",
+      "genres": [
+        "Action",
+        "Drama",
+        "Suspense"
+      ],
+      "updatedAt": 1618008161
+    },
+    {
+      "id": 1575,
+      "title": "Code Geass: Lelouch of the Rebellion",
+      "score": 10,
+      "episodes": 25,
+      "image": "https://cdn.myanimelist.net/images/anime/1032/135088.jpg",
+      "url": "https://myanimelist.net/anime/1575",
+      "genres": [
+        "Award Winning",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1484089116
+    },
+    {
+      "id": 1,
+      "title": "Cowboy Bebop",
+      "score": 10,
+      "episodes": 26,
+      "image": "https://cdn.myanimelist.net/images/anime/4/19644.jpg",
+      "url": "https://myanimelist.net/anime/1",
+      "genres": [
+        "Action",
+        "Award Winning",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1484089022
+    },
+    {
+      "id": 2904,
+      "title": "Code Geass: Lelouch of the Rebellion R2",
+      "score": 10,
+      "episodes": 25,
+      "image": "https://cdn.myanimelist.net/images/anime/1088/135089.jpg",
+      "url": "https://myanimelist.net/anime/2904",
+      "genres": [
+        "Award Winning",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1484089123
+    },
+    {
+      "id": 2001,
+      "title": "Gurren Lagann",
+      "score": 10,
+      "episodes": 27,
+      "image": "https://cdn.myanimelist.net/images/anime/4/5123.jpg",
+      "url": "https://myanimelist.net/anime/2001",
+      "genres": [
+        "Adventure",
+        "Award Winning",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1755195503
+    },
+    {
+      "id": 19,
+      "title": "Monster",
+      "score": 10,
+      "episodes": 74,
+      "image": "https://cdn.myanimelist.net/images/anime/10/18793.jpg",
+      "url": "https://myanimelist.net/anime/19",
+      "genres": [
+        "Drama",
+        "Mystery",
+        "Suspense"
+      ],
+      "updatedAt": 1484089057
+    },
+    {
+      "id": 4181,
+      "title": "Clannad: After Story",
+      "score": 10,
+      "episodes": 24,
+      "image": "https://cdn.myanimelist.net/images/anime/1299/110774.jpg",
+      "url": "https://myanimelist.net/anime/4181",
+      "genres": [
+        "Drama",
+        "Romance"
+      ],
+      "updatedAt": 1484089156
+    },
+    {
+      "id": 11741,
+      "title": "Fate/Zero Season 2",
+      "score": 10,
+      "episodes": 12,
+      "image": "https://cdn.myanimelist.net/images/anime/1522/117645.jpg",
+      "url": "https://myanimelist.net/anime/11741",
+      "genres": [
+        "Action",
+        "Fantasy"
+      ],
+      "updatedAt": 1484089199
+    },
+    {
+      "id": 245,
+      "title": "Great Teacher Onizuka",
+      "score": 10,
+      "episodes": 43,
+      "image": "https://cdn.myanimelist.net/images/anime/13/11460.jpg",
+      "url": "https://myanimelist.net/anime/245",
+      "genres": [
+        "Comedy"
+      ],
+      "updatedAt": 1484089086
+    },
+    {
+      "id": 50172,
+      "title": "Mob Psycho 100 III",
+      "score": 10,
+      "episodes": 12,
+      "image": "https://cdn.myanimelist.net/images/anime/1228/125011.jpg",
+      "url": "https://myanimelist.net/anime/50172",
+      "genres": [
+        "Action",
+        "Comedy",
+        "Supernatural"
+      ],
+      "updatedAt": 1755195513
+    },
+    {
+      "id": 33,
+      "title": "Berserk",
+      "score": 10,
+      "episodes": 25,
+      "image": "https://cdn.myanimelist.net/images/anime/1384/119988.jpg",
+      "url": "https://myanimelist.net/anime/33",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Drama",
+        "Fantasy",
+        "Horror"
+      ],
+      "updatedAt": 1518063997
+    },
+    {
+      "id": 40417,
+      "title": "Fruits Basket 2nd Season",
+      "score": 10,
+      "episodes": 25,
+      "image": "https://cdn.myanimelist.net/images/anime/1972/111635.jpg",
+      "url": "https://myanimelist.net/anime/40417",
+      "genres": [
+        "Drama",
+        "Romance",
+        "Supernatural"
+      ],
+      "updatedAt": 1776661695
+    },
+    {
+      "id": 42938,
+      "title": "Fruits Basket: The Final Season",
+      "score": 10,
+      "episodes": 13,
+      "image": "https://cdn.myanimelist.net/images/anime/1085/114792.jpg",
+      "url": "https://myanimelist.net/anime/42938",
+      "genres": [
+        "Drama",
+        "Romance",
+        "Supernatural"
+      ],
+      "updatedAt": 1625521020
+    },
+    {
+      "id": 820,
+      "title": "Legend of the Galactic Heroes",
+      "score": 10,
+      "episodes": 110,
+      "image": "https://cdn.myanimelist.net/images/anime/1976/142016.jpg",
+      "url": "https://myanimelist.net/anime/820",
+      "genres": [
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1484089091
+    },
+    {
+      "id": 59193,
+      "title": "Mushoku Tensei: Jobless Reincarnation Season 3",
+      "score": 10,
+      "episodes": 14,
+      "image": "https://cdn.myanimelist.net/images/anime/1527/158340.jpg",
+      "url": "https://myanimelist.net/anime/59193",
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "updatedAt": 1790553547
+    },
+    {
+      "id": 3014,
+      "title": "Legend of the Galactic Heroes: My Conquest is the Sea of Stars",
+      "score": 10,
+      "episodes": 1,
+      "image": "https://cdn.myanimelist.net/images/anime/3/51345.jpg",
+      "url": "https://myanimelist.net/anime/3014",
+      "genres": [
+        "Action",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1485319618
+    },
+    {
+      "id": 3016,
+      "title": "Legend of the Galactic Heroes: Overture to a New War",
+      "score": 10,
+      "episodes": 1,
+      "image": "https://cdn.myanimelist.net/images/anime/8/22498.jpg",
+      "url": "https://myanimelist.net/anime/3016",
+      "genres": [
+        "Action",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1484089141
+    },
+    {
+      "id": 53236,
+      "title": "Road of Naruto",
+      "score": 10,
+      "episodes": 1,
+      "image": "https://cdn.myanimelist.net/images/anime/1731/128787.jpg",
+      "url": "https://myanimelist.net/anime/53236",
+      "genres": [
+        "Action",
+        "Fantasy"
+      ],
+      "updatedAt": 1670107758
+    },
+    {
+      "id": 3371,
+      "title": "Legend of the Galactic Heroes Gaiden",
+      "score": 10,
+      "episodes": 24,
+      "image": "https://cdn.myanimelist.net/images/anime/9/28463.jpg",
+      "url": "https://myanimelist.net/anime/3371",
+      "genres": [
+        "Action",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1485319641
+    },
+    {
+      "id": 3665,
+      "title": "Legend of the Galactic Heroes Gaiden (1999)",
+      "score": 10,
+      "episodes": 28,
+      "image": "https://cdn.myanimelist.net/images/anime/1682/134157.jpg",
+      "url": "https://myanimelist.net/anime/3665",
+      "genres": [
+        "Action",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "updatedAt": 1485319648
+    }
+  ],
+  "watching": [
+    {
+      "id": 60568,
+      "title": "False Memory (2026)",
+      "score": 0,
+      "episodes": 0,
+      "image": "https://cdn.myanimelist.net/images/anime/1288/147047.jpg",
+      "url": "https://myanimelist.net/anime/60568",
+      "genres": [
+        "Action",
+        "Mystery"
+      ],
+      "updatedAt": 1791080086
+    },
+    {
+      "id": 63832,
+      "title": "You and I Are Polar Opposites Season 2",
+      "score": 9,
+      "episodes": 0,
+      "image": "https://cdn.myanimelist.net/images/anime/1143/158409.jpg",
+      "url": "https://myanimelist.net/anime/63832",
+      "genres": [
+        "Comedy",
+        "Romance"
+      ],
+      "updatedAt": 1790989751
+    },
+    {
+      "id": 62001,
+      "title": "Daemons of the Shadow Realm",
+      "score": 0,
+      "episodes": 6,
+      "image": "https://cdn.myanimelist.net/images/anime/1171/156397.jpg",
+      "url": "https://myanimelist.net/anime/62001",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Supernatural"
+      ],
+      "updatedAt": 1778545578
+    },
+    {
+      "id": 59978,
+      "title": "Frieren: Beyond Journey's End Season 2",
+      "score": 0,
+      "episodes": 0,
+      "image": "https://cdn.myanimelist.net/images/anime/1921/154528.jpg",
+      "url": "https://myanimelist.net/anime/59978",
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Fantasy"
+      ],
+      "updatedAt": 1769031031
+    }
+  ]
+}

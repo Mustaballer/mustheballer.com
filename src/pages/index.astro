@@ -1,0 +1,112 @@
+---
+import Base from "../layouts/Base.astro";
+import Study from "../components/study/Study";
+import {
+  Achievements,
+  Anime,
+  Contact,
+  Education,
+  Games,
+  Library,
+  Links,
+  Projects,
+  QuestLog,
+  Spellbook,
+} from "../components/sections";
+import { profile } from "../data/profile";
+---
+
+<Base>
+  <!-- Recruiter mode: the full portfolio as a plain, fast document. Always in the HTML. -->
+  <main class="doc" id="top">
+    <nav class="doc-nav" aria-label="Page">
+      <a href="#top" class="doc-nav__brand">MA</a>
+      <ul>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#off-the-clock">Off the clock</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="doc-nav__actions">
+        <button type="button" class="btn btn--ghost" data-theme-toggle aria-label="Toggle dark mode">☾</button>
+        <button type="button" class="btn btn--accent enter-study" data-set-mode="study">Enter the study ✦</button>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">{profile.title} @ {profile.company} · {profile.location}</p>
+      <h1>{profile.name}</h1>
+      <p class="hero__tagline">{profile.tagline}</p>
+      <Links />
+    </header>
+
+    <section id="experience" class="section">
+      <header class="section__head">
+        <h2>Quest Log</h2>
+        <p class="epigraph">Journey before destination.</p>
+      </header>
+      <QuestLog />
+    </section>
+
+    <section id="projects" class="section">
+      <header class="section__head"><h2>Projects</h2></header>
+      <Projects />
+    </section>
+
+    <section id="skills" class="section">
+      <header class="section__head">
+        <h2>Spellbook</h2>
+        <p class="epigraph">Technical skills, ranked by the seven tiers of magic.</p>
+      </header>
+      <Spellbook />
+      <h3 class="sub">Education</h3>
+      <Education />
+    </section>
+
+    <section id="off-the-clock" class="section">
+      <header class="section__head">
+        <h2>Off the clock</h2>
+        <p class="epigraph">Fantasy, anime, and a white battlestation.</p>
+      </header>
+      <h3 class="sub">The Library</h3>
+      <Library />
+      <h3 class="sub">Anime</h3>
+      <Anime />
+      <h3 class="sub">Games</h3>
+      <Games />
+      <h3 class="sub">Achievements</h3>
+      <Achievements />
+    </section>
+
+    <footer id="contact" class="section footer">
+      <h2>Send a raven</h2>
+      <Contact />
+      <p class="signoff">“Wait and hope.” — <cite>The Count of Monte Cristo</cite></p>
+    </footer>
+  </main>
+
+  <!-- Study mode: the 3D room. Loads three.js only when this mode is active. -->
+  <Study client:only="react" />
+
+  <script>
+    const root = document.documentElement;
+    const setMode = (mode: string) => {
+      root.dataset.mode = mode;
+      try { localStorage.setItem("mode", mode); } catch {}
+      window.dispatchEvent(new CustomEvent("modechange", { detail: mode }));
+    };
+    document.addEventListener("click", (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>("[data-set-mode],[data-theme-toggle]");
+      if (!t) return;
+      if (t.dataset.setMode) setMode(t.dataset.setMode);
+      else {
+        const dark = root.dataset.theme
+          ? root.dataset.theme === "dark"
+          : matchMedia("(prefers-color-scheme: dark)").matches;
+        root.dataset.theme = dark ? "light" : "dark";
+        try { localStorage.setItem("theme", root.dataset.theme); } catch {}
+      }
+    });
+  </script>
+</Base>
