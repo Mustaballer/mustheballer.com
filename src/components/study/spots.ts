@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -68,6 +68,7 @@ export const SPOTS: Record<SpotId, Spot> = {
     toast: "Inside: a settled debt, a diamond, and a note — “Julie's dowry.” Signed, Sinbad the Sailor.",
   },
   window: { label: "The window", action: "chateau" },
+  mask: { label: "A white mask", toast: "“Looking cool, Joker!” — Persona 5" },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
   chess: {
     label: "A black king",

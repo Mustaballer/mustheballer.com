@@ -276,3 +276,66 @@ export function chateauTexture() {
     c.fillText("Château d'If", 256, 420);
   });
 }
+
+// Anime face drawn on a transparent canvas, wrapped onto the front of the head.
+export function faceTexture() {
+  return make(256, 256, (c) => {
+    c.clearRect(0, 0, 256, 256);
+    const eye = (x: number, flip: number) => {
+      const y = 136;
+      c.fillStyle = "#fbf8f2";
+      c.beginPath();
+      c.ellipse(x, y, 30, 27, 0, 0, Math.PI * 2);
+      c.fill();
+      const g = c.createLinearGradient(0, y - 26, 0, y + 26);
+      g.addColorStop(0, "#1f120c");
+      g.addColorStop(1, "#8a5530");
+      c.fillStyle = g;
+      c.beginPath();
+      c.ellipse(x + flip * 3, y + 2, 19, 25, 0, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = "#0e0806";
+      c.beginPath();
+      c.ellipse(x + flip * 3, y + 4, 8, 12, 0, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = "#fff";
+      c.beginPath();
+      c.arc(x + flip * 3 - 8, y - 9, 7, 0, Math.PI * 2);
+      c.fill();
+      c.beginPath();
+      c.arc(x + flip * 3 + 7, y + 12, 3, 0, Math.PI * 2);
+      c.fill();
+      c.strokeStyle = "#140d10";
+      c.lineCap = "round";
+      c.lineWidth = 8;
+      c.beginPath();
+      c.ellipse(x, y + 5, 32, 31, 0, Math.PI * 1.1, Math.PI * 1.9);
+      c.stroke();
+      c.lineWidth = 5;
+      c.beginPath();
+      c.moveTo(x + flip * 31, y - 9);
+      c.lineTo(x + flip * 41, y - 17);
+      c.stroke();
+      c.lineWidth = 6;
+      c.beginPath();
+      c.moveTo(x - flip * 22, y - 46);
+      c.quadraticCurveTo(x, y - 56, x + flip * 28, y - 48);
+      c.stroke();
+    };
+    eye(80, -1);
+    eye(176, 1);
+    // nose hint + small smile
+    c.strokeStyle = "rgba(120,60,40,0.55)";
+    c.lineWidth = 3;
+    c.beginPath();
+    c.moveTo(130, 175);
+    c.lineTo(126, 186);
+    c.stroke();
+    c.strokeStyle = "#5a2a22";
+    c.lineWidth = 3.5;
+    c.beginPath();
+    c.moveTo(114, 212);
+    c.quadraticCurveTo(128, 220, 142, 211);
+    c.stroke();
+  });
+}

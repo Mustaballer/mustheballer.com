@@ -8,6 +8,7 @@ import { createContext, useContext, useMemo, useRef, type ReactNode } from "reac
 import * as THREE from "three";
 import anime from "../../data/generated/anime.json";
 import { experience, hackathons } from "../../data/profile";
+import { Avatar } from "./Avatar";
 import type { SpotId, Vec3 } from "./spots";
 import {
   chateauTexture,
@@ -398,6 +399,22 @@ function DeskItems({ night }: { night: boolean }) {
         <pointLight position={[0, 0.3, 0.12]} color="#ffc98a" intensity={night ? 1.3 : 0.3} distance={2} decay={1.8} />
       </group>
 
+      {/* Persona 5 nod: a white domino mask */}
+      <Spot id="mask">
+        <group position={[-0.22, 0.785, -1.3]} rotation={[-Math.PI / 2 + 0.25, 0, 0.35]}>
+          <mesh scale={[1, 0.55, 0.35]} castShadow>
+            <sphereGeometry args={[0.07, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <meshStandardMaterial color="#f6f4f0" roughness={0.35} side={THREE.DoubleSide} />
+          </mesh>
+          {[-0.032, 0.032].map((x) => (
+            <mesh key={x} position={[x, 0.004, 0.02]} rotation={[-Math.PI / 2, 0, x > 0 ? -0.3 : 0.3]}>
+              <circleGeometry args={[0.017, 14]} />
+              <meshBasicMaterial color="#111" />
+            </mesh>
+          ))}
+        </group>
+      </Spot>
+
       {/* a wand */}
       <Spot id="wand">
         <group position={[-0.02, 0.78, -1.42]} rotation={[0, 0.5, Math.PI / 2]}>
@@ -525,20 +542,16 @@ function Posters() {
 }
 
 function Character() {
-  const head = useRef<THREE.Group>(null!);
-  const body = useRef<THREE.Group>(null!);
   const { hovered, focus } = useContext(SpotCtx);
-  useFrame(({ clock }) => {
-    const t = clock.elapsedTime;
-    body.current.position.y = Math.sin(t * 1.6) * 0.006;
-    const look = hovered === "character" || focus === "character";
-    const want = look ? -1.0 : Math.sin(t * 0.3) * 0.08; // negative turns toward the room
-    head.current.rotation.y = THREE.MathUtils.lerp(head.current.rotation.y, want, 0.08);
+  const look = hovered === "character" || focus === "character";
+  const swivel = useRef<THREE.Group>(null!);
+  // swivel the chair round to face the room when someone says hello
+  useFrame((_, dt) => {
+    swivel.current.rotation.y = THREE.MathUtils.lerp(swivel.current.rotation.y, look ? -1.85 : 0, 1 - Math.exp(-dt * 4));
   });
-  const skin = "#c99a78";
-  const hoodie = "#26232b";
   return (
     <group position={[0.5, 0, -0.9]}>
+      <group ref={swivel}>
       {/* gaming chair */}
       <Box p={[0, 0.5, 0]} s={[0.52, 0.08, 0.5]} c={C.white} />
       <Box p={[0, 0.84, 0.25]} s={[0.46, 0.58, 0.07]} c={C.white} r={[0.12, 0, 0]} />
@@ -548,67 +561,9 @@ function Character() {
       <Box p={[0, 0.04, 0]} s={[0.06, 0.04, 0.56]} c="#ccc" metal={0.6} />
 
       <Spot id="character">
-        <group ref={body}>
-          <mesh position={[0, 0.88, -0.02]} castShadow>
-            <capsuleGeometry args={[0.16, 0.3, 8, 16]} />
-            <meshStandardMaterial color={hoodie} roughness={0.9} />
-          </mesh>
-          {[-0.09, 0.09].map((x) => (
-            <mesh key={x} position={[x, 0.6, -0.21]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-              <capsuleGeometry args={[0.06, 0.28, 6, 12]} />
-              <meshStandardMaterial color="#3a3f4f" roughness={0.9} />
-            </mesh>
-          ))}
-          {[
-            { from: [-0.19, 1.04, 0], to: [-0.1, 0.82, -0.58] },
-            { from: [0.19, 1.04, 0], to: [0.5, 0.8, -0.58] },
-          ].map(({ from, to }, i) => {
-            const a = new THREE.Vector3(...(from as Vec3));
-            const b = new THREE.Vector3(...(to as Vec3));
-            const mid = a.clone().add(b).multiplyScalar(0.5);
-            const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
-            return (
-              <group key={i}>
-                <mesh position={mid} quaternion={q} castShadow>
-                  <capsuleGeometry args={[0.048, a.distanceTo(b) - 0.1, 6, 12]} />
-                  <meshStandardMaterial color={hoodie} roughness={0.9} />
-                </mesh>
-                <mesh position={b}>
-                  <sphereGeometry args={[0.042, 12, 12]} />
-                  <meshStandardMaterial color={skin} />
-                </mesh>
-              </group>
-            );
-          })}
-          <group ref={head} position={[0, 1.34, -0.04]}>
-            <mesh castShadow>
-              <sphereGeometry args={[0.135, 24, 20]} />
-              <meshStandardMaterial color={skin} roughness={0.7} />
-            </mesh>
-            {/* eyes, on the face side (-z) */}
-            {[-0.045, 0.045].map((x) => (
-              <mesh key={x} position={[x, 0.0, -0.125]} scale={[1, 1.4, 0.6]}>
-                <sphereGeometry args={[0.016, 10, 10]} />
-                <meshStandardMaterial color="#1a1412" roughness={0.3} />
-              </mesh>
-            ))}
-            <mesh position={[0, 0.04, 0.02]} scale={[1.06, 0.92, 1.08]}>
-              <sphereGeometry args={[0.135, 24, 20, 0, Math.PI * 2, 0, Math.PI * 0.62]} />
-              <meshStandardMaterial color="#17120f" roughness={0.8} />
-            </mesh>
-            <mesh position={[0, 0.02, 0]}>
-              <torusGeometry args={[0.15, 0.014, 8, 24, Math.PI]} />
-              <meshStandardMaterial color={C.white} />
-            </mesh>
-            {[-0.145, 0.145].map((x) => (
-              <mesh key={x} position={[x, -0.01, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[0.052, 0.052, 0.04, 16]} />
-                <meshStandardMaterial color={C.white} emissive={C.red} emissiveIntensity={0.3} />
-              </mesh>
-            ))}
-          </group>
-        </group>
+        <Avatar look={look} />
       </Spot>
+      </group>
     </group>
   );
 }
