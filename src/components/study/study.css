@@ -213,7 +213,7 @@
 .boot__bar span { display: block; height: 100%; width: 40%; background: var(--p5-gold); animation: load 1.1s ease-in-out infinite; }
 
 /* travel transition: navy, gold and cream bands slash across with the destination's name */
-.slash { --slash-time: 1.25s; position: absolute; inset: 0; z-index: 9; pointer-events: none; overflow: hidden; }
+.slash { --slash-time: 0.95s; position: absolute; inset: 0; z-index: 9; pointer-events: none; overflow: hidden; }
 .slash__back, .slash__band, .slash__stripe {
   position: absolute; top: -25%; bottom: -25%; left: 50%; transform-origin: center;
   animation: slash var(--slash-time) cubic-bezier(.65,0,.35,1) forwards;
