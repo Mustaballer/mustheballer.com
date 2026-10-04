@@ -355,10 +355,12 @@ function DeskItems({ night }: { night: boolean }) {
       {/* The Count of Monte Cristo, Penguin Classics, face up */}
       <Spot id="montecristo">
         <group position={[1.28, 0.795, -1.5]} rotation={[0, -0.35, 0]}>
-          <Box p={[0, 0, 0]} s={[0.2, 0.055, 0.3]} c="#1c1a1a" rough={0.8} />
-          <Box p={[0.004, 0, 0]} s={[0.192, 0.045, 0.296]} c="#efe6d2" shadow={false} />
+          <Box p={[0, -0.0245, 0]} s={[0.2, 0.006, 0.3]} c="#1c1a1a" rough={0.8} />
+          <Box p={[0, 0.0245, 0]} s={[0.2, 0.006, 0.3]} c="#1c1a1a" rough={0.8} />
+          <Box p={[-0.097, 0, 0]} s={[0.006, 0.055, 0.3]} c="#1c1a1a" rough={0.8} />
+          <Box p={[0.002, 0, 0]} s={[0.19, 0.043, 0.288]} c="#efe6d2" rough={0.95} shadow={false} />
           {cover && (
-            <mesh position={[0, 0.0285, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[0, 0.028, 0]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.2, 0.3]} />
               <meshStandardMaterial map={cover} roughness={0.7} />
             </mesh>
@@ -406,67 +408,86 @@ function DeskItems({ night }: { night: boolean }) {
   );
 }
 
-// Shelf above the desk: a hand-carved Roxy figurine and a sealed relic box.
+// Shelf above the desk: one prop per Hall of Fame anime.
 function FigureShelf() {
+  const silver = { color: "#e4e7ec", metalness: 0.35, roughness: 0.3, emissive: "#6a7280", emissiveIntensity: 0.25 };
   return (
     <group>
       <Box p={[0.15, 1.78, -1.99]} s={[1.1, 0.03, 0.2]} c={C.darkWood} />
-      <Spot id="roxy">
-        <group position={[-0.15, 1.795, -1.99]}>
-          {/* base */}
-          <mesh position={[0, 0.01, 0]}>
-            <cylinderGeometry args={[0.05, 0.055, 0.02, 20]} />
-            <meshStandardMaterial color="#2a2228" />
-          </mesh>
-          {/* robe */}
-          <mesh position={[0, 0.08, 0]}>
-            <coneGeometry args={[0.045, 0.13, 16]} />
-            <meshStandardMaterial color="#2d3a6b" />
-          </mesh>
-          {/* head */}
-          <mesh position={[0, 0.165, 0]}>
-            <sphereGeometry args={[0.028, 16, 14]} />
-            <meshStandardMaterial color="#f1d6c2" />
-          </mesh>
-          {/* blue braids */}
-          {[-1, 1].map((s) => (
-            <mesh key={s} position={[s * 0.026, 0.135, 0.004]}>
-              <capsuleGeometry args={[0.009, 0.05, 4, 8]} />
-              <meshStandardMaterial color="#4a7fd4" />
+
+      {/* Code Geass: the black king */}
+      <Spot id="chess">
+        <group position={[-0.28, 1.795, -1.98]}>
+          {[
+            { y: 0.01, r: [0.04, 0.045, 0.02] },
+            { y: 0.075, r: [0.018, 0.032, 0.11] },
+            { y: 0.135, r: [0.03, 0.022, 0.015] },
+            { y: 0.16, r: [0.022, 0.028, 0.035] },
+          ].map(({ y, r }, i) => (
+            <mesh key={i} position={[0, y, 0]} castShadow>
+              <cylinderGeometry args={[r[0], r[1], r[2], 20]} />
+              <meshStandardMaterial color="#141216" roughness={0.25} metalness={0.2} />
             </mesh>
           ))}
-          <mesh position={[0, 0.175, -0.004]}>
-            <sphereGeometry args={[0.03, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
-            <meshStandardMaterial color="#4a7fd4" />
-          </mesh>
-          {/* witch hat */}
-          <mesh position={[0, 0.19, 0]}>
-            <cylinderGeometry args={[0.055, 0.055, 0.006, 24]} />
-            <meshStandardMaterial color="#3b2a22" />
-          </mesh>
-          <mesh position={[0, 0.235, 0]} rotation={[0, 0, 0.12]}>
-            <coneGeometry args={[0.03, 0.09, 16]} />
-            <meshStandardMaterial color="#3b2a22" />
+          <Box p={[0, 0.2, 0]} s={[0.008, 0.04, 0.008]} c="#141216" rough={0.25} />
+          <Box p={[0, 0.205, 0]} s={[0.026, 0.008, 0.008]} c="#141216" rough={0.25} />
+        </group>
+      </Spot>
+
+      {/* Steins;Gate: the Phone Microwave (name subject to change) */}
+      <Spot id="microwave">
+        <group position={[0.04, 1.795, -1.98]}>
+          <Box p={[0, 0.06, 0]} s={[0.22, 0.12, 0.14]} c="#e9e6df" rough={0.5} />
+          <Box p={[-0.025, 0.06, 0.071]} s={[0.13, 0.08, 0.004]} c="#1f2a2a" e="#7fffd0" ei={0.25} shadow={false} />
+          <Box p={[0.08, 0.06, 0.071]} s={[0.04, 0.09, 0.004]} c="#cfcac0" shadow={false} />
+          {[0.085, 0.06, 0.035].map((y) => (
+            <Box key={y} p={[0.08, y, 0.074]} s={[0.02, 0.008, 0.004]} c="#555" shadow={false} />
+          ))}
+          {/* the flip phone wired to it */}
+          <Box p={[0.06, 0.128, 0.02]} s={[0.035, 0.012, 0.065]} c="#c0c4cc" metal={0.5} rough={0.3} r={[0, 0.4, 0]} />
+          <mesh position={[0.1, 0.1, -0.03]} rotation={[0, 0, 0.6]}>
+            <torusGeometry args={[0.03, 0.002, 4, 16, Math.PI]} />
+            <meshStandardMaterial color="#222" />
           </mesh>
         </group>
       </Spot>
-      <Spot id="relic">
-        <group position={[0.12, 1.83, -1.99]}>
-          <Box p={[0, 0, 0]} s={[0.12, 0.07, 0.09]} c="#5a3a24" />
-          <Box p={[0, 0.036, 0]} s={[0.125, 0.008, 0.095]} c="#3b2716" />
-          <Box p={[0, 0.0, 0.046]} s={[0.03, 0.06, 0.002]} c="#efe2c0" shadow={false} />
-          <mesh position={[0, 0.0, 0.048]} rotation={[Math.PI / 2, 0, 0]}>
-            <cylinderGeometry args={[0.012, 0.012, 0.004, 14]} />
-            <meshStandardMaterial color="#9b1b22" />
+
+      {/* FMA: Brotherhood: a State Alchemist's silver pocket watch on a stand */}
+      <Spot id="watch">
+        <group position={[0.34, 1.795, -1.98]}>
+          <Box p={[0, 0.006, 0]} s={[0.07, 0.012, 0.05]} c={C.darkWood} />
+          <Box p={[0, 0.05, -0.012]} s={[0.008, 0.08, 0.008]} c={C.darkWood} />
+          <mesh position={[0, 0.06, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+            <cylinderGeometry args={[0.038, 0.038, 0.012, 28]} />
+            <meshStandardMaterial {...silver} />
           </mesh>
+          {/* white dial with hands */}
+          <mesh position={[0, 0.06, 0.0065]}>
+            <circleGeometry args={[0.031, 28]} />
+            <meshStandardMaterial color="#f4f0e6" roughness={0.6} />
+          </mesh>
+          <Box p={[0, 0.069, 0.0072]} s={[0.003, 0.02, 0.001]} c="#1a1a1a" shadow={false} />
+          <Box p={[0.007, 0.06, 0.0072]} s={[0.015, 0.003, 0.001]} c="#1a1a1a" shadow={false} />
+          <mesh position={[0, 0.103, 0]}>
+            <torusGeometry args={[0.008, 0.002, 6, 14]} />
+            <meshStandardMaterial {...silver} />
+          </mesh>
+          {/* chain draped down to the shelf */}
+          {Array.from({ length: 6 }, (_, i) => (
+            <mesh key={i} position={[0.012 + i * 0.008, 0.1 - i * 0.017, 0.004]}>
+              <sphereGeometry args={[0.0035, 6, 6]} />
+              <meshStandardMaterial {...silver} />
+            </mesh>
+          ))}
         </group>
       </Spot>
+
       {/* small succulent */}
-      <mesh position={[0.5, 1.83, -1.99]}>
+      <mesh position={[0.58, 1.83, -1.99]}>
         <cylinderGeometry args={[0.04, 0.03, 0.07, 14]} />
         <meshStandardMaterial color={C.white} />
       </mesh>
-      <mesh position={[0.5, 1.88, -1.99]}>
+      <mesh position={[0.58, 1.88, -1.99]}>
         <icosahedronGeometry args={[0.045, 0]} />
         <meshStandardMaterial color="#4f7a3a" flatShading />
       </mesh>

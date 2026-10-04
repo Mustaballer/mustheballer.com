@@ -109,6 +109,13 @@ function StudyRoom() {
 
   const close = useCallback(() => setFocus(null), []);
 
+  // Deep links: /?mode=study#board opens straight at that spot.
+  useEffect(() => {
+    if (!ready) return;
+    const id = location.hash.slice(1) as SpotId;
+    if (id in SPOTS && SPOTS[id].view) setFocus(id);
+  }, [ready]);
+
   // keyboard: Esc back, 1–6 stations, ← → cycle stations
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

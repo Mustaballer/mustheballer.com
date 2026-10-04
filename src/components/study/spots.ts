@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "roxy" | "relic" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -69,8 +69,18 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   window: { label: "The window", action: "chateau" },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
-  roxy: { label: "Roxy figurine", toast: "Hand-carved. Do not sell to Zanoba." },
-  relic: { label: "A sealed box", toast: "Some sacred relics are better left sealed." },
+  chess: {
+    label: "A black king",
+    toast: "“If the king doesn't lead, how can he expect his subordinates to follow?” — Code Geass",
+  },
+  microwave: {
+    label: "Phone Microwave (name subject to change)",
+    toast: "D-Mail sent. Worldline divergence: 1.048596%. El Psy Kongroo. — Steins;Gate",
+  },
+  watch: {
+    label: "A State Alchemist's watch",
+    toast: "“To obtain, something of equal value must be lost.” — Fullmetal Alchemist: Brotherhood",
+  },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {
     label: "A worn diary",
