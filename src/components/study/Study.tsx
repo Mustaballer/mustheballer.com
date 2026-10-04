@@ -103,7 +103,13 @@ function StudyRoom() {
         return;
       }
       if (spot.toast) say(spot.toast);
-      if (spot.view) go(id);
+      if (!spot.view) return;
+      if (isStation(id)) return go(id);
+      // close-ups just glide, without the full-screen slash
+      const held = shift.current;
+      shift.current = true;
+      go(id);
+      shift.current = held;
     },
     [focus, go, say],
   );
@@ -192,7 +198,7 @@ function StudyRoom() {
           markers={markers}
           night={night}
           chateau={chateau}
-          panelOpen={!!focus}
+          panelOpen={!!focus && !!SPOTS[focus].title}
           onSelect={select}
           onReady={() => setReady(true)}
         />

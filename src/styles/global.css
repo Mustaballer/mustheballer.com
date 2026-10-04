@@ -268,13 +268,22 @@ html[data-mode="study"] .doc { display: none; }
 .achievements .is-active { border-color: var(--gold); }
 
 /* footer */
-.study-invite { margin: 2rem 0 0; color: var(--ink-soft); font-size: 0.95rem; }
-.link-btn { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.study-invite {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap;
+  margin: 2.5rem 0 0; padding: 1.1rem 1.3rem;
+  background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--gold-soft); border-radius: var(--radius);
+}
+.study-invite strong { font: 600 1.3rem var(--serif); }
+.study-invite p { margin: 0.2rem 0 0; color: var(--ink-soft); font-size: 0.92rem; max-width: 34rem; }
+.study-invite .btn { white-space: nowrap; }
 @media (max-width: 899px) { .study-invite { display: none; } }
 .footer h2 { font-size: 2.4rem; margin-bottom: 0.75rem; }
 .contact p { max-width: 38rem; color: var(--ink-soft); margin: 0; }
-.signoff { margin: 3rem 0 0; font: italic 600 1.25rem var(--serif); color: var(--gold); }
-.signoff cite { font-style: normal; color: var(--ink-soft); font-size: 1rem; }
+.signoff {
+  margin: 3.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line);
+  text-align: center; font: italic 600 1.35rem var(--serif); color: var(--gold);
+}
+.signoff cite { display: block; margin-top: 0.3rem; font: normal 500 0.75rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
 
 /* ---------------------------------------------------------------- study */
 .study { position: fixed; inset: 0; z-index: 50; background: #0c0a10; color: #f2ece2; }

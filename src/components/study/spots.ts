@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -75,8 +75,37 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   window: { label: "The window", action: "chateau" },
   mask: { label: "A white mask", toast: "“Looking cool, Joker!” — Persona 5" },
-  chocobo: { label: "A Chocobo plush", toast: "Kweh! — Final Fantasy XV" },
-  manga: { label: "Slam Dunk, vol. 1–4", toast: "“Coach Anzai… I want to play basketball.” — Slam Dunk" },
+  // close-ups: the camera glides in, a caption shows, no panel
+  chocobo: {
+    label: "A Chocobo plush",
+    toast: "Kweh! — Final Fantasy XV",
+    view: { pos: [-0.62, 0.88, 1.0], target: [-1.24, 0.56, 0.5] },
+  },
+  manga: {
+    label: "Slam Dunk, vol. 1–4",
+    toast: "“Coach Anzai… I want to play basketball.” — Slam Dunk",
+    view: { pos: [-1.45, 1.1, 2.25], target: [-1.9, 0.52, 1.73] },
+  },
+  posterMushoku: {
+    label: "Mushoku Tensei poster",
+    toast: "Mushoku Tensei: Jobless Reincarnation — a 10/10 on my MyAnimeList",
+    view: { pos: [1.25, 1.92, -0.8], target: [1.25, 1.94, -2.09] },
+  },
+  posterSteins: {
+    label: "Steins;Gate poster",
+    toast: "Steins;Gate — a 10/10 on my MyAnimeList. El Psy Kongroo.",
+    view: { pos: [1.8, 1.9, -0.8], target: [1.8, 1.92, -2.09] },
+  },
+  posterFF: {
+    label: "Final Fantasy XV poster",
+    toast: "Final Fantasy XV — Noctis, Gladio, Ignis & Prompto on the road trip",
+    view: { pos: [-1.35, 1.72, 1.84], target: [-2.29, 1.72, 1.84] },
+  },
+  diploma: {
+    label: "Diploma",
+    toast: "University of Toronto — BASc, Computer Engineering (2026)",
+    view: { pos: [-1.55, 1.45, -0.55], target: [-2.29, 1.45, -0.55] },
+  },
   racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
   chess: {

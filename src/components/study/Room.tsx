@@ -528,8 +528,9 @@ function Posters() {
     ff.repeat.set(0.65, 1);
     ff.offset.set(0.175, 0);
   }, [ff]);
-  const poster = (t: THREE.Texture | null, p: Vec3, r: Vec3 = [0, 0, 0], w = 0.41, h = 0.58) =>
+  const poster = (id: SpotId, t: THREE.Texture | null, p: Vec3, r: Vec3 = [0, 0, 0], w = 0.41, h = 0.58) =>
     t && (
+      <Spot id={id}>
       <group position={p} rotation={r}>
         <Box p={[0, 0, 0]} s={[w + 0.03, h + 0.04, 0.015]} c="#111" shadow={false} />
         <mesh position={[0, 0, 0.009]}>
@@ -537,12 +538,13 @@ function Posters() {
           <meshStandardMaterial map={t} emissiveMap={t} emissive="#ffffff" emissiveIntensity={0.45} roughness={0.9} />
         </mesh>
       </group>
+      </Spot>
     );
   return (
     <>
-      {poster(a, [1.25, 1.95, -2.09], [0, 0, 0.02])}
-      {poster(b, [1.8, 1.92, -2.09], [0, 0, -0.025])}
-      {poster(ff, [-2.29, 1.72, 1.84], [0, Math.PI / 2, 0.015], 0.46, 0.22)}
+      {poster("posterMushoku", a, [1.25, 1.95, -2.09], [0, 0, 0.02])}
+      {poster("posterSteins", b, [1.8, 1.92, -2.09], [0, 0, -0.025])}
+      {poster("posterFF", ff, [-2.29, 1.72, 1.84], [0, Math.PI / 2, 0.015], 0.46, 0.22)}
     </>
   );
 }
@@ -734,10 +736,12 @@ function Nightstand({ night }: { night: boolean }) {
 function Diploma() {
   const tex = useMemo(() => diplomaTexture(), []);
   return (
-    <group position={[-2.29, 1.45, -0.55]} rotation={[0, Math.PI / 2, 0]}>
-      <Box p={[0, 0, 0]} s={[0.4, 0.31, 0.02]} c={C.darkWood} />
-      <Plane p={[0, 0, 0.011]} s={[0.35, 0.26]} map={tex} />
-    </group>
+    <Spot id="diploma">
+      <group position={[-2.29, 1.45, -0.55]} rotation={[0, Math.PI / 2, 0]}>
+        <Box p={[0, 0, 0]} s={[0.4, 0.31, 0.02]} c={C.darkWood} />
+        <Plane p={[0, 0, 0.011]} s={[0.35, 0.26]} map={tex} />
+      </group>
+    </Spot>
   );
 }
 
@@ -889,7 +893,7 @@ function Snow({ w, h }: { w: number; h: number }) {
     a.needsUpdate = true;
   });
   return (
-    <points geometry={geo}>
+    <points geometry={geo} raycast={() => null}>
       <pointsMaterial color="#ffffff" size={0.012} sizeAttenuation transparent opacity={0.85} depthWrite={false} />
     </points>
   );
