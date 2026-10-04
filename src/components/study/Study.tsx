@@ -224,7 +224,7 @@ function MusOS({ onClose }: { onClose: () => void }) {
           <div className="musos__app">
             {app === "projects" && <Projects />}
             {app === "achievements" && <Achievements />}
-            {app === "anime" && <Anime limit={24} />}
+            {app === "anime" && <Anime />}
             {app === "games" && <Games />}
             {app === "resume" && (
               <div className="musos__resume">

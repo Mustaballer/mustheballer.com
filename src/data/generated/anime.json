@@ -1,12 +1,12 @@
 {
   "profileUrl": "https://myanimelist.net/profile/mus_theballer",
-  "fetchedAt": "2026-10-04T02:29:58.902Z",
+  "fetchedAt": "2026-10-04T03:02:10.563Z",
   "stats": {
     "total": 418,
     "completed": 292,
     "watching": 4,
     "episodes": 7246,
-    "meanScore": 8.22,
+    "meanScore": 8.2,
     "topGenres": [
       {
         "name": "Action",
@@ -189,19 +189,6 @@
       "updatedAt": 1484089156
     },
     {
-      "id": 11741,
-      "title": "Fate/Zero Season 2",
-      "score": 10,
-      "episodes": 12,
-      "image": "https://cdn.myanimelist.net/images/anime/1522/117645.jpg",
-      "url": "https://myanimelist.net/anime/11741",
-      "genres": [
-        "Action",
-        "Fantasy"
-      ],
-      "updatedAt": 1484089199
-    },
-    {
       "id": 245,
       "title": "Great Teacher Onizuka",
       "score": 10,
@@ -212,20 +199,6 @@
         "Comedy"
       ],
       "updatedAt": 1484089086
-    },
-    {
-      "id": 50172,
-      "title": "Mob Psycho 100 III",
-      "score": 10,
-      "episodes": 12,
-      "image": "https://cdn.myanimelist.net/images/anime/1228/125011.jpg",
-      "url": "https://myanimelist.net/anime/50172",
-      "genres": [
-        "Action",
-        "Comedy",
-        "Supernatural"
-      ],
-      "updatedAt": 1755195513
     },
     {
       "id": 33,
@@ -299,33 +272,6 @@
       "updatedAt": 1790553547
     },
     {
-      "id": 3014,
-      "title": "Legend of the Galactic Heroes: My Conquest is the Sea of Stars",
-      "score": 10,
-      "episodes": 1,
-      "image": "https://cdn.myanimelist.net/images/anime/3/51345.jpg",
-      "url": "https://myanimelist.net/anime/3014",
-      "genres": [
-        "Action",
-        "Sci-Fi"
-      ],
-      "updatedAt": 1485319618
-    },
-    {
-      "id": 3016,
-      "title": "Legend of the Galactic Heroes: Overture to a New War",
-      "score": 10,
-      "episodes": 1,
-      "image": "https://cdn.myanimelist.net/images/anime/8/22498.jpg",
-      "url": "https://myanimelist.net/anime/3016",
-      "genres": [
-        "Action",
-        "Drama",
-        "Sci-Fi"
-      ],
-      "updatedAt": 1484089141
-    },
-    {
       "id": 53236,
       "title": "Road of Naruto",
       "score": 10,
@@ -337,34 +283,6 @@
         "Fantasy"
       ],
       "updatedAt": 1670107758
-    },
-    {
-      "id": 3371,
-      "title": "Legend of the Galactic Heroes Gaiden",
-      "score": 10,
-      "episodes": 24,
-      "image": "https://cdn.myanimelist.net/images/anime/9/28463.jpg",
-      "url": "https://myanimelist.net/anime/3371",
-      "genres": [
-        "Action",
-        "Drama",
-        "Sci-Fi"
-      ],
-      "updatedAt": 1485319641
-    },
-    {
-      "id": 3665,
-      "title": "Legend of the Galactic Heroes Gaiden (1999)",
-      "score": 10,
-      "episodes": 28,
-      "image": "https://cdn.myanimelist.net/images/anime/1682/134157.jpg",
-      "url": "https://myanimelist.net/anime/3665",
-      "genres": [
-        "Action",
-        "Drama",
-        "Sci-Fi"
-      ],
-      "updatedAt": 1485319648
     }
   ],
   "watching": [

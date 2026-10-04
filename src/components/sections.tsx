@@ -205,7 +205,7 @@ export function Library() {
   );
 }
 
-export function Anime({ limit = 12 }: { limit?: number }) {
+export function Anime({ limit }: { limit?: number }) {
   const s = anime.stats;
   return (
     <div className="anime">
