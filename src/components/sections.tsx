@@ -117,11 +117,12 @@ export function Hackathons() {
   );
 }
 
-export function Projects() {
+// `professional` (recruiter mode) leaves out the origin story and the early-days archive.
+export function Projects({ professional = false }: { professional?: boolean }) {
   return (
     <>
       <div className="projects">
-        {projects.map((p) => (
+        {projects.filter((p) => !(professional && p.origin)).map((p) => (
           <article key={p.name} className={`card project ${p.origin ? "project--origin" : ""}`}>
             {p.badge && <span className="pill project__badge">{p.badge}</span>}
             <h3>{p.name}</h3>
@@ -140,6 +141,7 @@ export function Projects() {
           </article>
         ))}
       </div>
+      {!professional && (
       <details className="archive">
         <summary>Side quests from the early days</summary>
         <ul>
@@ -150,6 +152,7 @@ export function Projects() {
           ))}
         </ul>
       </details>
+      )}
     </>
   );
 }
