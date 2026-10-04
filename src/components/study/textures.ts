@@ -374,10 +374,35 @@ export function blanketTexture() {
       c.fillRect(0, pos, 256, w);
     };
     for (const p of [0, 128]) {
-      band(p + 40, 26, "#101a33", 0.45);
-      band(p + 58, 4, "#c9a24a", 0.9);
-      band(p + 100, 3, "#e9c76f", 0.6);
+      band(p + 36, 34, "#101a33", 0.45);
+      band(p + 58, 8, "#c9a24a", 0.9);
+      band(p + 100, 6, "#e9c76f", 0.55);
     }
     c.globalAlpha = 1;
+  });
+}
+
+// A sealed envelope seen from the front: cream paper, flap lines, a stamp.
+export function envelopeTexture() {
+  return make(320, 220, (c) => {
+    c.fillStyle = "#f6eedb";
+    c.fillRect(0, 0, 320, 220);
+    c.strokeStyle = "rgba(120,90,50,0.45)";
+    c.lineWidth = 4;
+    c.beginPath();
+    c.moveTo(4, 4);
+    c.lineTo(160, 120);
+    c.lineTo(316, 4);
+    c.stroke();
+    c.strokeRect(2, 2, 316, 216);
+    c.fillStyle = "#c9a24a";
+    c.fillRect(250, 150, 50, 56);
+    c.strokeStyle = "#f6eedb";
+    c.setLineDash([4, 4]);
+    c.strokeRect(254, 154, 42, 48);
+    c.setLineDash([]);
+    c.fillStyle = "rgba(60,40,30,0.7)";
+    c.font = `italic 600 26px ${SERIF}`;
+    c.fillText("Mustafa A.", 40, 185);
   });
 }

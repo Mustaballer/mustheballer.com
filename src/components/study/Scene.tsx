@@ -68,6 +68,7 @@ const shadowProps = {
   castShadow: true,
   "shadow-mapSize": [1024, 1024] as [number, number],
   "shadow-bias": -0.0004,
+  "shadow-normalBias": 0.03, // stops self-shadow striping on shelves and the blanket
   "shadow-camera-left": -4,
   "shadow-camera-right": 4,
   "shadow-camera-top": 4,

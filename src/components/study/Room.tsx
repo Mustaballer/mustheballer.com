@@ -15,6 +15,7 @@ import {
   blanketTexture,
   chateauTexture,
   diplomaTexture,
+  envelopeTexture,
   jumpTapeTexture,
   monitorTexture,
   noteTexture,
@@ -691,33 +692,32 @@ function Bookshelf({ night }: { night: boolean }) {
   );
 }
 
-// Contact: a letter, quill and ink on the nightstand, with East of Eden.
+// Contact: a sealed envelope propped against the wall on the nightstand, next to East of Eden.
 function Nightstand({ night }: { night: boolean }) {
   const eden = useImage("/books/east-of-eden.jpg");
+  const envelope = useMemo(() => envelopeTexture(), []);
   return (
     <group>
       <Box p={[-2.05, 0.27, -0.55]} s={[0.42, 0.54, 0.42]} c={C.white} />
       <Box p={[-1.835, 0.38, -0.55]} s={[0.005, 0.02, 0.16]} c="#b8902f" metal={0.6} shadow={false} />
       <Spot id="letter">
-        <group position={[-2.05, 0.545, -0.55]}>
-          <Box p={[0.04, 0.003, 0.06]} s={[0.17, 0.004, 0.12]} c="#f7efdc" r={[0, 0.3, 0]} />
-          <mesh position={[0.06, 0.007, 0.07]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[0.018, 16]} />
-            <meshStandardMaterial color="#9b1b22" />
-          </mesh>
-          {/* inkpot + quill */}
-          <mesh position={[-0.1, 0.03, -0.1]}>
-            <cylinderGeometry args={[0.03, 0.035, 0.06, 16]} />
-            <meshStandardMaterial color="#141218" roughness={0.2} metalness={0.3} />
-          </mesh>
-          <mesh position={[-0.08, 0.13, -0.11]} rotation={[0.2, 0, -0.35]}>
-            <coneGeometry args={[0.022, 0.2, 8]} />
-            <meshStandardMaterial color="#f4efe6" />
-          </mesh>
+        <group position={[-2.19, 0.66, -0.6]} rotation={[0, Math.PI / 2, 0]}>
+          <group rotation={[-0.22, 0, 0]}>
+            <Box p={[0, 0, 0]} s={[0.24, 0.165, 0.006]} c="#efe5cf" rough={0.9} />
+            <mesh position={[0, 0, 0.0035]}>
+              <planeGeometry args={[0.24, 0.165]} />
+              <meshStandardMaterial map={envelope} roughness={0.9} />
+            </mesh>
+            {/* red wax seal where the flap meets */}
+            <mesh position={[0, -0.005, 0.006]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.022, 0.022, 0.006, 20]} />
+              <meshStandardMaterial color="#9b1b22" roughness={0.5} />
+            </mesh>
+          </group>
         </group>
       </Spot>
       {/* East of Eden, currently reading */}
-      <group position={[-2.12, 0.565, -0.42]} rotation={[0, 0.3, 0]}>
+      <group position={[-2.0, 0.558, -0.4]} rotation={[0, 0.35, 0]}>
         <Box p={[0, 0, 0]} s={[0.15, 0.035, 0.22]} c="#ddd6c6" />
         {eden && (
           <mesh position={[0, 0.0185, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -726,7 +726,7 @@ function Nightstand({ night }: { night: boolean }) {
           </mesh>
         )}
       </group>
-      <Candle p={[-2.18, 0.54, -0.7]} night={night} h={0.1} />
+      <Candle p={[-1.92, 0.54, -0.72]} night={night} h={0.1} />
     </group>
   );
 }
@@ -746,7 +746,7 @@ function Bed({ night }: { night: boolean }) {
   const blanket = useMemo(() => {
     const t = blanketTexture();
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.repeat.set(2, 2);
+    t.repeat.set(1.5, 1.5);
     return t;
   }, []);
   const slamDunk = useImage("/books/slam-dunk.jpg");
@@ -761,7 +761,7 @@ function Bed({ night }: { night: boolean }) {
         <boxGeometry args={[1.26, 0.04, 1.42]} />
         <meshStandardMaterial map={blanket} roughness={1} />
       </mesh>
-      <Box p={[0.02, 0.428, -0.36]} s={[1.26, 0.05, 0.1]} c="#f3ede0" rough={1} />
+      <Box p={[0.02, 0.43, -0.36]} s={[1.28, 0.05, 0.1]} c="#f3ede0" rough={1} />
       {/* pillows + a gold throw pillow */}
       <Box p={[-0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />
       <Box p={[0.28, 0.46, -0.78]} s={[0.46, 0.1, 0.3]} c="#fbfaf7" rough={1} />

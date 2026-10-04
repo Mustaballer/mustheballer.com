@@ -62,7 +62,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   letter: {
     label: "Contact",
     title: "Send a letter",
-    view: { pos: [0.75, 1.5, -0.2], target: [-2.0, 0.6, -0.55] },
+    view: { pos: [-0.35, 1.2, -0.25], target: [-2.15, 0.62, -0.58] },
   },
 
   montecristo: {
