@@ -49,7 +49,7 @@ function Part({ geom, color, ramp, p, r, s, q, outline = 1.06 }: PartProps) {
   );
 }
 
-const SKIN = "#b47c55"; // warm tan
+const SKIN = "#9c6640"; // tan
 const HAIR = "#2e211b"; // dark brown so the toon shading shows the shape
 const HOODIE = "#14305f"; // U of T blue
 const PANTS = "#3a3f52";
