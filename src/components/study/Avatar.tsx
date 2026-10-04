@@ -49,8 +49,8 @@ function Part({ geom, color, ramp, p, r, s, q, outline = 1.06 }: PartProps) {
   );
 }
 
-const SKIN = "#9c6640"; // tan
-const HAIR = "#2e211b"; // dark brown so the toon shading shows the shape
+const SKIN = "#a8704b"; // tan
+const HAIR = "#141016"; // black
 const HOODIE = "#14305f"; // U of T blue
 const PANTS = "#3a3f52";
 
@@ -92,6 +92,27 @@ export function Avatar({ look }: { look: boolean }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [look],
   );
+
+  // spikes swept to the side: crown spikes lean up-and-right, edge spikes fall down over the right side and forehead
+  const spikes = useMemo(() => {
+    const out: { p: Vec3; r: Vec3; s: number }[] = [];
+    // crown: three rows front to back, each spike angled up and toward his right (+x)
+    [-0.07, -0.02, 0.03, 0.08].forEach((z, ri) => {
+      [-0.05, 0.0, 0.05].forEach((x, ci) => {
+        const y = 0.128 - Math.abs(z) * 0.35 - Math.abs(x) * 0.25;
+        out.push({ p: [x, y, z], r: [z * 3, 0, -0.7 - ci * 0.15], s: 1.0 + ((ri + ci) % 3) * 0.15 });
+      });
+    });
+    // right side: shorter spikes falling down and outward
+    [-0.06, 0.0, 0.06].forEach((z, i) =>
+      out.push({ p: [0.1, 0.07, z], r: [z * 2, 0, -1.9 - i * 0.1], s: 0.85 }),
+    );
+    // fringe: swept across the forehead toward the right
+    [-0.05, 0.0, 0.05].forEach((x, i) =>
+      out.push({ p: [x, 0.075, -0.112], r: [-1.2, 0, -1.25 - i * 0.12], s: 0.8 + i * 0.1 }),
+    );
+    return out;
+  }, []);
 
   // wayfarer-style lens outline (lens-local, metres), extruded into a thin 3D lens
   const lensGeo = useMemo(() => {
@@ -161,11 +182,13 @@ export function Avatar({ look }: { look: boolean }) {
             The cap's edge sits level at y≈0.035: low enough to cover the forehead, high enough to clear the ears. */}
         <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.004]} s={[0.97, 1.13, 1.05]} outline={1.03} geom={<sphereGeometry args={[0.135, 48, 28, 0, Math.PI * 2, 0, Math.PI * 0.418]} />} />
         {/* back of the head, down to the nape — kept off the sides so the ears stay visible */}
-        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.012]} s={[0.96, 1.04, 1.0]} outline={1.03} geom={<sphereGeometry args={[0.134, 40, 24, Math.PI * 0.2, Math.PI * 0.6, Math.PI * 0.35, Math.PI * 0.27]} />} />
-        {/* the swept top: a long volume running front to back, leaning right */}
-        <Part ramp={ramp} color={HAIR} p={[0.02, 0.118, 0.0]} r={[0.05, 0, -0.28]} s={[0.95, 0.42, 1.25]} outline={1.04} geom={<sphereGeometry args={[0.1, 36, 22]} />} />
+        <Part ramp={ramp} color={HAIR} p={[0, 0.0, 0.012]} s={[0.96, 1.04, 1.0]} outline={1.03} geom={<sphereGeometry args={[0.134, 40, 24, Math.PI * 0.075, Math.PI * 0.85, Math.PI * 0.33, Math.PI * 0.3]} />} />
         {/* the front: swept over the forehead toward the right, a little lift at the front */}
         <Part ramp={ramp} color={HAIR} p={[0.025, 0.085, -0.1]} r={[-0.75, 0.1, -0.42]} s={[1.3, 0.55, 0.62]} outline={1.05} geom={<sphereGeometry args={[0.07, 30, 20]} />} />
+        {/* spikes, all swept to the right */}
+        {spikes.map((t, i) => (
+          <Part key={i} ramp={ramp} color={HAIR} p={t.p} r={t.r} s={[t.s, t.s, t.s]} outline={1.12} geom={<coneGeometry args={[0.03, 0.12, 6]} />} />
+        ))}
         {/* side part on his left */}
         <mesh position={[-0.06, 0.122, -0.015]} rotation={[0.06, 0, 0.5]}>
           <boxGeometry args={[0.005, 0.008, 0.16]} />
@@ -181,11 +204,6 @@ export function Avatar({ look }: { look: boolean }) {
             <mesh position={[0, 0, -0.0045]}>
               <extrudeGeometry args={[lensGeo, { depth: 0.002, bevelEnabled: false }]} />
               <meshStandardMaterial color="#25223a" roughness={0.08} metalness={0.4} side={THREE.DoubleSide} />
-            </mesh>
-            {/* glint */}
-            <mesh position={[-0.012, 0.008, -0.0048]} rotation={[0, Math.PI, -0.4]}>
-              <planeGeometry args={[0.022, 0.0035]} />
-              <meshBasicMaterial color="#ffffff" transparent opacity={0.75} side={THREE.DoubleSide} />
             </mesh>
           </group>
         ))}
