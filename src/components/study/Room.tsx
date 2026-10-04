@@ -15,8 +15,10 @@ import {
   blanketTexture,
   chateauTexture,
   diplomaTexture,
+  dragonStarsTexture,
   envelopeTexture,
   jumpTapeTexture,
+  leafPlateTexture,
   monitorTexture,
   noteTexture,
   plaqueTexture,
@@ -440,28 +442,13 @@ function DeskItems({ night }: { night: boolean }) {
 
 // Shelf above the desk: one prop per Hall of Fame anime.
 function FigureShelf() {
-  const silver = { color: "#e4e7ec", metalness: 0.35, roughness: 0.3, emissive: "#6a7280", emissiveIntensity: 0.25 };
   return (
     <group>
       <Box p={[0.15, 1.78, -1.99]} s={[1.1, 0.03, 0.2]} c={C.darkWood} />
 
-      {/* Code Geass: the black king */}
-      <Spot id="chess">
-        <group position={[-0.28, 1.795, -1.98]}>
-          {[
-            { y: 0.01, r: [0.04, 0.045, 0.02] },
-            { y: 0.075, r: [0.018, 0.032, 0.11] },
-            { y: 0.135, r: [0.03, 0.022, 0.015] },
-            { y: 0.16, r: [0.022, 0.028, 0.035] },
-          ].map(({ y, r }, i) => (
-            <mesh key={i} position={[0, y, 0]} castShadow>
-              <cylinderGeometry args={[r[0], r[1], r[2], 20]} />
-              <meshStandardMaterial color="#141216" roughness={0.25} metalness={0.2} />
-            </mesh>
-          ))}
-          <Box p={[0, 0.2, 0]} s={[0.008, 0.04, 0.008]} c="#141216" rough={0.25} />
-          <Box p={[0, 0.205, 0]} s={[0.026, 0.008, 0.008]} c="#141216" rough={0.25} />
-        </group>
+      {/* Dragon Ball: all seven, in a little cluster */}
+      <Spot id="dragonballs">
+        <DragonBalls position={[-0.3, 1.795, -1.97]} />
       </Spot>
 
       {/* Steins;Gate: the Phone Microwave (name subject to change) */}
@@ -482,36 +469,57 @@ function FigureShelf() {
         </group>
       </Spot>
 
-      {/* FMA: Brotherhood: a State Alchemist's silver pocket watch on a stand */}
-      <Spot id="watch">
-        <group position={[0.34, 1.795, -1.98]}>
-          <Box p={[0, 0.006, 0]} s={[0.07, 0.012, 0.05]} c={C.darkWood} />
-          <Box p={[0, 0.05, -0.012]} s={[0.008, 0.08, 0.008]} c={C.darkWood} />
-          <mesh position={[0, 0.06, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-            <cylinderGeometry args={[0.038, 0.038, 0.012, 28]} />
-            <meshStandardMaterial {...silver} />
-          </mesh>
-          {/* white dial with hands */}
-          <mesh position={[0, 0.06, 0.0065]}>
-            <circleGeometry args={[0.031, 28]} />
-            <meshStandardMaterial color="#f4f0e6" roughness={0.6} />
-          </mesh>
-          <Box p={[0, 0.069, 0.0072]} s={[0.003, 0.02, 0.001]} c="#1a1a1a" shadow={false} />
-          <Box p={[0.007, 0.06, 0.0072]} s={[0.015, 0.003, 0.001]} c="#1a1a1a" shadow={false} />
-          <mesh position={[0, 0.103, 0]}>
-            <torusGeometry args={[0.008, 0.002, 6, 14]} />
-            <meshStandardMaterial {...silver} />
-          </mesh>
-          {/* chain draped down to the shelf */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <mesh key={i} position={[0.012 + i * 0.008, 0.1 - i * 0.017, 0.004]}>
-              <sphereGeometry args={[0.0035, 6, 6]} />
-              <meshStandardMaterial {...silver} />
-            </mesh>
-          ))}
-        </group>
+      {/* Naruto: a Hidden Leaf headband propped on the shelf, cloth tails draping down */}
+      <Spot id="headband">
+        <Headband position={[0.32, 1.795, -2.04]} />
       </Spot>
+    </group>
+  );
+}
 
+function DragonBalls({ position }: { position: Vec3 }) {
+  const stars = useMemo(() => Array.from({ length: 7 }, (_, i) => dragonStarsTexture(i + 1)), []);
+  // 4 on the shelf, 3 stacked on top
+  const spots: Vec3[] = [
+    [-0.05, 0.024, 0.01], [0.0, 0.024, 0.03], [0.05, 0.024, 0.01], [0.0, 0.024, -0.025],
+    [-0.025, 0.06, 0.012], [0.025, 0.06, 0.012], [0.0, 0.094, 0.005],
+  ];
+  return (
+    <group position={position}>
+      {spots.map((p, i) => (
+        <group key={i} position={p}>
+          <mesh castShadow>
+            <sphereGeometry args={[0.024, 24, 18]} />
+            <meshStandardMaterial color="#ff9a1f" emissive="#ff7a00" emissiveIntensity={0.18} roughness={0.1} metalness={0.1} />
+          </mesh>
+          <mesh position={[0, 0, 0.0245]} renderOrder={2}>
+            <circleGeometry args={[0.017, 20]} />
+            <meshBasicMaterial map={stars[i]} transparent depthWrite={false} toneMapped={false} />
+          </mesh>
+        </group>
+      ))}
+      <pointLight position={[0, 0.06, 0.08]} color="#ffa040" intensity={0.12} distance={0.5} decay={2} />
+    </group>
+  );
+}
+
+function Headband({ position }: { position: Vec3 }) {
+  const plate = useMemo(() => leafPlateTexture(), []);
+  const cloth = "#1d2a4f";
+  return (
+    <group position={position}>
+      {/* plate + band, leaning back against the wall */}
+      <group position={[0, 0.032, 0]} rotation={[-0.25, 0, 0]}>
+        <Box p={[0, 0, 0]} s={[0.17, 0.05, 0.006]} c={cloth} rough={1} />
+        <Box p={[0, 0, 0.005]} s={[0.11, 0.045, 0.004]} c="#c9ced6" metal={0.6} rough={0.3} />
+        <mesh position={[0, 0, 0.0075]}>
+          <planeGeometry args={[0.105, 0.042]} />
+          <meshStandardMaterial map={plate} metalness={0.5} roughness={0.35} />
+        </mesh>
+      </group>
+      {/* the two cloth tails lying across the shelf */}
+      <Box p={[0.12, 0.003, 0.03]} s={[0.1, 0.004, 0.022]} r={[0, -0.35, 0]} c={cloth} rough={1} />
+      <Box p={[0.11, 0.006, 0.06]} s={[0.09, 0.004, 0.022]} r={[0, -0.7, 0]} c={cloth} rough={1} />
     </group>
   );
 }

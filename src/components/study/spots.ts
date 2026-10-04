@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "mask" | "chess" | "microwave" | "watch" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "purse" | "window" | "wand" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "racket" | "mask" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -108,18 +108,12 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   racket: { label: "A tennis racket", toast: "¡Vamos! Favourite player: Carlos Alcaraz." },
   wand: { label: "A wand", toast: "“This time, I'll live without regrets.” — Mushoku Tensei" },
-  chess: {
-    label: "A black king",
-    toast: "“If the king doesn't lead, how can he expect his subordinates to follow?” — Code Geass",
-  },
+  dragonballs: { label: "The seven Dragon Balls", toast: "All seven. Shenron, I wish for… a 10 ft vertical. — Dragon Ball" },
   microwave: {
     label: "Phone Microwave (name subject to change)",
     toast: "D-Mail sent. Worldline divergence: 1.048596%. El Psy Kongroo. — Steins;Gate",
   },
-  watch: {
-    label: "A State Alchemist's watch",
-    toast: "“To obtain, something of equal value must be lost.” — Fullmetal Alchemist: Brotherhood",
-  },
+  headband: { label: "A Leaf headband", toast: "“I'm not gonna run away, I never go back on my word!” — Naruto" },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {
     label: "A worn diary",

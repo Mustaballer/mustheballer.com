@@ -406,3 +406,74 @@ export function envelopeTexture() {
     c.fillText("Mustafa A.", 40, 185);
   });
 }
+
+// Red stars for a Dragon Ball (n = 1–7), drawn on a transparent disc.
+export function dragonStarsTexture(n: number) {
+  return make(128, 128, (c) => {
+    c.clearRect(0, 0, 128, 128);
+    const layouts: Record<number, [number, number][]> = {
+      1: [[64, 64]],
+      2: [[46, 64], [82, 64]],
+      3: [[64, 44], [44, 78], [84, 78]],
+      4: [[44, 44], [84, 44], [44, 84], [84, 84]],
+      5: [[64, 36], [36, 60], [92, 60], [46, 92], [82, 92]],
+      6: [[42, 40], [86, 40], [30, 70], [98, 70], [50, 98], [78, 98]],
+      7: [[64, 64], [64, 30], [94, 48], [94, 82], [64, 98], [34, 82], [34, 48]],
+    };
+    const r = n <= 2 ? 18 : n <= 4 ? 15 : 12;
+    c.fillStyle = "#d61f1f";
+    for (const [x, y] of layouts[n]) {
+      c.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const a = -Math.PI / 2 + (i * Math.PI) / 5;
+        const rr = i % 2 ? r * 0.42 : r;
+        c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+      }
+      c.closePath();
+      c.fill();
+    }
+  });
+}
+
+// Engraved Hidden Leaf symbol on a brushed metal plate.
+export function leafPlateTexture() {
+  return make(256, 128, (c) => {
+    const g = c.createLinearGradient(0, 0, 0, 128);
+    g.addColorStop(0, "#e9ecf1");
+    g.addColorStop(0.5, "#b9bfca");
+    g.addColorStop(1, "#dfe3ea");
+    c.fillStyle = g;
+    c.fillRect(0, 0, 256, 128);
+    c.strokeStyle = "rgba(255,255,255,0.35)";
+    c.lineWidth = 1;
+    for (let y = 4; y < 128; y += 5) {
+      c.beginPath();
+      c.moveTo(0, y);
+      c.lineTo(256, y);
+      c.stroke();
+    }
+    c.strokeStyle = "#3a3f4a";
+    c.lineWidth = 6;
+    c.lineCap = "round";
+    // spiral
+    c.beginPath();
+    for (let t = 0; t < Math.PI * 3.2; t += 0.1) {
+      const r = 4 + t * 7.5;
+      c.lineTo(128 + Math.cos(t) * r * 0.9, 70 + Math.sin(t) * r * 0.75);
+    }
+    c.stroke();
+    // the leaf's point, up and to the left
+    c.beginPath();
+    c.moveTo(166, 52);
+    c.lineTo(92, 14);
+    c.lineTo(104, 46);
+    c.stroke();
+    // screws
+    c.fillStyle = "#7d8592";
+    for (const x of [16, 240]) for (const y of [16, 112]) {
+      c.beginPath();
+      c.arc(x, y, 5, 0, Math.PI * 2);
+      c.fill();
+    }
+  });
+}
