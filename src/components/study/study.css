@@ -213,10 +213,10 @@
 .boot__bar span { display: block; height: 100%; width: 40%; background: var(--p5-gold); animation: load 1.1s ease-in-out infinite; }
 
 /* travel transition: navy, gold and cream bands slash across with the destination's name */
-.slash { position: absolute; inset: 0; z-index: 9; pointer-events: none; overflow: hidden; }
+.slash { --slash-time: 1.25s; position: absolute; inset: 0; z-index: 9; pointer-events: none; overflow: hidden; }
 .slash__back, .slash__band, .slash__stripe {
   position: absolute; top: -25%; bottom: -25%; left: 50%; transform-origin: center;
-  animation: slash 0.62s cubic-bezier(.7,0,.3,1) forwards;
+  animation: slash var(--slash-time) cubic-bezier(.65,0,.35,1) forwards;
 }
 .slash__back { width: 62vw; margin-left: -31vw; background: var(--p5-navy); }
 .slash__band { width: 46vw; margin-left: -23vw; background: var(--p5-gold); animation-delay: 0.04s; }
@@ -226,17 +226,19 @@
   font: 900 clamp(2.2rem, 6vw, 5rem)/1 var(--sans); letter-spacing: -0.02em;
   color: var(--p5-cream); -webkit-text-stroke: 2px var(--p5-navy); paint-order: stroke fill;
   text-shadow: 6px 6px 0 var(--p5-navy);
-  animation: slash-label 0.62s cubic-bezier(.7,0,.3,1) forwards;
+  animation: slash-label var(--slash-time) cubic-bezier(.65,0,.35,1) forwards;
 }
+/* sweep in, hold so the name can be read, sweep out */
 @keyframes slash {
   0% { transform: translateX(-140vw) skewX(-22deg); }
-  45%, 55% { transform: translateX(0) skewX(-22deg); }
+  24%, 76% { transform: translateX(0) skewX(-22deg); }
   100% { transform: translateX(140vw) skewX(-22deg); }
 }
 @keyframes slash-label {
-  0% { transform: translate(-50%, -50%) translateX(-60vw) rotate(-8deg) scale(1.1); opacity: 0; }
-  40%, 60% { transform: translate(-50%, -50%) rotate(-8deg) scale(1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) translateX(60vw) rotate(-8deg) scale(1.1); opacity: 0; }
+  0%, 12% { transform: translate(-50%, -50%) translateX(-60vw) rotate(-8deg) scale(1.15); opacity: 0; }
+  28% { transform: translate(-50%, -50%) rotate(-8deg) scale(1.04); opacity: 1; }
+  72% { transform: translate(-50%, -50%) translateX(1.5vw) rotate(-8deg) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) translateX(60vw) rotate(-8deg) scale(1.15); opacity: 0; }
 }
 
 /* ---------------------------------------------------------------- easter eggs */
