@@ -6,7 +6,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
-import { experience, library } from "../../data/profile";
+import { experience, hackathons, library } from "../../data/profile";
 import type { SpotId, Vec3 } from "./spots";
 import { SPOTS } from "./spots";
 import {
@@ -177,6 +177,7 @@ export function Room({
       <Bed />
       <Window night={night} />
       <Diploma />
+      <Trophies />
       <Shardblade />
       <Plant />
     </SpotCtx.Provider>
@@ -657,6 +658,55 @@ function Diploma() {
       <group position={[2.95, 1.95, -3.98]}>
         <Box p={[0, 0, 0]} s={[0.62, 0.5, 0.03]} c={C.darkWood} />
         <Plane p={[0, 0, 0.017]} s={[0.54, 0.42]} map={tex} />
+      </group>
+    </Spot>
+  );
+}
+
+// A floating wall shelf under the diploma: a gold cup per hackathon win, a medal for the rest.
+function Trophies() {
+  const gold = { color: "#d8a93b", metalness: 0.75, roughness: 0.28 };
+  return (
+    <Spot id="trophies" label={[2.95, 1.75, -3.8]}>
+      <group position={[2.95, 1.3, -3.86]}>
+        <Box p={[0, 0, 0]} s={[0.95, 0.04, 0.22]} c={C.darkWood} />
+        {hackathons.map((h, i) => {
+          const x = -0.33 + i * 0.22;
+          return h.win ? (
+            <group key={h.project} position={[x, 0.02, 0]}>
+              <mesh position={[0, 0.015, 0]} castShadow>
+                <boxGeometry args={[0.09, 0.03, 0.09]} />
+                <meshStandardMaterial color="#2a2228" />
+              </mesh>
+              <mesh position={[0, 0.06, 0]}>
+                <cylinderGeometry args={[0.008, 0.012, 0.06, 10]} />
+                <meshStandardMaterial {...gold} />
+              </mesh>
+              <mesh position={[0, 0.125, 0]} castShadow>
+                <cylinderGeometry args={[0.05, 0.022, 0.08, 20]} />
+                <meshStandardMaterial {...gold} emissive="#7a5a10" emissiveIntensity={0.25} />
+              </mesh>
+              {[-1, 1].map((side) => (
+                <mesh key={side} position={[side * 0.055, 0.13, 0]} rotation={[0, 0, Math.PI / 2]}>
+                  <torusGeometry args={[0.018, 0.005, 6, 16]} />
+                  <meshStandardMaterial {...gold} />
+                </mesh>
+              ))}
+            </group>
+          ) : (
+            // medal leaning against the wall
+            <group key={h.project} position={[x, 0.02, -0.07]} rotation={[-0.12, 0, 0]}>
+              <mesh position={[0, 0.13, 0]}>
+                <boxGeometry args={[0.035, 0.1, 0.004]} />
+                <meshStandardMaterial color="#1f4a6b" />
+              </mesh>
+              <mesh position={[0, 0.055, 0.004]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+                <cylinderGeometry args={[0.035, 0.035, 0.007, 24]} />
+                <meshStandardMaterial color="#dfe3ea" metalness={0.35} roughness={0.35} emissive="#8a94a3" emissiveIntensity={0.25} />
+              </mesh>
+            </group>
+          );
+        })}
       </group>
     </Spot>
   );

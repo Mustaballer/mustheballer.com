@@ -175,6 +175,63 @@ export const projects: Project[] = [
   },
 ];
 
+export type Hackathon = {
+  project: string;
+  event: string;
+  result: string;
+  win: boolean;
+  blurb: string;
+  tags: string[];
+  devpost: string;
+  github?: string;
+};
+
+export const hackathons: Hackathon[] = [
+  {
+    project: "NCAR",
+    event: "MakeUofT 2022",
+    result: "Winner · Transport & Travel",
+    win: true,
+    blurb:
+      "Nighttime Collision Avoidance System: an affordable driving assistant that spots people on a pitch-black road with an infrared camera and a TensorFlow model, then warns the driver by projecting onto the windshield.",
+    tags: ["Raspberry Pi", "TensorFlow", "OpenCV", "Infrared camera"],
+    devpost: "https://devpost.com/software/ncar-nighttime-collision-avoidance-system",
+    github: "https://github.com/Mustaballer/NCAR",
+  },
+  {
+    project: "FocusHacks",
+    event: "NewHacks 2021",
+    result: "Winner · Most Creative Use of Twilio",
+    win: true,
+    blurb:
+      "An ML study buddy that watches for when you lose focus and emails you a nudge to get back to work.",
+    tags: ["TensorFlow", "Node.js", "Express", "Twilio SendGrid"],
+    devpost: "https://devpost.com/software/your-virtual-teacher",
+    github: "https://github.com/NEWHACKS-TEAM/FocusHacks",
+  },
+  {
+    project: "Team Jungle",
+    event: "MLH Fellowship Orientation Hackathon 2022",
+    result: "Winner",
+    win: true,
+    blurb:
+      "A modular team portfolio site driven entirely by a JSON file, with an interactive map of everywhere the team has been.",
+    tags: ["Flask", "Jinja", "Folium", "Bootstrap"],
+    devpost: "https://devpost.com/software/team-lms",
+    github: "https://github.com/MLH-Fellowship/project-team-jungle",
+  },
+  {
+    project: "CaptureCube",
+    event: "Hack the North 2025",
+    result: "Semifinalist",
+    win: false,
+    blurb: "Low-cost product ads in minutes: a dual-axis photo rig plus AI video generation.",
+    tags: ["React", "Flask", "Raspberry Pi", "Veo"],
+    devpost: "https://devpost.com/software/capturecube",
+    github: "https://github.com/PencilKnot/CaptureCube",
+  },
+];
+
 // Older projects from the original site — kept as a compact archive.
 export const archive = [
   { name: "EventNow", note: "Event booker · React, GraphQL", href: "https://github.com/Mustaballer/EVENTNOW" },

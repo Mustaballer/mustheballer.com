@@ -4,6 +4,7 @@ import {
   archive,
   education,
   experience,
+  hackathons,
   library,
   profile,
   projects,
@@ -22,6 +23,7 @@ export function Links({ compact = false }: { compact?: boolean }) {
       <li><a href={profile.resume} {...ext}>Résumé (PDF)</a></li>
       <li><a href={l.linkedin} {...ext}>LinkedIn</a></li>
       <li><a href={l.github} {...ext}>GitHub</a></li>
+      <li><a href={l.devpost} {...ext}>Devpost</a></li>
       <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
     </ul>
   );
@@ -72,7 +74,45 @@ export function Achievements() {
           </div>
         </li>
       ))}
+      {hackathons.filter((h) => h.win).map((h) => (
+        <li key={h.project}>
+          <span className="achievements__icon" aria-hidden>🥇</span>
+          <div>
+            <strong>{h.event}</strong>
+            <span>{h.result} · {h.project}</span>
+            <em>Hackathon winner</em>
+          </div>
+        </li>
+      ))}
     </ul>
+  );
+}
+
+export function Hackathons() {
+  const wins = hackathons.filter((h) => h.win).length;
+  return (
+    <div className="trophies">
+      <p className="trophies__count">
+        <strong>{wins}</strong> hackathon wins · <a href={profile.links.devpost} {...ext}>all projects on Devpost ↗</a>
+      </p>
+      <ul className="trophies__list">
+        {hackathons.map((h) => (
+          <li key={h.project} className={`trophy ${h.win ? "trophy--win" : ""}`}>
+            <span className="trophy__icon" aria-hidden>{h.win ? "🏆" : "🎖️"}</span>
+            <div>
+              <h3>{h.project}</h3>
+              <p className="trophy__result">{h.result} <span className="meta">· {h.event}</span></p>
+              <p className="trophy__blurb">{h.blurb}</p>
+              <ul className="tags">{h.tags.map((t) => <li key={t}>{t}</li>)}</ul>
+              <p className="project__links">
+                <a href={h.devpost} {...ext}>Devpost ↗</a>
+                {h.github && <a href={h.github} {...ext}>GitHub ↗</a>}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

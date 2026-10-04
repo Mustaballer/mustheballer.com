@@ -10,6 +10,7 @@ export type SpotId =
   | "eden"
   | "montecristo"
   | "diploma"
+  | "trophies"
   | "phone"
   | "character"
   | "window"
@@ -64,6 +65,11 @@ export const SPOTS: Record<SpotId, Spot> = {
     label: "Education",
     title: "Education",
     view: { pos: [2.4, 1.95, -1.9], target: [2.95, 1.95, -3.95] },
+  },
+  trophies: {
+    label: "Hackathons",
+    title: "Trophy Room",
+    view: { pos: [2.35, 1.5, -2.0], target: [2.95, 1.42, -3.9] },
   },
   phone: {
     label: "Contact",

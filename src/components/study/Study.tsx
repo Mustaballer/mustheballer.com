@@ -6,6 +6,7 @@ import {
   Contact,
   Education,
   Games,
+  Hackathons,
   Library,
   Links,
   Projects,
@@ -122,7 +123,7 @@ function StudyRoom() {
 
       <nav className="hud hud--travel" aria-label="Quick travel">
         <span className="hud__label">Quick travel</span>
-        {(["board", "monitor", "shelf", "diploma", "phone"] as SpotId[]).map((id) => (
+        {(["board", "monitor", "trophies", "shelf", "diploma", "phone"] as SpotId[]).map((id) => (
           <button key={id} type="button" className={focus === id ? "is-on" : ""} onClick={() => select(id)}>
             {SPOTS[id].label}
           </button>
@@ -159,6 +160,7 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
       </>
     ),
     diploma: <Education />,
+    trophies: <Hackathons />,
     phone: <Contact />,
     character: (
       <>

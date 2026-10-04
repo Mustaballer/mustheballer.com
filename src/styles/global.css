@@ -50,6 +50,7 @@
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
+  font-variant-numeric: lining-nums;
   margin: 0;
   background: var(--paper);
   color: var(--ink);
@@ -174,6 +175,18 @@ html[data-mode="study"] .doc { display: none; }
 .archive { margin-top: 1.5rem; color: var(--ink-soft); }
 .archive summary { cursor: pointer; font-weight: 500; }
 .archive ul { margin: 0.75rem 0 0; padding-left: 1.1rem; }
+
+/* trophy room */
+.trophies__count { margin: 0 0 1.25rem; color: var(--ink-soft); }
+.trophies__count strong { font: 600 1.6rem var(--serif); color: var(--gold); margin-right: 0.15rem; }
+.trophies__list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 1.25rem; }
+.trophy { display: flex; gap: 1rem; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.3rem; box-shadow: var(--shadow); }
+.trophy--win { border-color: color-mix(in srgb, var(--gold) 55%, var(--line)); }
+.trophy__icon { flex: none; font-size: 1.8rem; line-height: 1; }
+.trophy h3 { font-size: 1.4rem; }
+.trophy__result { margin: 0.2rem 0 0; font-weight: 600; color: var(--gold); font-size: 0.92rem; }
+.trophy__result .meta { font-weight: 400; }
+.trophy__blurb { margin: 0.5rem 0 0; color: var(--ink-soft); font-size: 0.95rem; }
 
 /* spellbook */
 .spellbook { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.25rem; }
