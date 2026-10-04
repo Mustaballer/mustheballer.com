@@ -6,7 +6,6 @@
 import { useFrame } from "@react-three/fiber";
 import { createContext, useContext, useMemo, useRef, type ReactNode } from "react";
 import * as THREE from "three";
-import anime from "../../data/generated/anime.json";
 import { experience, hackathons } from "../../data/profile";
 import { Avatar } from "./Avatar";
 import type { SpotId, Vec3 } from "./spots";
@@ -140,7 +139,7 @@ function useImage(url: string | undefined) {
     if (!url) return null;
     const t = new THREE.TextureLoader().load(url);
     t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 4;
+    t.anisotropy = 8;
     return t;
   }, [url]);
 }
@@ -442,7 +441,7 @@ function FigureShelf() {
 
       {/* Naruto: a Hidden Leaf headband propped on the shelf, cloth tails draping down */}
       <Spot id="headband">
-        <Headband position={[0.38, 2.0, -2.088]} />
+        <Headband position={[0.32, 1.795, -2.04]} />
       </Spot>
     </group>
   );
@@ -476,41 +475,37 @@ function DragonBalls({ position }: { position: Vec3 }) {
   );
 }
 
-// Naruto: a Hidden Leaf headband hung on the wall, tails hanging from the knot.
+// Naruto: a Hidden Leaf headband standing on the shelf, leaning against the wall,
+// band wrapping back toward the wall, tails lying on the shelf.
 function Headband({ position }: { position: Vec3 }) {
   const plate = useMemo(() => leafPlateTexture(), []);
   const cloth = "#22325e";
   return (
     <group position={position}>
-      {/* the band, slightly bowed */}
-      <Box p={[0, 0, 0]} s={[0.36, 0.04, 0.005]} c={cloth} rough={1} />
-      {/* metal plate with the Leaf symbol */}
-      <Box p={[0, 0, 0.005]} s={[0.12, 0.05, 0.005]} c="#c9ced6" metal={0.6} rough={0.3} />
-      <mesh position={[0, 0, 0.0081]}>
-        <planeGeometry args={[0.116, 0.047]} />
-        <meshStandardMaterial map={plate} metalness={0.45} roughness={0.35} />
-      </mesh>
-      {/* knot on the right, with two tails hanging down */}
-      <mesh position={[0.175, -0.002, 0.004]} scale={[1, 0.8, 0.6]}>
-        <sphereGeometry args={[0.014, 12, 10]} />
-        <meshStandardMaterial color={cloth} roughness={1} />
-      </mesh>
-      <Box p={[0.185, -0.06, 0.004]} s={[0.022, 0.11, 0.004]} r={[0, 0, 0.12]} c={cloth} rough={1} />
-      <Box p={[0.165, -0.07, 0.006]} s={[0.022, 0.13, 0.004]} r={[0, 0, -0.08]} c={cloth} rough={1} />
-      {/* small nail it hangs from */}
-      <mesh position={[0, 0.03, 0.002]}>
-        <sphereGeometry args={[0.004, 8, 8]} />
-        <meshStandardMaterial color="#8a8f99" metalness={0.7} roughness={0.3} />
-      </mesh>
+      <group position={[0, 0.026, 0]} rotation={[-0.22, 0, 0]}>
+        {/* band behind the plate, curving back on both sides */}
+        <Box p={[0, 0, -0.004]} s={[0.13, 0.04, 0.005]} c={cloth} rough={1} />
+        {[-1, 1].map((sx) => (
+          <Box key={sx} p={[sx * 0.078, 0, -0.022]} s={[0.055, 0.04, 0.005]} r={[0, sx * 0.95, 0]} c={cloth} rough={1} />
+        ))}
+        {/* plate + Leaf symbol */}
+        <Box p={[0, 0, 0.001]} s={[0.12, 0.05, 0.005]} c="#c9ced6" metal={0.6} rough={0.3} />
+        <mesh position={[0, 0, 0.0042]}>
+          <planeGeometry args={[0.116, 0.047]} />
+          <meshStandardMaterial map={plate} metalness={0.45} roughness={0.35} />
+        </mesh>
+      </group>
+      {/* tails lying on the shelf, trailing off to the right */}
+      <Box p={[0.12, 0.003, 0.035]} s={[0.1, 0.004, 0.02]} r={[0, -0.25, 0]} c={cloth} rough={1} />
+      <Box p={[0.115, 0.006, 0.062]} s={[0.09, 0.004, 0.02]} r={[0, -0.55, 0]} c={cloth} rough={1} />
     </group>
   );
 }
 
-// Posters: two from the MyAnimeList Hall of Fame, one game (Final Fantasy XV, cover art from Steam).
+// Posters: Mushoku Tensei (MAL Hall of Fame), Future Trunks, and one game (Final Fantasy XV, cover art from Steam).
 function Posters() {
-  const pick = (re: RegExp) => anime.hallOfFame.find((a) => re.test(a.title))?.image;
-  const a = useImage(pick(/Mushoku Tensei/) ?? anime.hallOfFame[0]?.image);
-  const b = useImage(pick(/Steins;Gate/) ?? anime.hallOfFame[1]?.image);
+  const a = useImage("/posters/mushoku-tensei-s3.jpg"); // AniList cover, 460×648
+  const b = useImage("/posters/future-trunks.jpg"); // Future Trunks (image via MyAnimeList)
   // Final Fantasy XV: Steam's wide hero art, cropped to the four bros (≈18–83% of the width)
   const ff = useImage("/posters/final-fantasy-xv-bros.jpg");
   useMemo(() => {
@@ -533,7 +528,7 @@ function Posters() {
   return (
     <>
       {poster("posterMushoku", a, [1.25, 1.95, -2.09], [0, 0, 0.02])}
-      {poster("posterSteins", b, [1.8, 1.92, -2.09], [0, 0, -0.025])}
+      {poster("posterTrunks", b, [1.8, 1.92, -2.09], [0, 0, -0.025])}
       {poster("posterFF", ff, [-2.29, 1.72, 1.84], [0, Math.PI / 2, 0.015], 0.46, 0.22)}
     </>
   );

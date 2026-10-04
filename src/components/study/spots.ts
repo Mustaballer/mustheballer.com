@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterSteins" | "posterFF" | "diploma" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterTrunks" | "posterFF" | "diploma" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -86,9 +86,9 @@ export const SPOTS: Record<SpotId, Spot> = {
     toast: "Mushoku Tensei: Jobless Reincarnation — a 10/10 on my MyAnimeList",
     view: { pos: [1.25, 1.92, -0.8], target: [1.25, 1.94, -2.09] },
   },
-  posterSteins: {
-    label: "Steins;Gate poster",
-    toast: "Steins;Gate — a 10/10 on my MyAnimeList. El Psy Kongroo.",
+  posterTrunks: {
+    label: "Future Trunks poster",
+    toast: "Future Trunks vs. Goku Black — Dragon Ball Super",
     view: { pos: [1.8, 1.9, -0.8], target: [1.8, 1.92, -2.09] },
   },
   posterFF: {
@@ -114,7 +114,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   headband: {
     label: "A Leaf headband",
     toast: "“I'm not gonna run away, I never go back on my word!” — Naruto",
-    view: { pos: [0.42, 2.02, -1.45], target: [0.4, 1.98, -2.08] },
+    view: { pos: [0.36, 1.98, -1.5], target: [0.33, 1.83, -2.03] },
   },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {
