@@ -88,7 +88,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   posterTrunks: {
     label: "Future Trunks poster",
-    toast: "Future Trunks vs. Goku Black — Dragon Ball Super",
+    toast: "Future Trunks — the warrior from a ruined future. Dragon Ball Z",
     view: { pos: [1.8, 1.9, -0.8], target: [1.8, 1.92, -2.09] },
   },
   posterFF: {
