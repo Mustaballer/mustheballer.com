@@ -15,7 +15,8 @@ function make(w: number, h: number, draw: (c: CanvasRenderingContext2D) => void)
   return tex;
 }
 
-export function monitorTexture() {
+// The monitor: a MusOS lock screen. `avatar` (once loaded) is drawn inside the rune rings.
+export function monitorTexture(avatar?: HTMLImageElement) {
   return make(1024, 590, (c) => {
     const g = c.createLinearGradient(0, 0, 1024, 590);
     g.addColorStop(0, "#0b1226");
@@ -43,9 +44,34 @@ export function monitorTexture() {
     c.fillStyle = "#fff";
     c.font = `600 64px ${SERIF}`;
     c.fillText("MusOS", 60, 120);
-    c.font = `400 22px ${SANS}`;
-    c.fillStyle = "rgba(255,255,255,0.7)";
-    c.fillText("click to log in", 62, 156);
+    // user avatar + name, like a login screen
+    const cx = 640, cy = 262, r = 78;
+    if (avatar) {
+      c.save();
+      c.beginPath();
+      c.arc(cx, cy, r, 0, Math.PI * 2);
+      c.clip();
+      c.drawImage(avatar, cx - r, cy - r, r * 2, r * 2);
+      c.restore();
+    } else {
+      c.fillStyle = "rgba(244,234,208,0.12)";
+      c.beginPath();
+      c.arc(cx, cy, r, 0, Math.PI * 2);
+      c.fill();
+    }
+    c.strokeStyle = "#c9a24a";
+    c.lineWidth = 5;
+    c.beginPath();
+    c.arc(cx, cy, r + 3, 0, Math.PI * 2);
+    c.stroke();
+    c.textAlign = "center";
+    c.fillStyle = "#f4ead0";
+    c.font = `600 30px ${SANS}`;
+    c.fillText("Mustafa", cx, cy + r + 50);
+    c.fillStyle = "rgba(255,255,255,0.6)";
+    c.font = `400 20px ${SANS}`;
+    c.fillText("click to log in", cx, cy + r + 80);
+    c.textAlign = "left";
     const icons = ["Projects", "Achievements", "Anime", "Games", "resume.pdf"];
     icons.forEach((name, i) => {
       const y = 210 + i * 70;

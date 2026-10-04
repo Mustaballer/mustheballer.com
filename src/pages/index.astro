@@ -32,8 +32,13 @@ import { profile } from "../data/profile";
     </nav>
 
     <header class="hero">
-      <p class="eyebrow">{profile.title} @ {profile.company} · {profile.location}</p>
-      <h1>{profile.name}</h1>
+      <div class="hero__id">
+        <img class="hero__photo" src={profile.photo} alt={profile.name} width="88" height="88" />
+        <div>
+          <p class="eyebrow">{profile.title} @ {profile.company} · {profile.location}</p>
+          <h1>{profile.name}</h1>
+        </div>
+      </div>
       <p class="hero__tagline">{profile.tagline}</p>
       <Links />
     </header>

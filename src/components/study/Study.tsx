@@ -299,6 +299,15 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
   const body: Partial<Record<SpotId, React.ReactNode>> = {
     character: (
       <>
+        <div className="char-card">
+          <img className="char-card__photo" src={profile.photo} alt={profile.name} width="112" height="112" />
+          <div className="char-card__info">
+            <span className="char-card__tag">Protagonist</span>
+            <strong className="char-card__name">{profile.name}</strong>
+            <span className="char-card__role">{profile.title} @ {profile.company}</span>
+            <span className="char-card__role">{profile.location}</span>
+          </div>
+        </div>
         <p className="panel__lead">{profile.tagline}</p>
         <p>
           Computer Engineering grad from the University of Toronto, now a Software Engineer at Amazon. Off the clock:

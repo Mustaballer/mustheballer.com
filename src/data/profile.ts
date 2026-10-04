@@ -17,6 +17,7 @@ export const profile = {
     steam: "https://steamcommunity.com/profiles/76561199839140332/",
   },
   resume: "/Mustafa_Abdulrahman_Resume.pdf",
+  photo: "/me.jpg",
 };
 
 export type Quest = {

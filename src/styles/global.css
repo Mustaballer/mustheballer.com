@@ -145,6 +145,15 @@ html[data-mode="study"] .doc { display: none; }
 
 .hero { padding: 5rem 0 3rem; }
 .hero h1 { font-size: clamp(2.8rem, 8vw, 5rem); }
+.hero__id { display: flex; align-items: center; gap: 1.4rem; }
+.hero__photo {
+  flex: none; width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--card); box-shadow: 0 0 0 2px var(--gold-soft), var(--shadow);
+}
+@media (max-width: 599px) {
+  .hero__id { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .hero__photo { width: 72px; height: 72px; }
+}
 .hero__tagline { font-size: 1.2rem; max-width: 40rem; color: var(--ink-soft); margin: 1rem 0 0; }
 
 .section { padding-top: 4rem; scroll-margin-top: 3rem; }

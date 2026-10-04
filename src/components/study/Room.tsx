@@ -4,9 +4,9 @@
 //   Left wall: bookshelf, nightstand (contact), window over the bed.
 //   Floor: chair + character, treasure chest (hackathons).
 import { useFrame } from "@react-three/fiber";
-import { createContext, useContext, useMemo, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
-import { experience, hackathons } from "../../data/profile";
+import { experience, hackathons, profile } from "../../data/profile";
 import { Avatar } from "./Avatar";
 import type { SpotId, Vec3 } from "./spots";
 import {
@@ -284,7 +284,13 @@ function Desk() {
 }
 
 function Battlestation() {
-  const screen = useMemo(() => monitorTexture(), []);
+  const [avatar, setAvatar] = useState<HTMLImageElement>();
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setAvatar(img);
+    img.src = profile.photo;
+  }, []);
+  const screen = useMemo(() => monitorTexture(avatar), [avatar]);
   const fan = useRef<THREE.Group>(null!);
   useFrame((_, dt) => fan.current.children.forEach((f) => (f.rotation.z += dt * 0.6)));
   return (
