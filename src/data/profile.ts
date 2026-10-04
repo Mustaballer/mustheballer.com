@@ -89,7 +89,7 @@ export const experience: Quest[] = [
     location: "Toronto, ON",
     start: "May 2023",
     end: "Aug 2023",
-    rank: "B",
+    rank: "A",
     achievement: "Automaton Apprentice",
     highlight: "Manual task input cut by 50% with OpenAdapt",
     bullets: [
