@@ -247,7 +247,7 @@ export type Rank = (typeof RANKS)[number];
 export const skills: { school: string; color: string; spells: { name: string; rank: Rank }[] }[] = [
   {
     school: "Languages",
-    color: "#b3262e",
+    color: "#1c3570",
     spells: [
       { name: "TypeScript / JavaScript", rank: "Saint" },
       { name: "Python", rank: "Saint" },
@@ -259,7 +259,7 @@ export const skills: { school: string; color: string; spells: { name: string; ra
   },
   {
     school: "Frameworks",
-    color: "#2f5d8a",
+    color: "#c9a24a",
     spells: [
       { name: "React", rank: "Saint" },
       { name: "TanStack Query", rank: "Advanced" },
@@ -273,7 +273,7 @@ export const skills: { school: string; color: string; spells: { name: string; ra
   },
   {
     school: "AI & Agents",
-    color: "#6b4fa3",
+    color: "#3d5a99",
     spells: [
       { name: "Amazon Bedrock", rank: "Saint" },
       { name: "Strands Agents", rank: "Advanced" },
@@ -284,7 +284,7 @@ export const skills: { school: string; color: string; spells: { name: string; ra
   },
   {
     school: "Cloud & Tools",
-    color: "#a8741a",
+    color: "#a17a2b",
     spells: [
       { name: "AWS (S3, IAM, Lambda, EC2, CloudWatch)", rank: "Saint" },
       { name: "AWS CDK", rank: "Advanced" },

@@ -1,16 +1,17 @@
 /* ------------------------------------------------------------------ tokens */
+/* Navy + gold, the same palette as the 3D study (Monte Cristo navy, treasure gold, parchment). */
 :root {
-  --paper: #f7f3ea;
-  --paper-2: #efe8da;
+  --paper: #f6f2e8;
+  --paper-2: #ece5d5;
   --card: #fffdf8;
-  --ink: #1f1b17;
-  --ink-soft: #5d554b;
-  --line: #ddd2bf;
-  --accent: #c8102e; /* Radeon red */
-  --accent-ink: #fff;
-  --gold: #a8803f;
-  --storm: #5f9fe8;
-  --shadow: 0 1px 2px rgb(60 40 20 / 0.06), 0 8px 24px rgb(60 40 20 / 0.06);
+  --ink: #101a33;
+  --ink-soft: #4b5570;
+  --line: #dbd2bf;
+  --accent: #1c3570; /* navy-blue links + buttons on light paper */
+  --accent-ink: #f6f2e8;
+  --gold: #a17a2b; /* text-safe gold on light paper */
+  --gold-soft: #c9a24a;
+  --shadow: 0 1px 2px rgb(16 26 51 / 0.06), 0 8px 24px rgb(16 26 51 / 0.07);
   --serif: "Cormorant Garamond", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --radius: 14px;
@@ -18,30 +19,32 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #141114;
-    --paper-2: #1c181c;
-    --card: #1f1a1f;
-    --ink: #eee7da;
-    --ink-soft: #a89f92;
-    --line: #342d33;
-    --accent: #ef3e4a;
-    --gold: #d4ab68;
-    --storm: #8cc4ff;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.3);
+    --paper: #0e1528;
+    --paper-2: #151f38;
+    --card: #17223f;
+    --ink: #efe7d4;
+    --ink-soft: #a9b1c7;
+    --line: #27345a;
+    --accent: #e2bd62; /* gold leads in the dark */
+    --accent-ink: #101a33;
+    --gold: #e2bd62;
+    --gold-soft: #b8933f;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #141114;
-  --paper-2: #1c181c;
-  --card: #1f1a1f;
-  --ink: #eee7da;
-  --ink-soft: #a89f92;
-  --line: #342d33;
-  --accent: #ef3e4a;
-  --gold: #d4ab68;
-  --storm: #8cc4ff;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.3);
+  --paper: #0e1528;
+  --paper-2: #151f38;
+  --card: #17223f;
+  --ink: #efe7d4;
+  --ink-soft: #a9b1c7;
+  --line: #27345a;
+  --accent: #e2bd62; /* gold leads in the dark */
+  --accent-ink: #101a33;
+  --gold: #e2bd62;
+  --gold-soft: #b8933f;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
   color-scheme: dark;
 }
 
@@ -96,7 +99,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; mar
   margin-left: 0.5rem;
   vertical-align: 1px;
 }
-.pill--live { border-color: var(--accent); color: var(--accent); }
+.pill--live { border-color: var(--gold-soft); color: var(--gold); background: color-mix(in srgb, var(--gold-soft) 12%, transparent); }
 
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.4rem; box-shadow: var(--shadow); }
 
@@ -113,7 +116,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; mar
 
 .bullets { margin: 0.75rem 0 0; padding-left: 1.1rem; }
 .bullets li { margin: 0.35rem 0; }
-.bullets li::marker { color: var(--accent); }
+.bullets li::marker { color: var(--gold-soft); }
 
 .sub { font-size: 1.5rem; margin: 2.5rem 0 1rem; }
 
@@ -129,7 +132,7 @@ html[data-mode="study"] .doc { display: none; }
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
-.doc-nav__brand { font: 600 1.4rem var(--serif); text-decoration: none; color: var(--accent); }
+.doc-nav__brand { font: italic 900 1.2rem var(--sans); text-decoration: none; color: var(--paper); background: var(--ink); padding: 0.3rem 0.8rem; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); box-shadow: inset -4px 0 0 var(--gold-soft); }
 .doc-nav ul { list-style: none; display: flex; gap: 1.1rem; padding: 0; margin: 0; flex: 1; }
 .doc-nav ul a { text-decoration: none; font-size: 0.9rem; color: var(--ink-soft); }
 .doc-nav ul a:hover { color: var(--ink); }
@@ -152,7 +155,7 @@ html[data-mode="study"] .doc { display: none; }
 /* quest log */
 .quests { display: grid; gap: 1.25rem; }
 .quest { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem 1.5rem; box-shadow: var(--shadow); }
-.quest--active { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.quest--active { border-color: var(--gold-soft); box-shadow: 6px 6px 0 color-mix(in srgb, var(--gold-soft) 35%, transparent); }
 .quest__head { display: flex; gap: 1rem; align-items: flex-start; }
 .quest__head h3 { font-size: 1.55rem; }
 .quest__head .at { color: var(--ink-soft); font-weight: 500; }
@@ -161,7 +164,7 @@ html[data-mode="study"] .doc { display: none; }
   font: 700 1.3rem var(--serif); border-radius: 50%;
   border: 2px solid var(--gold); color: var(--gold);
 }
-.quest__rank.rank-S { background: var(--accent); border-color: var(--accent); color: #fff; }
+.quest__rank.rank-S { background: var(--gold-soft); border-color: var(--gold-soft); color: #101a33; }
 .quest__highlight { margin: 0.9rem 0 0; font-weight: 600; }
 
 /* projects */
@@ -265,6 +268,9 @@ html[data-mode="study"] .doc { display: none; }
 .achievements .is-active { border-color: var(--gold); }
 
 /* footer */
+.study-invite { margin: 2rem 0 0; color: var(--ink-soft); font-size: 0.95rem; }
+.link-btn { font: inherit; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 899px) { .study-invite { display: none; } }
 .footer h2 { font-size: 2.4rem; margin-bottom: 0.75rem; }
 .contact p { max-width: 38rem; color: var(--ink-soft); margin: 0; }
 .signoff { margin: 3rem 0 0; font: italic 600 1.25rem var(--serif); color: var(--gold); }

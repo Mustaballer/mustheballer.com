@@ -2,18 +2,13 @@
 import Base from "../layouts/Base.astro";
 import Study from "../components/study/Study";
 import {
-  Achievements,
-  Anime,
   Contact,
   Education,
-  Games,
   Hackathons,
-  Library,
   Links,
   Projects,
   QuestLog,
   Spellbook,
-  Training,
 } from "../components/sections";
 import { profile } from "../data/profile";
 ---
@@ -28,7 +23,6 @@ import { profile } from "../data/profile";
         <li><a href="#projects">Projects</a></li>
         <li><a href="#hackathons">Hackathons</a></li>
         <li><a href="#skills">Skills</a></li>
-        <li><a href="#off-the-clock">Off the clock</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="doc-nav__actions">
@@ -75,26 +69,13 @@ import { profile } from "../data/profile";
       <Education />
     </section>
 
-    <section id="off-the-clock" class="section">
-      <header class="section__head">
-        <h2>Off the clock</h2>
-        <p class="epigraph">Hoops, fantasy, anime, and a white battlestation.</p>
-      </header>
-      <h3 class="sub">Training Arc</h3>
-      <Training />
-      <h3 class="sub">The Library</h3>
-      <Library />
-      <h3 class="sub">Anime</h3>
-      <Anime />
-      <h3 class="sub">Games</h3>
-      <Games />
-      <h3 class="sub">Achievements</h3>
-      <Achievements />
-    </section>
-
     <footer id="contact" class="section footer">
       <h2>Send a raven</h2>
       <Contact />
+      <p class="study-invite">
+        The personal side — anime, fantasy, hoops and a white AMD battlestation — lives in the 3D study.
+        <button type="button" class="link-btn" data-set-mode="study">Enter the study →</button>
+      </p>
       <p class="signoff">“Wait and hope.” — <cite>The Count of Monte Cristo</cite></p>
     </footer>
   </main>
