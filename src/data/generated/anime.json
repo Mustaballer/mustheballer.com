@@ -1,16 +1,16 @@
 {
   "profileUrl": "https://myanimelist.net/profile/mus_theballer",
-  "fetchedAt": "2026-10-04T03:02:10.563Z",
+  "fetchedAt": "2026-10-04T05:52:45.943Z",
   "stats": {
-    "total": 418,
-    "completed": 292,
+    "total": 419,
+    "completed": 293,
     "watching": 4,
-    "episodes": 7246,
+    "episodes": 7271,
     "meanScore": 8.2,
     "topGenres": [
       {
         "name": "Action",
-        "count": 113
+        "count": 114
       },
       {
         "name": "Drama",
@@ -21,16 +21,16 @@
         "count": 91
       },
       {
+        "name": "Fantasy",
+        "count": 70
+      },
+      {
         "name": "Romance",
         "count": 70
       },
       {
-        "name": "Fantasy",
-        "count": 69
-      },
-      {
         "name": "Adventure",
-        "count": 57
+        "count": 58
       }
     ]
   },
