@@ -164,7 +164,7 @@ function Outlines() {
   const gl = useThree((s) => s.gl);
   const size = useThree((s) => s.size);
   const effect = useMemo(
-    () => new OutlineEffect(gl, { defaultThickness: 0.0035, defaultColor: [0.07, 0.06, 0.1], defaultAlpha: 1 }),
+    () => new OutlineEffect(gl, { defaultThickness: 0.00175, defaultColor: [0.07, 0.06, 0.1], defaultAlpha: 1 }),
     [gl],
   );
   const tagged = useRef(new WeakSet<THREE.Material>());
@@ -177,7 +177,7 @@ function Outlines() {
         tagged.current.add(m);
         const thin = mesh.geometry?.type === "PlaneGeometry" || mesh.geometry?.type === "CircleGeometry" || mesh.geometry?.type === "RingGeometry";
         if (m.transparent || m instanceof THREE.MeshBasicMaterial || thin) m.userData.outlineParameters = { visible: false };
-        else if (size.width < 700) m.userData.outlineParameters = { thickness: 0.0045 }; // phones: a touch bolder so it survives downscaling
+        else if (size.width < 700) m.userData.outlineParameters = { thickness: 0.00225 }; // phones: a touch bolder so it survives downscaling
       }
     });
     effect.render(scene, camera);
