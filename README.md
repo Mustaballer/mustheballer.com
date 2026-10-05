@@ -18,3 +18,11 @@ npm install
 npm run dev        # http://localhost:4321
 npm run build      # fetch data + build to dist/
 ```
+
+## 3D assets
+- Character: built and animated in Blender from `art/character/build.py`. Rebuild with
+  `blender -b -P art/character/build.py -- public/models/mustafa.glb`
+- Desk lamp and speaker: [Kenney Furniture Kit](https://kenney.nl/assets/furniture-kit) (CC0)
+
+## Credits
+Book covers via Open Library; anime art via MyAnimeList and AniList; game art via Steam.

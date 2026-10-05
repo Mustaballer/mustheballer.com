@@ -3,11 +3,14 @@
 //   Back wall: quest board, desk + battlestation, figure shelf, posters.
 //   Left wall: bookshelf, nightstand (contact), window over the bed.
 //   Floor: chair + character, treasure chest (hackathons).
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { experience, hackathons, profile } from "../../data/profile";
 import { Avatar } from "./Avatar";
+import { toonRamp, toToon } from "./toon";
 import type { SpotId, Vec3 } from "./spots";
 import {
   basketballTexture,
@@ -24,6 +27,8 @@ import {
   volleyballTexture,
   windowTexture,
 } from "./textures";
+
+const RAMP = toonRamp();
 
 const C = {
   wall: "#ece4d6",
@@ -107,14 +112,24 @@ type BoxProps = {
   shadow?: boolean;
   opacity?: number;
 };
-function Box({ p, s, c, r, rough = 0.7, metal = 0, e, ei = 1, shadow = true, opacity }: BoxProps) {
+// Rounded boxes read as modelled furniture under toon shading; geometries are shared per size.
+const roundedCache = new Map<string, THREE.BufferGeometry>();
+function roundedBox([w, h, d]: Vec3) {
+  const key = `${w}|${h}|${d}`;
+  let g = roundedCache.get(key);
+  if (!g) {
+    const r = Math.min(0.018, Math.min(w, h, d) * 0.3);
+    g = r < 0.002 ? new THREE.BoxGeometry(w, h, d) : new RoundedBoxGeometry(w, h, d, 2, r);
+    roundedCache.set(key, g);
+  }
+  return g;
+}
+
+function Box({ p, s, c, r, e, ei = 1, shadow = true, opacity }: BoxProps) {
   return (
-    <mesh position={p} rotation={r} castShadow={shadow} receiveShadow>
-      <boxGeometry args={s} />
-      <meshStandardMaterial
+    <mesh position={p} rotation={r} castShadow={shadow} receiveShadow geometry={roundedBox(s)}>
+      <meshToonMaterial gradientMap={RAMP}
         color={c}
-        roughness={rough}
-        metalness={metal}
         emissive={e ?? "#000"}
         emissiveIntensity={e ? ei : 0}
         transparent={opacity !== undefined}
@@ -128,7 +143,7 @@ function Plane({ p, s, r, map }: { p: Vec3; s: [number, number]; r?: Vec3; map: 
   return (
     <mesh position={p} rotation={r}>
       <planeGeometry args={s} />
-      <meshStandardMaterial map={map} roughness={0.9} />
+      <meshToonMaterial gradientMap={RAMP} map={map} />
     </mesh>
   );
 }
@@ -158,7 +173,7 @@ function Candle({ p, night, h = 0.13 }: { p: Vec3; night: boolean; h?: number })
     <group position={p}>
       <mesh castShadow position={[0, h / 2, 0]}>
         <cylinderGeometry args={[0.03, 0.033, h, 16]} />
-        <meshStandardMaterial color="#f3ead8" roughness={0.6} />
+        <meshToonMaterial gradientMap={RAMP} color="#f3ead8" />
       </mesh>
       <mesh ref={flame} position={[0, h + 0.025, 0]}>
         <coneGeometry args={[0.012, 0.045, 10]} />
@@ -205,6 +220,7 @@ export function Room({
       <Window night={night} chateau={chateau} />
       <TreasureChest />
       <Clutter />
+      <Dust night={night} />
       <SportsCorner />
     </SpotCtx.Provider>
   );
@@ -258,11 +274,11 @@ function Rug() {
     <group position={[0.55, 0.004, -0.75]}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <circleGeometry args={[0.95, 48]} />
-        <meshStandardMaterial color="#5b1d24" roughness={1} />
+        <meshToonMaterial gradientMap={RAMP} color="#5b1d24" />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]} receiveShadow>
         <ringGeometry args={[0.76, 0.82, 48]} />
-        <meshStandardMaterial color="#c9a46a" roughness={1} />
+        <meshToonMaterial gradientMap={RAMP} color="#c9a46a" />
       </mesh>
     </group>
   );
@@ -316,7 +332,7 @@ function Battlestation() {
           <Box p={[0, 0, 0.42]} s={[0.44, 0.9, 0.02]} c={C.offWhite} rough={0.35} opacity={0.35} />
           <mesh position={[0.215, 0, 0]}>
             <boxGeometry args={[0.01, 0.88, 0.84]} />
-            <meshStandardMaterial color="#d6e6f0" transparent opacity={0.12} roughness={0.05} metalness={0.2} />
+            <meshToonMaterial gradientMap={RAMP} color="#d6e6f0" transparent opacity={0.12} />
           </mesh>
           <Box p={[-0.19, 0.05, -0.02]} s={[0.01, 0.7, 0.62]} c="#e8e8e8" />
           {/* white ASRock RX 9070 XT: white shroud, silver backplate, light strip, three fans underneath */}
@@ -328,14 +344,14 @@ function Battlestation() {
             {[-0.21, 0, 0.21].map((z) => (
               <mesh key={z} position={[0, -0.061, z]} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[0.085, 0.008, 6, 28]} />
-                <meshStandardMaterial color="#e6e6e3" emissive="#ffffff" emissiveIntensity={0.5} />
+                <meshToonMaterial gradientMap={RAMP} color="#e6e6e3" emissive="#ffffff" emissiveIntensity={0.5} />
               </mesh>
             ))}
           </group>
           {/* Ryzen 9 7900X under an AIO pump */}
           <mesh position={[-0.13, 0.17, -0.06]} rotation={[0, 0, Math.PI / 2]}>
             <cylinderGeometry args={[0.07, 0.07, 0.06, 32]} />
-            <meshStandardMaterial color="#f0f0f0" emissive={C.red} emissiveIntensity={0.6} />
+            <meshToonMaterial gradientMap={RAMP} color="#f0f0f0" emissive={C.red} emissiveIntensity={0.6} />
           </mesh>
           {[0, 1].map((i) => (
             <Box key={i} p={[-0.15, 0.2, 0.1 + i * 0.04]} s={[0.06, 0.14, 0.012]} c="#f4f4f4" e="#ff6070" ei={0.8} shadow={false} />
@@ -344,7 +360,7 @@ function Battlestation() {
             {[-0.25, 0, 0.25].map((y) => (
               <mesh key={y} position={[0, y, 0.395]}>
                 <torusGeometry args={[0.1, 0.012, 8, 32]} />
-                <meshStandardMaterial color="#fff" emissive="#ff4a5a" emissiveIntensity={1.8} toneMapped={false} />
+                <meshToonMaterial gradientMap={RAMP} color="#fff" emissive="#ff4a5a" emissiveIntensity={1.8} toneMapped={false} />
               </mesh>
             ))}
           </group>
@@ -357,14 +373,11 @@ function Battlestation() {
       <Box p={[0.45, 0.796, -1.5]} s={[0.75, 0.004, 0.21]} c="#ddd" e={C.red} ei={0.25} shadow={false} />
       <mesh position={[1.0, 0.78, -1.48]} scale={[1, 0.5, 1.5]} castShadow>
         <sphereGeometry args={[0.035, 16, 12]} />
-        <meshStandardMaterial color={C.white} roughness={0.4} />
+        <meshToonMaterial gradientMap={RAMP} color={C.white} />
       </mesh>
-      {/* speaker */}
-      <Box p={[1.2, 0.88, -1.95]} s={[0.13, 0.22, 0.14]} c={C.white} rough={0.4} />
-      <mesh position={[1.2, 0.86, -1.879]}>
-        <circleGeometry args={[0.04, 20]} />
-        <meshStandardMaterial color="#333" />
-      </mesh>
+      {/* speaker (Kenney Furniture Kit, CC0) */}
+      <KenneyModel url="/models/kenney/speakerSmall.glb" scale={0.82} position={[1.14, 0.765, -2.0]}
+        recolor={{ wood: "#f4f2ee", metalMedium: "#3a3a40" }} />
     </group>
   );
 }
@@ -383,7 +396,7 @@ function DeskItems({ night }: { night: boolean }) {
           {cover && (
             <mesh position={[0, 0.028, 0]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.2, 0.3]} />
-              <meshStandardMaterial map={cover} roughness={0.7} />
+              <meshToonMaterial gradientMap={RAMP} map={cover} />
             </mesh>
           )}
         </group>
@@ -398,19 +411,15 @@ function DeskItems({ night }: { night: boolean }) {
         </group>
       </Spot>
 
-      {/* desk lamp */}
+      {/* desk lamp (Kenney Furniture Kit, CC0) */}
       <group position={[1.55, 0.765, -1.98]}>
-        <mesh position={[0, 0.015, 0]}>
-          <cylinderGeometry args={[0.07, 0.08, 0.03, 20]} />
-          <meshStandardMaterial color={C.white} />
-        </mesh>
-        <Box p={[0, 0.2, 0]} s={[0.02, 0.36, 0.02]} c={C.white} />
-        <mesh position={[0, 0.38, 0.06]} rotation={[0.6, 0, 0]}>
-          <coneGeometry args={[0.08, 0.12, 20, 1, true]} />
-          <meshStandardMaterial color={C.white} side={THREE.DoubleSide} emissive="#ffd9a0" emissiveIntensity={night ? 0.5 : 0.1} />
-        </mesh>
-        <pointLight position={[0, 0.3, 0.12]} color="#ffc98a" intensity={night ? 1.3 : 0.3} distance={2} decay={1.8} />
+        <KenneyModel url="/models/kenney/lampSquareTable.glb" scale={1.45} position={[-0.087, 0, -0.087]}
+          recolor={{ lamp: "#fff3dc", metal: "#f4f2ee" }} glow={{ lamp: night ? 0.55 : 0.12 }} />
+        <pointLight position={[0, 0.34, 0.12]} color="#ffc98a" intensity={night ? 1.3 : 0.3} distance={2} decay={1.8} />
       </group>
+
+      {/* coffee mug with steam */}
+      <Mug position={[1.08, 0.765, -1.72]} />
 
     </group>
   );
@@ -440,7 +449,7 @@ function FigureShelf() {
           <Box p={[0.06, 0.128, 0.02]} s={[0.035, 0.012, 0.065]} c="#c0c4cc" metal={0.5} rough={0.3} r={[0, 0.4, 0]} />
           <mesh position={[0.1, 0.1, -0.03]} rotation={[0, 0, 0.6]}>
             <torusGeometry args={[0.03, 0.002, 4, 16, Math.PI]} />
-            <meshStandardMaterial color="#222" />
+            <meshToonMaterial gradientMap={RAMP} color="#222" />
           </mesh>
         </group>
       </Spot>
@@ -469,7 +478,7 @@ function DragonBalls({ position }: { position: Vec3 }) {
         <group key={i} position={p} rotation={[-0.25, 0, 0]}>
           <mesh castShadow>
             <sphereGeometry args={[R, 28, 20]} />
-            <meshStandardMaterial color="#f7951e" emissive="#ff8a00" emissiveIntensity={0.08} roughness={0.25} />
+            <meshToonMaterial gradientMap={RAMP} color="#f7951e" emissive="#ff8a00" emissiveIntensity={0.08} />
           </mesh>
           <mesh position={[0, 0, R + 0.0004]} renderOrder={2}>
             <circleGeometry args={[R * 0.82, 24]} />
@@ -498,7 +507,7 @@ function Headband({ position }: { position: Vec3 }) {
         <Box p={[0, 0, 0.001]} s={[0.12, 0.05, 0.005]} c="#c9ced6" metal={0.6} rough={0.3} />
         <mesh position={[0, 0, 0.0042]}>
           <planeGeometry args={[0.116, 0.047]} />
-          <meshStandardMaterial map={plate} metalness={0.45} roughness={0.35} />
+          <meshToonMaterial gradientMap={RAMP} map={plate} />
         </mesh>
       </group>
       {/* tails lying on the shelf, trailing off to the right */}
@@ -526,7 +535,7 @@ function Posters() {
         <Box p={[0, 0, 0]} s={[w + 0.03, h + 0.04, 0.015]} c="#111" shadow={false} />
         <mesh position={[0, 0, 0.009]}>
           <planeGeometry args={[w, h]} />
-          <meshStandardMaterial map={t} emissiveMap={t} emissive="#ffffff" emissiveIntensity={0.45} roughness={0.9} />
+          <meshToonMaterial gradientMap={RAMP} map={t} emissiveMap={t} emissive="#ffffff" emissiveIntensity={0.45} />
         </mesh>
       </group>
       </Spot>
@@ -549,22 +558,22 @@ function Character() {
     swivel.current.rotation.y = THREE.MathUtils.lerp(swivel.current.rotation.y, look ? -1.85 : 0, 1 - Math.exp(-dt * 4));
   });
   return (
-    <group position={[0.5, 0, -0.9]}>
+    <group position={[0.5, 0, -1.03]}>
       <group ref={swivel}>
       {/* black office chair: mesh back, padded seat, armrests, 5-star base on casters */}
-      <Box p={[0, 0.5, 0]} s={[0.5, 0.07, 0.48]} c="#1e1e22" rough={0.85} />
-      <Box p={[0, 0.88, 0.25]} s={[0.44, 0.62, 0.05]} c="#232327" rough={0.9} r={[0.12, 0, 0]} />
-      <Box p={[0, 0.88, 0.277]} s={[0.4, 0.56, 0.008]} c="#2e2e34" rough={1} r={[0.12, 0, 0]} shadow={false} />
-      <Box p={[0, 0.58, 0.22]} s={[0.04, 0.16, 0.03]} c="#141416" metal={0.4} rough={0.5} />
+      <Box p={[0, 0.413, 0]} s={[0.5, 0.07, 0.48]} c="#1e1e22" rough={0.85} />
+      <Box p={[0, 0.793, 0.25]} s={[0.44, 0.62, 0.05]} c="#232327" rough={0.9} r={[0.12, 0, 0]} />
+      <Box p={[0, 0.793, 0.277]} s={[0.4, 0.56, 0.008]} c="#2e2e34" rough={1} r={[0.12, 0, 0]} shadow={false} />
+      <Box p={[0, 0.493, 0.22]} s={[0.04, 0.16, 0.03]} c="#141416" metal={0.4} rough={0.5} />
       {[-1, 1].map((sx) => (
         <group key={sx}>
-          <Box p={[sx * 0.26, 0.6, 0.02]} s={[0.03, 0.14, 0.03]} c="#141416" metal={0.4} rough={0.5} />
-          <Box p={[sx * 0.26, 0.68, 0.0]} s={[0.06, 0.025, 0.24]} c="#1a1a1d" rough={0.8} />
+          <Box p={[sx * 0.26, 0.513, 0.02]} s={[0.03, 0.14, 0.03]} c="#141416" metal={0.4} rough={0.5} />
+          <Box p={[sx * 0.26, 0.593, 0.0]} s={[0.06, 0.025, 0.24]} c="#1a1a1d" rough={0.8} />
         </group>
       ))}
-      <mesh position={[0, 0.27, 0]} castShadow>
-        <cylinderGeometry args={[0.025, 0.03, 0.42, 12]} />
-        <meshStandardMaterial color="#141416" metalness={0.6} roughness={0.35} />
+      <mesh position={[0, 0.23, 0]} castShadow>
+        <cylinderGeometry args={[0.025, 0.03, 0.34, 12]} />
+        <meshToonMaterial gradientMap={RAMP} color="#141416" />
       </mesh>
       {Array.from({ length: 5 }, (_, i) => {
         const ang = (i / 5) * Math.PI * 2;
@@ -573,7 +582,7 @@ function Character() {
             <Box p={[0.15, 0.06, 0]} s={[0.3, 0.03, 0.04]} c="#141416" metal={0.5} rough={0.4} />
             <mesh position={[0.29, 0.025, 0]}>
               <sphereGeometry args={[0.025, 10, 8]} />
-              <meshStandardMaterial color="#0e0e10" roughness={0.6} />
+              <meshToonMaterial gradientMap={RAMP} color="#0e0e10" />
             </mesh>
           </group>
         );
@@ -616,7 +625,7 @@ function QuestBoard() {
               <Plane p={[0, 0, 0]} s={[0.24, 0.31]} map={n.tex} />
               <mesh position={[0, 0.13, 0.01]}>
                 <sphereGeometry args={[0.012, 10, 10]} />
-                <meshStandardMaterial color={n.active ? C.red : "#b8902f"} metalness={0.3} roughness={0.4} />
+                <meshToonMaterial gradientMap={RAMP} color={n.active ? C.red : "#b8902f"} />
               </mesh>
             </group>
           );
@@ -677,7 +686,7 @@ function Bookshelf({ night }: { night: boolean }) {
       <Spot id="crystal">
         <mesh position={[-2.1, 2.1, -1.85]}>
           <octahedronGeometry args={[0.07]} />
-          <meshStandardMaterial color="#ff8a8a" emissive="#e0313c" emissiveIntensity={1.4} toneMapped={false} />
+          <meshToonMaterial gradientMap={RAMP} color="#ff8a8a" emissive="#e0313c" emissiveIntensity={1.4} toneMapped={false} />
         </mesh>
         <pointLight position={[-2.0, 2.2, -1.85]} color="#ff4a4a" intensity={0.4} distance={1.2} decay={2} />
       </Spot>
@@ -700,12 +709,12 @@ function Nightstand({ night }: { night: boolean }) {
             <Box p={[0, 0, 0]} s={[0.24, 0.165, 0.006]} c="#efe5cf" rough={0.9} />
             <mesh position={[0, 0, 0.0035]}>
               <planeGeometry args={[0.24, 0.165]} />
-              <meshStandardMaterial map={envelope} roughness={0.9} />
+              <meshToonMaterial gradientMap={RAMP} map={envelope} />
             </mesh>
             {/* red wax seal where the flap meets */}
             <mesh position={[0, -0.005, 0.006]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.022, 0.022, 0.006, 20]} />
-              <meshStandardMaterial color="#9b1b22" roughness={0.5} />
+              <meshToonMaterial gradientMap={RAMP} color="#9b1b22" />
             </mesh>
           </group>
         </group>
@@ -716,7 +725,7 @@ function Nightstand({ night }: { night: boolean }) {
         {eden && (
           <mesh position={[0, 0.0185, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[0.15, 0.22]} />
-            <meshStandardMaterial map={eden} roughness={0.8} />
+            <meshToonMaterial gradientMap={RAMP} map={eden} />
           </mesh>
         )}
       </group>
@@ -755,7 +764,7 @@ function Bed({ night }: { night: boolean }) {
       {/* tartan blanket with the sheet folded back over it at the top */}
       <mesh position={[0.02, 0.42, 0.35]} castShadow receiveShadow>
         <boxGeometry args={[1.26, 0.04, 1.42]} />
-        <meshStandardMaterial map={blanket} roughness={1} />
+        <meshToonMaterial gradientMap={RAMP} map={blanket} />
       </mesh>
       <Box p={[0.02, 0.43, -0.36]} s={[1.28, 0.05, 0.1]} c="#f3ede0" rough={1} />
       {/* pillows */}
@@ -767,39 +776,39 @@ function Bed({ night }: { night: boolean }) {
         <group position={[0.38, 0.44, -0.45]} rotation={[0, 0.9, 0]}>
           <mesh position={[0, 0.08, 0]} scale={[1, 0.9, 1.2]} castShadow>
             <sphereGeometry args={[0.08, 20, 16]} />
-            <meshStandardMaterial color="#f2c230" roughness={0.95} />
+            <meshToonMaterial gradientMap={RAMP} color="#f2c230" />
           </mesh>
           <mesh position={[0, 0.19, 0.06]} castShadow>
             <sphereGeometry args={[0.055, 20, 16]} />
-            <meshStandardMaterial color="#f2c230" roughness={0.95} />
+            <meshToonMaterial gradientMap={RAMP} color="#f2c230" />
           </mesh>
           <mesh position={[0, 0.185, 0.12]} rotation={[Math.PI / 2, 0, 0]}>
             <coneGeometry args={[0.018, 0.05, 10]} />
-            <meshStandardMaterial color="#e08a2a" roughness={0.8} />
+            <meshToonMaterial gradientMap={RAMP} color="#e08a2a" />
           </mesh>
           {[-0.022, 0.022].map((x) => (
             <mesh key={x} position={[x, 0.205, 0.105]}>
               <sphereGeometry args={[0.008, 8, 8]} />
-              <meshStandardMaterial color="#1a1412" />
+              <meshToonMaterial gradientMap={RAMP} color="#1a1412" />
             </mesh>
           ))}
           {/* crest */}
           {[-0.2, 0.15, 0.45].map((rz, i) => (
             <mesh key={i} position={[0, 0.25, 0.03 - i * 0.02]} rotation={[-0.6, 0, rz]}>
               <coneGeometry args={[0.012, 0.06, 6]} />
-              <meshStandardMaterial color="#f2c230" roughness={0.95} />
+              <meshToonMaterial gradientMap={RAMP} color="#f2c230" />
             </mesh>
           ))}
           {/* wings + tail */}
           {[-1, 1].map((sx) => (
             <mesh key={sx} position={[sx * 0.075, 0.09, -0.01]} rotation={[0.3, 0, sx * 0.5]} scale={[0.4, 1, 1]}>
               <sphereGeometry args={[0.045, 12, 10]} />
-              <meshStandardMaterial color="#e6b42a" roughness={0.95} />
+              <meshToonMaterial gradientMap={RAMP} color="#e6b42a" />
             </mesh>
           ))}
           <mesh position={[0, 0.1, -0.1]} rotation={[-1.1, 0, 0]}>
             <coneGeometry args={[0.03, 0.07, 8]} />
-            <meshStandardMaterial color="#e6b42a" roughness={0.95} />
+            <meshToonMaterial gradientMap={RAMP} color="#e6b42a" />
           </mesh>
         </group>
       </Spot>
@@ -810,7 +819,7 @@ function Bed({ night }: { night: boolean }) {
         {[-1, 1].map((sx) => (
           <mesh key={sx} position={[sx * 0.065, -0.002, 0.04]} rotation={[Math.PI / 2 - 0.3, 0, sx * 0.25]}>
             <capsuleGeometry args={[0.022, 0.04, 6, 10]} />
-            <meshStandardMaterial color="#f4f4f2" roughness={0.4} />
+            <meshToonMaterial gradientMap={RAMP} color="#f4f4f2" />
           </mesh>
         ))}
         <Box p={[0, 0.014, -0.005]} s={[0.07, 0.004, 0.045]} c="#1b1b20" rough={0.3} shadow={false} />
@@ -821,7 +830,7 @@ function Bed({ night }: { night: boolean }) {
       <Box p={[-0.42, 0.448, -0.48]} s={[0.075, 0.009, 0.15]} c="#1c1b1f" rough={0.3} r={[0, 0.3, 0]} />
       <mesh position={[-0.47, 0.446, -0.6]} rotation={[Math.PI / 2, 0, 0.6]}>
         <torusGeometry args={[0.05, 0.003, 4, 16, Math.PI]} />
-        <meshStandardMaterial color="#f4f4f2" />
+        <meshToonMaterial gradientMap={RAMP} color="#f4f4f2" />
       </mesh>
 
       {/* Slam Dunk, a small stack with volume 1 on top */}
@@ -835,7 +844,7 @@ function Bed({ night }: { night: boolean }) {
             {slamDunk && (
               <mesh position={[0, 0.0105, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 <planeGeometry args={[0.12, 0.18]} />
-                <meshStandardMaterial map={slamDunk} roughness={0.8} />
+                <meshToonMaterial gradientMap={RAMP} map={slamDunk} />
               </mesh>
             )}
           </group>
@@ -930,7 +939,7 @@ function TreasureChest() {
     loot.current.position.y = THREE.MathUtils.lerp(loot.current.position.y, open ? 0.2 : 0.02, k);
     glow.current.intensity = THREE.MathUtils.lerp(glow.current.intensity, open ? 1.6 : 0, k);
   });
-  const gold = { color: "#d8a93b", metalness: 0.75, roughness: 0.28 };
+  const gold = { color: "#d8a93b" };
   const W = 0.7, H = 0.36, D = 0.44;
   return (
     <Spot id="chest">
@@ -945,7 +954,7 @@ function TreasureChest() {
         <group ref={loot} position={[0, 0.02, 0]}>
           <mesh position={[0, H - 0.04, 0]}>
             <boxGeometry args={[W - 0.06, 0.04, D - 0.06]} />
-            <meshStandardMaterial color="#e8b84a" metalness={0.8} roughness={0.3} emissive="#7a5a10" emissiveIntensity={0.3} />
+            <meshToonMaterial gradientMap={RAMP} color="#e8b84a" emissive="#7a5a10" emissiveIntensity={0.3} />
           </mesh>
           {hackathons.map((h, i) => {
             const x = -0.22 + i * 0.145;
@@ -953,16 +962,16 @@ function TreasureChest() {
               <group key={h.project} position={[x, H, 0]}>
                 <mesh position={[0, 0.03, 0]}>
                   <cylinderGeometry args={[0.007, 0.011, 0.05, 10]} />
-                  <meshStandardMaterial {...gold} />
+                  <meshToonMaterial gradientMap={RAMP} {...gold} />
                 </mesh>
                 <mesh position={[0, 0.085, 0]} castShadow>
                   <cylinderGeometry args={[0.042, 0.018, 0.065, 20]} />
-                  <meshStandardMaterial {...gold} emissive="#7a5a10" emissiveIntensity={0.3} />
+                  <meshToonMaterial gradientMap={RAMP} {...gold} emissive="#7a5a10" emissiveIntensity={0.3} />
                 </mesh>
                 {[-1, 1].map((side) => (
                   <mesh key={side} position={[side * 0.047, 0.09, 0]} rotation={[0, 0, Math.PI / 2]}>
                     <torusGeometry args={[0.015, 0.004, 6, 14]} />
-                    <meshStandardMaterial {...gold} />
+                    <meshToonMaterial gradientMap={RAMP} {...gold} />
                   </mesh>
                 ))}
               </group>
@@ -971,7 +980,7 @@ function TreasureChest() {
                 <Box p={[0, 0.05, 0]} s={[0.025, 0.07, 0.004]} c="#1f4a6b" />
                 <mesh rotation={[Math.PI / 2, 0, 0]}>
                   <cylinderGeometry args={[0.028, 0.028, 0.006, 20]} />
-                  <meshStandardMaterial color="#dfe3ea" metalness={0.35} roughness={0.35} emissive="#8a94a3" emissiveIntensity={0.25} />
+                  <meshToonMaterial gradientMap={RAMP} color="#dfe3ea" emissive="#8a94a3" emissiveIntensity={0.25} />
                 </mesh>
               </group>
             );
@@ -982,12 +991,12 @@ function TreasureChest() {
         <group ref={lid} position={[0, H, -D / 2]}>
           <mesh position={[0, 0.0, D / 2]} rotation={[0, 0, Math.PI / 2]} castShadow>
             <cylinderGeometry args={[D / 2, D / 2, W, 20, 1, false, 0, Math.PI]} />
-            <meshStandardMaterial color="#8a5530" roughness={0.7} side={THREE.DoubleSide} />
+            <meshToonMaterial gradientMap={RAMP} color="#8a5530" side={THREE.DoubleSide} />
           </mesh>
           {[-W / 2 + 0.06, W / 2 - 0.06].map((x) => (
             <mesh key={x} position={[x, 0, D / 2]} rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[D / 2 + 0.006, D / 2 + 0.006, 0.04, 20, 1, true, 0, Math.PI]} />
-              <meshStandardMaterial color="#b8902f" metalness={0.6} roughness={0.35} side={THREE.DoubleSide} />
+              <meshToonMaterial gradientMap={RAMP} color="#b8902f" side={THREE.DoubleSide} />
             </mesh>
           ))}
           <Box p={[0, -0.03, D + 0.005]} s={[0.07, 0.08, 0.02]} c="#b8902f" metal={0.6} rough={0.35} />
@@ -1021,7 +1030,7 @@ function SportsCorner() {
           {/* jump tape on the back wall, floor to ceiling */}
           <mesh position={[2.08, 1.325, -2.095]}>
             <planeGeometry args={[0.1, 2.65]} />
-            <meshStandardMaterial map={tape} roughness={0.9} />
+            <meshToonMaterial gradientMap={RAMP} map={tape} />
           </mesh>
           {/* chalk swipes where jumps have landed */}
           {[2.42, 2.5, 2.46].map((y, i) => (
@@ -1032,11 +1041,11 @@ function SportsCorner() {
           ))}
           <mesh position={[1.95, 0.12, -1.75]} rotation={[0.3, 0.8, 0]} castShadow>
             <sphereGeometry args={[0.12, 28, 20]} />
-            <meshStandardMaterial map={bball} roughness={0.7} />
+            <meshToonMaterial gradientMap={RAMP} map={bball} />
           </mesh>
           <mesh position={[2.15, 0.105, -1.45]} rotation={[0.2, 1.4, 0.4]} castShadow>
             <sphereGeometry args={[0.105, 28, 20]} />
-            <meshStandardMaterial map={vball} roughness={0.55} />
+            <meshToonMaterial gradientMap={RAMP} map={vball} />
           </mesh>
         </group>
       </Spot>
@@ -1045,28 +1054,130 @@ function SportsCorner() {
       <group position={[2.22, 0, -1.95]} rotation={[0.12, -0.6, -0.08]}>
         <mesh position={[0, 0.14, 0]}>
           <cylinderGeometry args={[0.014, 0.016, 0.28, 10]} />
-          <meshStandardMaterial color="#1d1d24" roughness={0.6} />
+          <meshToonMaterial gradientMap={RAMP} color="#1d1d24" />
         </mesh>
         {/* throat: two arms from the handle up into the frame */}
         {[-1, 1].map((sx) => (
           <mesh key={sx} position={[sx * 0.022, 0.31, 0]} rotation={[0, 0, sx * -0.35]}>
             <cylinderGeometry args={[0.007, 0.007, 0.08, 8]} />
-            <meshStandardMaterial color="#2a4fa0" roughness={0.4} />
+            <meshToonMaterial gradientMap={RAMP} color="#2a4fa0" />
           </mesh>
         ))}
         <mesh position={[0, 0.47, 0]} scale={[0.8, 1.1, 1]}>
           <torusGeometry args={[0.12, 0.01, 8, 32]} />
-          <meshStandardMaterial color="#2a4fa0" roughness={0.4} />
+          <meshToonMaterial gradientMap={RAMP} color="#2a4fa0" />
         </mesh>
         <mesh position={[0, 0.47, 0]} scale={[0.8, 1.1, 1]}>
           <circleGeometry args={[0.115, 24]} />
-          <meshStandardMaterial color="#e9e6dc" transparent opacity={0.35} side={THREE.DoubleSide} />
+          <meshToonMaterial gradientMap={RAMP} color="#e9e6dc" transparent opacity={0.35} side={THREE.DoubleSide} />
         </mesh>
       </group>
       <mesh position={[1.88, 0.033, -1.45]} castShadow>
         <sphereGeometry args={[0.033, 16, 12]} />
-        <meshStandardMaterial color="#d7e84a" roughness={0.9} />
+        <meshToonMaterial gradientMap={RAMP} color="#d7e84a" />
       </mesh>
     </group>
+  );
+}
+
+// A Kenney Furniture Kit model, toon-shaded and recoloured per material name.
+function KenneyModel({ url, scale, position, rotation, recolor = {}, glow = {} }: {
+  url: string; scale: number; position: Vec3; rotation?: Vec3;
+  recolor?: Record<string, string>; glow?: Record<string, number>;
+}) {
+  const gltf = useLoader(GLTFLoader, url);
+  const obj = useMemo(() => {
+    const root = gltf.scene.clone(true);
+    root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      mesh.castShadow = mesh.receiveShadow = true;
+      const src = mesh.material as THREE.MeshStandardMaterial;
+      const toon = toToon(src.clone()) as THREE.MeshToonMaterial;
+      if (recolor[src.name]) toon.color.set(recolor[src.name]);
+      mesh.material = toon;
+    });
+    return root;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gltf]);
+  useEffect(() => {
+    obj.traverse((o) => {
+      const m = (o as THREE.Mesh).material as THREE.MeshToonMaterial | undefined;
+      if (m && glow[m.name] !== undefined) {
+        m.emissive.set("#ffd9a0");
+        m.emissiveIntensity = glow[m.name];
+      }
+    });
+  }, [obj, glow]);
+  return <primitive object={obj} scale={scale} position={position} rotation={rotation} />;
+}
+
+// A mug on the desk with a few wisps of steam curling up.
+function Mug({ position }: { position: Vec3 }) {
+  const puffs = useRef<THREE.Group>(null!);
+  useFrame(({ clock }) => {
+    puffs.current.children.forEach((p, i) => {
+      const t = (clock.elapsedTime * 0.35 + i / 4) % 1;
+      p.position.set(Math.sin(t * 6 + i) * 0.012, 0.11 + t * 0.2, 0);
+      p.scale.setScalar(0.6 + t * 1.4);
+      ((p as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.35 * Math.sin(t * Math.PI);
+    });
+  });
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.045, 0]} castShadow>
+        <cylinderGeometry args={[0.035, 0.032, 0.09, 20]} />
+        <meshToonMaterial gradientMap={RAMP} color="#c9a24a" />
+      </mesh>
+      <mesh position={[0, 0.087, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.031, 20]} />
+        <meshBasicMaterial color="#3b2416" />
+      </mesh>
+      <mesh position={[0.04, 0.05, 0]}>
+        <torusGeometry args={[0.02, 0.006, 8, 16, Math.PI]} />
+        <meshToonMaterial gradientMap={RAMP} color="#c9a24a" />
+      </mesh>
+      <group ref={puffs}>
+        {[0, 1, 2, 3].map((i) => (
+          <mesh key={i} raycast={() => null}>
+            <sphereGeometry args={[0.014, 8, 6]} />
+            <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} />
+          </mesh>
+        ))}
+      </group>
+    </group>
+  );
+}
+
+// Dust motes drifting slowly through the room light.
+function Dust({ night }: { night: boolean }) {
+  const { geo, seeds } = useMemo(() => {
+    const n = 90;
+    const pos = new Float32Array(n * 3);
+    const seeds = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3] = -2 + Math.random() * 4.2;
+      pos[i * 3 + 1] = 0.3 + Math.random() * 2.2;
+      pos[i * 3 + 2] = -2 + Math.random() * 3.6;
+      seeds[i] = Math.random() * 100;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    return { geo, seeds };
+  }, []);
+  useFrame(({ clock }, dt) => {
+    const a = geo.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < seeds.length; i++) {
+      const t = clock.elapsedTime * 0.25 + seeds[i];
+      let y = a.getY(i) + dt * 0.02;
+      if (y > 2.5) y = 0.3;
+      a.setXYZ(i, a.getX(i) + Math.sin(t) * dt * 0.03, y, a.getZ(i) + Math.cos(t * 0.7) * dt * 0.03);
+    }
+    a.needsUpdate = true;
+  });
+  return (
+    <points geometry={geo} raycast={() => null}>
+      <pointsMaterial color={night ? "#ffe2b0" : "#fff7e6"} size={0.016} sizeAttenuation transparent opacity={night ? 0.55 : 0.4} depthWrite={false} />
+    </points>
   );
 }

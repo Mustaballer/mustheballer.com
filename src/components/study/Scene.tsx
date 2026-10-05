@@ -1,6 +1,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { Room } from "./Room";
 import type { SpotId, StationId } from "./spots";
 import { HOME, SPOTS, STATIONS } from "./spots";
@@ -51,6 +52,7 @@ export default function Scene({ focus, hovered, setHovered, markers, night, chat
         </>
       )}
       <Rig focus={focus} panelOpen={panelOpen} />
+      <Outlines />
       <Projector markers={markers} />
     </Canvas>
   );
@@ -78,18 +80,18 @@ const shadowProps = {
 function Lights({ night }: { night: boolean }) {
   return night ? (
     <>
-      <ambientLight intensity={0.42} color="#8a8fc0" />
-      <hemisphereLight args={["#5a65a0", "#2a1a14", 0.45]} />
+      <ambientLight intensity={0.5} color="#7f86b8" />
+      <hemisphereLight args={["#5a65a0", "#2a1a14", 0.3]} />
       {/* moonlight through the window */}
-      <directionalLight position={[-7, 4.5, 1.2]} intensity={0.65} color="#9db4ff" {...shadowProps} />
-      <directionalLight position={[6, 7, 6]} intensity={0.4} color="#ffd9b0" />
+      <directionalLight position={[-7, 4.5, 1.2]} intensity={0.85} color="#9db4ff" {...shadowProps} />
+      <directionalLight position={[6, 7, 6]} intensity={0.55} color="#ffd9b0" />
     </>
   ) : (
     <>
-      <ambientLight intensity={0.95} color="#fff1dd" />
-      <hemisphereLight args={["#fff6e8", "#8a6440", 0.7]} />
-      <directionalLight position={[-7, 5.5, 1.2]} intensity={2.2} color="#ffe2b8" {...shadowProps} />
-      <directionalLight position={[6, 7, 6]} intensity={0.7} color="#ffffff" />
+      <ambientLight intensity={0.9} color="#fff1dd" />
+      <hemisphereLight args={["#fff6e8", "#8a6440", 0.45]} />
+      <directionalLight position={[-7, 5.5, 1.2]} intensity={2.4} color="#ffe2b8" {...shadowProps} />
+      <directionalLight position={[6, 7, 6]} intensity={0.9} color="#ffffff" />
     </>
   );
 }
@@ -153,5 +155,32 @@ function Projector({ markers }: { markers: React.RefObject<MarkerEls> }) {
       el.style.visibility = visible ? "" : "hidden";
     }
   });
+  return null;
+}
+
+// Ink outlines on everything, drawn by three's OutlineEffect (it takes over rendering).
+// Glass, screens, decals, glows and other unlit/transparent surfaces are skipped.
+function Outlines() {
+  const gl = useThree((s) => s.gl);
+  const size = useThree((s) => s.size);
+  const effect = useMemo(
+    () => new OutlineEffect(gl, { defaultThickness: 0.0035, defaultColor: [0.07, 0.06, 0.1], defaultAlpha: 1 }),
+    [gl],
+  );
+  const tagged = useRef(new WeakSet<THREE.Material>());
+  useFrame(({ scene, camera }) => {
+    scene.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        if (tagged.current.has(m)) continue;
+        tagged.current.add(m);
+        const thin = mesh.geometry?.type === "PlaneGeometry" || mesh.geometry?.type === "CircleGeometry" || mesh.geometry?.type === "RingGeometry";
+        if (m.transparent || m instanceof THREE.MeshBasicMaterial || thin) m.userData.outlineParameters = { visible: false };
+        else if (size.width < 700) m.userData.outlineParameters = { thickness: 0.0045 }; // phones: a touch bolder so it survives downscaling
+      }
+    });
+    effect.render(scene, camera);
+  }, 1);
   return null;
 }
