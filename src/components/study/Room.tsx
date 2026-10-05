@@ -1194,26 +1194,35 @@ function Backpack() {
       <group position={[-0.75, 0, -1.2]} rotation={[0, 2.25, 0]}>
         <KenneyModel url="/models/props/backpack.glb" scale={0.68} position={[0.14, 0.384, 0]}
           recolor={{ mat3: "#4a4f5c", mat16: "#5b6170", mat23: "#17181c" }} />
-        <group position={[-0.185, 0.19, -0.01]} rotation={[0, -Math.PI / 2, 0]}>
-          <AmazonSmile position={[0, 0, 0]} />
+        <group position={[-0.186, 0.19, -0.01]} rotation={[0, -Math.PI / 2, 0]}>
+          <AmazonLogo width={0.17} />
         </group>
       </group>
     </Spot>
   );
 }
 
-// An orange smile-and-arrow, like the one on the swag.
-function AmazonSmile({ position }: { position: Vec3 }) {
+// The Amazon logo (official artwork via Wikimedia Commons, wordmark recoloured white for a dark bag).
+function AmazonLogo({ width }: { width: number }) {
+  const tex = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 343; // the logo's 398.61 × 133.49 aspect
+    const t = new THREE.CanvasTexture(canvas);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 8;
+    const img = new Image();
+    img.onload = () => {
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      t.needsUpdate = true;
+    };
+    img.src = "/models/props/amazon-logo.svg";
+    return t;
+  }, []);
   return (
-    <group position={position}>
-      <mesh rotation={[0, 0, Math.PI + 0.35]}>
-        <torusGeometry args={[0.055, 0.007, 6, 24, Math.PI * 0.7]} />
-        <meshBasicMaterial color="#ff9900" />
-      </mesh>
-      <mesh position={[0.05, 0.004, 0]} rotation={[0, 0, -0.9]}>
-        <coneGeometry args={[0.012, 0.022, 3]} />
-        <meshBasicMaterial color="#ff9900" />
-      </mesh>
-    </group>
+    <mesh raycast={() => null}>
+      <planeGeometry args={[width, width * (133.49 / 398.61)]} />
+      <meshBasicMaterial map={tex} transparent depthWrite={false} toneMapped={false} />
+    </mesh>
   );
 }
