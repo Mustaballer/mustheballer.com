@@ -373,8 +373,16 @@ export const diary = [
     entry: "Hooked the anime shelf up to MyAnimeList and the games up to Steam. They resync every night, so the 10/10s stay honest.",
   },
   {
+    date: "February 27, 2022",
+    entry: "Last update to the old site: a small cleanup before it went quiet for four years.",
+  },
+  {
     date: "February 2020",
     entry: "Shipped MyJikanBot, my first project outside of school. Every quest since started here.",
+  },
+  {
+    date: "February 12, 2019",
+    entry: "Created the mustaballer.github.io repo and put up my first personal website.",
   },
 ];
 

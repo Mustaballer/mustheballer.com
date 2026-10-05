@@ -213,7 +213,7 @@ export function plaqueTexture() {
     c.font = `600 50px ${SERIF}`;
     c.fillText("ADVENTURER'S QUEST BOARD", 400, 64);
     c.font = `italic 500 28px ${SERIF}`;
-    c.fillText("Wait and hope.", 400, 98);
+    c.fillText("Every quest so far", 400, 98);
   });
 }
 

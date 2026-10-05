@@ -48,6 +48,10 @@ MAT = {
     "pants": color_mat("Pants", "#2f3446", 0.9),
     "shoe": color_mat("Shoe", "#f2f1ed", 0.6),
     "sole": color_mat("Sole", "#2a2a2e", 0.8),
+    "kickBlack": color_mat("KickBlack", "#141418", 0.5),
+    "kickRed": color_mat("KickRed", "#c8102e", 0.5),
+    "kickGold": color_mat("KickGold", "#c9a24a", 0.4),
+    "midsole": color_mat("Midsole", "#f7f5ef", 0.7),
     "glasses": color_mat("Glasses", "#0b0b10", 0.15),
     "pods": color_mat("AirPods", "#fbfbf9", 0.3),
     "string": color_mat("Drawstring", "#e8e4dc", 0.8),
@@ -266,10 +270,22 @@ for side, sx in (("L", -1), ("R", 1)):
     th, sh, ft = f"thigh.{side}", f"shin.{side}", f"foot.{side}"
     capsule(f"Thigh.{side}", MAT["pants"], th, b_head(th), b_tail(th), 0.08)
     ellipsoid(f"Knee.{side}", MAT["pants"], sh, b_head(sh), (0.07, 0.07, 0.07))
-    capsule(f"Shin.{side}", MAT["pants"], sh, b_head(sh), b_tail(sh) + Vector((0, 0, 0.02)), 0.065)
-    # white sneaker with a dark sole
-    rbox(f"Shoe.{side}", MAT["shoe"], ft, (sx * 0.095, 0.04, 0.045), (0.085, 0.17, 0.07), 0.03)
-    rbox(f"Sole.{side}", MAT["sole"], ft, (sx * 0.095, 0.04, 0.012), (0.09, 0.175, 0.02), 0.008)
+    capsule(f"Shin.{side}", MAT["pants"], sh, b_head(sh), b_tail(sh) + Vector((0, 0, 0.13)), 0.062)  # cuffs end right at the top of the high-tops
+    # high-top sneakers: white leather, black toe and overlays, red collar and heel, gold stripe and laces
+    x = sx * 0.095
+    rbox(f"Outsole.{side}", MAT["sole"], ft, (x, 0.04, 0.007), (0.098, 0.19, 0.014), 0.006)
+    rbox(f"Midsole.{side}", MAT["midsole"], ft, (x, 0.04, 0.025), (0.096, 0.186, 0.026), 0.01)
+    rbox(f"Upper.{side}", MAT["shoe"], ft, (x, 0.035, 0.06), (0.086, 0.165, 0.05), 0.022)
+    # black toe cap, low and flush with the upper
+    ellipsoid(f"Toe.{side}", MAT["kickBlack"], ft, (x, 0.088, 0.05), (0.0445, 0.042, 0.018))
+    # high-top shaft: red, wrapping the ankle down into the shoe, with a black padded rim
+    rbox(f"Shaft.{side}", MAT["kickRed"], ft, (x, -0.008, 0.112), (0.1, 0.1, 0.095), 0.018)
+    ellipsoid(f"Rim.{side}", MAT["kickBlack"], ft, (x, -0.008, 0.158), (0.053, 0.053, 0.012))
+    # gold stripe flush along each side, from the toe back to the shaft
+    for side_x in (-1, 1):
+        rbox(f"Stripe.{side}.{side_x}", MAT["kickGold"], ft, (x + side_x * 0.0435, 0.045, 0.052), (0.003, 0.1, 0.012), 0.0015)
+    for i in range(4):  # laces
+        rbox(f"Lace.{side}.{i}", MAT["kickGold"], ft, (x, 0.075 - i * 0.022, 0.086 + i * 0.004), (0.046, 0.007, 0.005), 0.002)
 
 # ----------------------------------------------------------------------------- one skinned mesh
 parts = [o for o in scene.objects if o.type == "MESH"]
@@ -504,6 +520,12 @@ if PREVIEW_DIR:
     scene.frame_set(10)
     look((1.9, 0.25, 0.85), (0, 0.25, 0.75))
     scene.render.filepath = os.path.join(PREVIEW_DIR, "side.png")
+    bpy.ops.render.render(write_still=True)
+    look((0.55, 0.85, 0.5), (0.0, 0.36, 0.27))
+    scene.render.filepath = os.path.join(PREVIEW_DIR, "shoes.png")
+    bpy.ops.render.render(write_still=True)
+    look((0.6, -0.15, 0.42), (0.05, 0.3, 0.27))
+    scene.render.filepath = os.path.join(PREVIEW_DIR, "shoes_back.png")
     bpy.ops.render.render(write_still=True)
     for o in props:
         bpy.data.objects.remove(o, do_unlink=True)

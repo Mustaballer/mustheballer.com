@@ -85,7 +85,7 @@ function StudyRoom() {
       const spot = SPOTS[id];
       if (spot.action === "chateau") {
         setChateau((c) => {
-          say(c ? "Back to Toronto." : "The Château d'If, where Edmond Dantès learned to wait and hope.");
+          say(c ? "Back to Toronto." : "The Château d'If, off the coast of Marseille.");
           return !c;
         });
         return;
@@ -318,7 +318,7 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
     ),
     board: (
       <>
-        <p className="epigraph">Wait and hope.</p>
+        <p className="epigraph">Every quest so far.</p>
         <QuestLog />
       </>
     ),
@@ -347,7 +347,6 @@ function Panel({ id, onClose }: { id: SpotId; onClose: () => void }) {
     letter: (
       <>
         <Contact />
-        <p className="signoff">“Wait and hope.”</p>
       </>
     ),
     diary: (
