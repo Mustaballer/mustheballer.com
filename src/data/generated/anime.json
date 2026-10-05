@@ -1,11 +1,11 @@
 {
   "profileUrl": "https://myanimelist.net/profile/mus_theballer",
-  "fetchedAt": "2026-10-04T17:09:00.837Z",
+  "fetchedAt": "2026-10-05T03:39:02.462Z",
   "stats": {
     "total": 419,
-    "completed": 293,
-    "watching": 4,
-    "episodes": 7271,
+    "completed": 294,
+    "watching": 3,
+    "episodes": 7284,
     "meanScore": 8.2,
     "topGenres": [
       {
@@ -18,14 +18,14 @@
       },
       {
         "name": "Comedy",
-        "count": 91
-      },
-      {
-        "name": "Fantasy",
-        "count": 70
+        "count": 92
       },
       {
         "name": "Romance",
+        "count": 71
+      },
+      {
+        "name": "Fantasy",
         "count": 70
       },
       {
@@ -298,19 +298,6 @@
         "Mystery"
       ],
       "updatedAt": 1791080086
-    },
-    {
-      "id": 63832,
-      "title": "You and I Are Polar Opposites Season 2",
-      "score": 9,
-      "episodes": 0,
-      "image": "https://cdn.myanimelist.net/images/anime/1143/158409.jpg",
-      "url": "https://myanimelist.net/anime/63832",
-      "genres": [
-        "Comedy",
-        "Romance"
-      ],
-      "updatedAt": 1790989751
     },
     {
       "id": 62001,
