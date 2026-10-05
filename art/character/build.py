@@ -104,16 +104,16 @@ def _finish(name, bm, mat, bone, smooth=True):
     if smooth:
         for p in me.polygons:
             p.use_smooth = True
-    me.materials.append(mat)
+    # colour lives in the vertices, so the whole figure can share one material (one draw call)
+    col = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
+    rgba = tuple(mat.diffuse_color)
+    for d in col.data:
+        d.color = rgba
     ob = bpy.data.objects.new(name, me)
     scene.collection.objects.link(ob)
-    # rigid-parent to the bone without moving the part
-    b = arm.data.bones[bone]
-    ob.parent = arm
-    ob.parent_type = "BONE"
-    ob.parent_bone = bone
-    tail = arm.matrix_world @ b.matrix_local @ Matrix.Translation((0, b.length, 0))
-    ob.matrix_parent_inverse = tail.inverted()
+    # rigid skinning: every vertex follows this part's bone at full weight
+    vg = ob.vertex_groups.new(name=bone)
+    vg.add(list(range(len(me.vertices))), 1.0, "REPLACE")
     return ob
 
 
@@ -122,7 +122,7 @@ def _align(direction):
     return Vector((0, 0, 1)).rotation_difference(Vector(direction).normalized()).to_matrix().to_4x4()
 
 
-def ellipsoid(name, mat, bone, center, radii, direction=(0, 0, 1), seg=32, rings=18):
+def ellipsoid(name, mat, bone, center, radii, direction=(0, 0, 1), seg=18, rings=10):
     bm = bmesh.new()
     bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=rings, radius=1.0)
     m = Matrix.Translation(center) @ _align(direction) @ Matrix.Diagonal((*radii, 1.0))
@@ -149,7 +149,7 @@ def rbox(name, mat, bone, center, size, bevel=0.02, rot=None):
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1.0)
     bmesh.ops.scale(bm, vec=size, verts=bm.verts)
-    bmesh.ops.bevel(bm, geom=bm.edges[:] + bm.verts[:], offset=bevel, segments=3, affect="EDGES")
+    bmesh.ops.bevel(bm, geom=bm.edges[:] + bm.verts[:], offset=bevel, segments=2, affect="EDGES")
     m = Matrix.Translation(center) @ (rot or Matrix.Identity(4))
     bmesh.ops.transform(bm, matrix=m, verts=bm.verts)
     return _finish(name, bm, mat, bone)
@@ -168,7 +168,7 @@ def b_tail(n):
 ellipsoid("Pelvis", MAT["pants"], "hips", (0, 0, 0.69), (0.16, 0.12, 0.085))
 # hoodie body: a tapered, slightly boxy shape from hem to shoulders
 bm = bmesh.new()
-bmesh.ops.create_uvsphere(bm, u_segments=40, v_segments=20, radius=1.0)
+bmesh.ops.create_uvsphere(bm, u_segments=24, v_segments=12, radius=1.0)
 for v in bm.verts:
     z = v.co.z  # -1 .. 1
     widen = 1.0 + 0.12 * (1 - abs(z))  # fuller in the middle
@@ -188,7 +188,7 @@ for sx in (-1, 1):
 capsule("Neck", MAT["skin"], "neck", (0, 0.005, 1.0), (0, 0.005, 1.1), 0.045)
 HEAD_C = Vector((0, 0.01, 1.2))
 bm = bmesh.new()
-bmesh.ops.create_uvsphere(bm, u_segments=48, v_segments=24, radius=1.0)
+bmesh.ops.create_uvsphere(bm, u_segments=28, v_segments=14, radius=1.0)
 for v in bm.verts:
     taper = 1.0 - 0.22 * max(0.0, -v.co.z) ** 1.5  # narrower toward the chin
     v.co.x *= 0.142 * taper
@@ -207,7 +207,7 @@ for sx in (-1, 1):
 
 # hair: a cap that covers the forehead but stops above the ears, then spikes swept to his left (-X)
 bm = bmesh.new()
-bmesh.ops.create_uvsphere(bm, u_segments=48, v_segments=24, radius=1.0)
+bmesh.ops.create_uvsphere(bm, u_segments=28, v_segments=14, radius=1.0)
 bmesh.ops.transform(bm, matrix=Matrix.Translation(HEAD_C + Vector((0, -0.006, 0.012))) @ Matrix.Diagonal((0.152, 0.162, 0.172, 1)), verts=bm.verts)
 cut = []
 for v in bm.verts:
@@ -270,6 +270,29 @@ for side, sx in (("L", -1), ("R", 1)):
     # white sneaker with a dark sole
     rbox(f"Shoe.{side}", MAT["shoe"], ft, (sx * 0.095, 0.04, 0.045), (0.085, 0.17, 0.07), 0.03)
     rbox(f"Sole.{side}", MAT["sole"], ft, (sx * 0.095, 0.04, 0.012), (0.09, 0.175, 0.02), 0.008)
+
+# ----------------------------------------------------------------------------- one skinned mesh
+parts = [o for o in scene.objects if o.type == "MESH"]
+bpy.ops.object.select_all(action="DESELECT")
+for o in parts:
+    o.select_set(True)
+bpy.context.view_layer.objects.active = parts[0]
+bpy.ops.object.join()
+body = bpy.context.view_layer.objects.active
+body.name = "Body"
+body.data.materials.clear()
+body_mat = bpy.data.materials.new("Body")
+body_mat.use_nodes = True
+nt = body_mat.node_tree
+attr = nt.nodes.new("ShaderNodeVertexColor")
+attr.layer_name = "Col"
+nt.links.new(attr.outputs["Color"], nt.nodes["Principled BSDF"].inputs["Base Color"])
+nt.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.7
+body.data.materials.append(body_mat)
+body.parent = arm
+mod = body.modifiers.new("Armature", "ARMATURE")
+mod.object = arm
+print("BODY tris", sum(len(p.vertices) - 2 for p in body.data.polygons))
 
 # ----------------------------------------------------------------------------- IK rig for authoring
 def empty(name, loc):
@@ -434,7 +457,7 @@ for name, fn in CLIPS.items():
 if PREVIEW_DIR:
     os.makedirs(PREVIEW_DIR, exist_ok=True)
     scene.render.engine = "BLENDER_WORKBENCH"
-    scene.display.shading.color_type = "MATERIAL"
+    scene.display.shading.color_type = "VERTEX"
     scene.display.shading.light = "STUDIO"
     scene.display.shading.show_object_outline = True
     scene.render.resolution_x = scene.render.resolution_y = 520
@@ -496,20 +519,10 @@ for pb in arm.pose.bones:
     pb.rotation_euler = (0, 0, 0)
     pb.location = (0, 0, 0)
 
-# merge parts that move together (same bone + material) into one mesh: ~60 objects -> a handful of draw calls
-groups = {}
-for ob in [o for o in scene.objects if o.type == "MESH"]:
-    groups.setdefault((ob.parent_bone, ob.data.materials[0].name), []).append(ob)
-for (bone, mat), obs in groups.items():
-    if len(obs) < 2:
-        continue
-    bpy.ops.object.select_all(action="DESELECT")
-    for o in obs:
-        o.select_set(True)
-    bpy.context.view_layer.objects.active = obs[0]
-    bpy.ops.object.join()
-    obs[0].name = f"{bone}.{mat}"
-print("MESHES", len([o for o in scene.objects if o.type == "MESH"]))
+keep = {a.name for a, _ in baked.values()}
+for act in list(bpy.data.actions):
+    if act.name not in keep:
+        bpy.data.actions.remove(act)
 
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.export_scene.gltf(
@@ -522,5 +535,7 @@ bpy.ops.export_scene.gltf(
     export_frame_range=False,
     export_apply=False,
     export_yup=True,
+    export_vertex_color="ACTIVE",
+    export_skins=True,
 )
 print("EXPORTED", OUT)

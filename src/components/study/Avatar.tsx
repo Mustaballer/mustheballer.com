@@ -7,6 +7,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { uoftPrintTexture } from "./textures";
 import { toToon } from "./toon";
 
 const URL = "/models/mustafa.glb";
@@ -20,10 +21,32 @@ export function Avatar({ look }: { look: boolean }) {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
       mesh.castShadow = true;
-      mesh.frustumCulled = false; // rigid parts move with bones; skip per-part culling checks
       mesh.receiveShadow = true;
-      mesh.material = toToon(mesh.material as THREE.Material);
+      mesh.frustumCulled = false; // skinned: the bind-pose bounds don't follow the animation
+      const toon = toToon(mesh.material as THREE.Material) as THREE.MeshToonMaterial;
+      toon.vertexColors = !!mesh.geometry.getAttribute("color"); // the figure is coloured per vertex
+      mesh.material = toon;
     });
+
+    // UNIVERSITY OF / TORONTO / ENGINEERING on the hoodie, riding on the chest bone
+    const chest = root.getObjectByName("chest");
+    if (chest) {
+      root.updateMatrixWorld(true);
+      const print = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.19, 0.095),
+        new THREE.MeshBasicMaterial({ map: uoftPrintTexture(), transparent: true, depthWrite: false }),
+      );
+      // rest pose, model space (glTF: +Y up, facing -Z): just in front of the chest
+      const world = new THREE.Matrix4().compose(
+        new THREE.Vector3(0, 0.885, -0.15),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0.12, Math.PI, 0)),
+        new THREE.Vector3(1, 1, 1),
+      );
+      print.matrix.copy(chest.matrixWorld.clone().invert().multiply(world));
+      print.matrix.decompose(print.position, print.quaternion, print.scale);
+      print.renderOrder = 2;
+      chest.add(print);
+    }
     return root;
   }, [gltf]);
 
