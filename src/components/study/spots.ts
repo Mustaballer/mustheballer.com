@@ -118,7 +118,7 @@ export const SPOTS: Record<SpotId, Spot> = {
   },
   backpack: {
     label: "Amazon backpack",
-    toast: "Day 1 swag. Laptop, charger, badge, and way too many snacks.",
+    toast: "Day 1 swag. Laptop, charger, badge. Frugality is a leadership principle.",
     view: { pos: [-0.2, 0.75, -0.55], target: [-0.75, 0.25, -1.2] },
   },
   crystal: { label: "A red crystal", action: "teleport" },
