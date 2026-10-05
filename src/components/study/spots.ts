@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number];
 export type View = { pos: Vec3; target: Vec3 };
 
 export type StationId = "character" | "board" | "monitor" | "chest" | "shelf" | "court" | "letter";
-export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterTrunks" | "posterFF" | "diploma" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower";
+export type EggId = "montecristo" | "window" | "chocobo" | "manga" | "posterMushoku" | "posterTrunks" | "posterFF" | "diploma" | "dragonballs" | "microwave" | "headband" | "crystal" | "diary" | "tower" | "backpack";
 export type SpotId = StationId | EggId;
 
 type Spot = {
@@ -115,6 +115,11 @@ export const SPOTS: Record<SpotId, Spot> = {
     label: "A Leaf headband",
     toast: "Naruto: “I'm not gonna run away, I never go back on my word!”",
     view: { pos: [0.36, 1.98, -1.5], target: [0.33, 1.83, -2.03] },
+  },
+  backpack: {
+    label: "Amazon backpack",
+    toast: "Day 1 swag. Laptop, charger, badge, and way too many snacks.",
+    view: { pos: [-0.2, 0.75, -0.55], target: [-0.75, 0.25, -1.2] },
   },
   crystal: { label: "A red crystal", action: "teleport" },
   diary: {

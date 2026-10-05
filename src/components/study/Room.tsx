@@ -220,6 +220,7 @@ export function Room({
       <Window night={night} chateau={chateau} />
       <TreasureChest />
       <Clutter />
+      <Backpack />
       <Dust night={night} />
       <SportsCorner />
     </SpotCtx.Provider>
@@ -1181,5 +1182,38 @@ function Dust({ night }: { night: boolean }) {
     <points geometry={geo} raycast={() => null}>
       <pointsMaterial color={night ? "#ffe2b0" : "#fff7e6"} size={0.016} sizeAttenuation transparent opacity={night ? 0.55 : 0.4} depthWrite={false} />
     </points>
+  );
+}
+
+// Amazon swag backpack by the desk. Model: "Open Backpack" by Emmett "TawpShelf" Baber (Poly Pizza, CC-BY 3.0),
+// recoloured charcoal with black straps and an orange smile on the front.
+function Backpack() {
+  return (
+    <Spot id="backpack">
+      {/* the model's front panel faces its -X (straps on +X); turn that toward the room */}
+      <group position={[-0.75, 0, -1.2]} rotation={[0, 2.25, 0]}>
+        <KenneyModel url="/models/props/backpack.glb" scale={0.68} position={[0.14, 0.384, 0]}
+          recolor={{ mat3: "#4a4f5c", mat16: "#5b6170", mat23: "#17181c" }} />
+        <group position={[-0.185, 0.19, -0.01]} rotation={[0, -Math.PI / 2, 0]}>
+          <AmazonSmile position={[0, 0, 0]} />
+        </group>
+      </group>
+    </Spot>
+  );
+}
+
+// An orange smile-and-arrow, like the one on the swag.
+function AmazonSmile({ position }: { position: Vec3 }) {
+  return (
+    <group position={position}>
+      <mesh rotation={[0, 0, Math.PI + 0.35]}>
+        <torusGeometry args={[0.055, 0.007, 6, 24, Math.PI * 0.7]} />
+        <meshBasicMaterial color="#ff9900" />
+      </mesh>
+      <mesh position={[0.05, 0.004, 0]} rotation={[0, 0, -0.9]}>
+        <coneGeometry args={[0.012, 0.022, 3]} />
+        <meshBasicMaterial color="#ff9900" />
+      </mesh>
+    </group>
   );
 }
