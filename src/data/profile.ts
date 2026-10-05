@@ -100,6 +100,23 @@ export const experience: Quest[] = [
     ],
     tags: ["Python", "Transformers", "OpenAdapt"],
   },
+  {
+    role: "Production Engineering Fellow",
+    company: "MLH Fellowship",
+    location: "Remote · Meta Open Source",
+    start: "May 2022",
+    end: "Aug 2022",
+    rank: "B",
+    achievement: "Fellowship of the Pipeline",
+    highlight: "Redeploys 10x faster with an automated Bash script",
+    bullets: [
+      "Created an open-source web app with Python, Flask, Jinja, MySQL, Nginx and unittest.",
+      "Automated testing and deployment with CI/CD pipelines, making the workflow 80% more efficient.",
+      "Made production redeploys 10x faster by fine-tuning an automated Bash script.",
+      "Won the MLH Fellowship Orientation Hackathon for best portfolio website design.",
+    ],
+    tags: ["Python", "Flask", "MySQL", "Nginx", "CI/CD", "Bash"],
+  },
 ];
 
 export type Project = {

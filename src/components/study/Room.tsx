@@ -606,11 +606,13 @@ function QuestBoard() {
       })),
     [],
   );
+  // [x, y, tilt]: three notes across the top, two below
   const spots: Vec3[] = [
-    [-0.31, 0.04, -0.04],
-    [0.04, 0.08, 0.05],
-    [0.36, -0.01, 0.06],
-    [0.04, -0.28, -0.08],
+    [-0.36, 0.1, -0.04],
+    [0.0, 0.13, 0.05],
+    [0.36, 0.09, 0.06],
+    [-0.18, -0.26, -0.07],
+    [0.19, -0.25, 0.05],
   ];
   return (
     <Spot id="board">
@@ -621,7 +623,7 @@ function QuestBoard() {
         {notes.map((n, i) => {
           const [x, y, rot] = spots[i] ?? [0, 0, 0];
           return (
-            <group key={i} position={[x, y, 0.036]} rotation={[0, 0, rot]} scale={n.active ? 1.16 : 1}>
+            <group key={i} position={[x, y, 0.036]} rotation={[0, 0, rot]} scale={n.active ? 1.08 : 0.92}>
               <Plane p={[0, 0, 0]} s={[0.24, 0.31]} map={n.tex} />
               <mesh position={[0, 0.13, 0.01]}>
                 <sphereGeometry args={[0.012, 10, 10]} />
