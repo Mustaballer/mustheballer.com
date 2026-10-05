@@ -48,10 +48,6 @@ MAT = {
     "pants": color_mat("Pants", "#2f3446", 0.9),
     "shoe": color_mat("Shoe", "#f2f1ed", 0.6),
     "sole": color_mat("Sole", "#2a2a2e", 0.8),
-    "kickBlack": color_mat("KickBlack", "#141418", 0.5),
-    "kickRed": color_mat("KickRed", "#c8102e", 0.5),
-    "kickGold": color_mat("KickGold", "#c9a24a", 0.4),
-    "midsole": color_mat("Midsole", "#f7f5ef", 0.7),
     "glasses": color_mat("Glasses", "#0b0b10", 0.15),
     "pods": color_mat("AirPods", "#fbfbf9", 0.3),
     "string": color_mat("Drawstring", "#e8e4dc", 0.8),
@@ -270,22 +266,63 @@ for side, sx in (("L", -1), ("R", 1)):
     th, sh, ft = f"thigh.{side}", f"shin.{side}", f"foot.{side}"
     capsule(f"Thigh.{side}", MAT["pants"], th, b_head(th), b_tail(th), 0.08)
     ellipsoid(f"Knee.{side}", MAT["pants"], sh, b_head(sh), (0.07, 0.07, 0.07))
-    capsule(f"Shin.{side}", MAT["pants"], sh, b_head(sh), b_tail(sh) + Vector((0, 0, 0.13)), 0.062)  # cuffs end right at the top of the high-tops
-    # high-top sneakers: white leather, black toe and overlays, red collar and heel, gold stripe and laces
-    x = sx * 0.095
-    rbox(f"Outsole.{side}", MAT["sole"], ft, (x, 0.04, 0.007), (0.098, 0.19, 0.014), 0.006)
-    rbox(f"Midsole.{side}", MAT["midsole"], ft, (x, 0.04, 0.025), (0.096, 0.186, 0.026), 0.01)
-    rbox(f"Upper.{side}", MAT["shoe"], ft, (x, 0.035, 0.06), (0.086, 0.165, 0.05), 0.022)
-    # black toe cap, low and flush with the upper
-    ellipsoid(f"Toe.{side}", MAT["kickBlack"], ft, (x, 0.088, 0.05), (0.0445, 0.042, 0.018))
-    # high-top shaft: red, wrapping the ankle down into the shoe, with a black padded rim
-    rbox(f"Shaft.{side}", MAT["kickRed"], ft, (x, -0.008, 0.112), (0.1, 0.1, 0.095), 0.018)
-    ellipsoid(f"Rim.{side}", MAT["kickBlack"], ft, (x, -0.008, 0.158), (0.053, 0.053, 0.012))
-    # gold stripe flush along each side, from the toe back to the shaft
-    for side_x in (-1, 1):
-        rbox(f"Stripe.{side}.{side_x}", MAT["kickGold"], ft, (x + side_x * 0.0435, 0.045, 0.052), (0.003, 0.1, 0.012), 0.0015)
-    for i in range(4):  # laces
-        rbox(f"Lace.{side}.{i}", MAT["kickGold"], ft, (x, 0.075 - i * 0.022, 0.086 + i * 0.004), (0.046, 0.007, 0.005), 0.002)
+    capsule(f"Shin.{side}", MAT["pants"], sh, b_head(sh), b_tail(sh) + Vector((0, 0, 0.06)), 0.062)  # cuffs sit on top of the shoes
+    # sneakers: "Trainer" by jeremy (Poly Pizza, CC-BY 3.0), imported below
+    pass
+
+
+def import_trainer(side, sx):
+    """Bring in the Trainer model, size it to the foot, bake its colours into vertices, weight it to the foot bone."""
+    path = os.path.join(os.path.dirname(__file__), "trainer.glb")
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=path)
+    ob = [o for o in bpy.data.objects if o not in before and o.type == "MESH"][0]
+    me = ob.data
+    me.transform(ob.matrix_world)
+    ob.matrix_world = Matrix.Identity(4)
+    vs = [v.co for v in me.vertices]
+    mn = Vector(map(min, *vs))
+    mx = Vector(map(max, *vs))
+    # the toe is the lower end along X; turn it to face +Y (forward)
+    mid_x = (mn.x + mx.x) / 2
+    hi_pos = max((v.z for v in vs if v.x > mid_x), default=0)
+    hi_neg = max((v.z for v in vs if v.x < mid_x), default=0)
+    turn = math.radians(90 if hi_pos < hi_neg else -90)
+    length = mx.x - mn.x
+    k = 0.2 / length
+    centre = (mn + mx) / 2
+    m = (Matrix.Translation((x_of(side), 0.035, 0)) @ Matrix.Rotation(turn, 4, "Z") @ Matrix.Scale(k, 4)
+         @ Matrix.Translation((-centre.x, -centre.y, -mn.z)))
+    me.transform(m)
+    if sx < 0:  # left shoe: mirror so the pair is symmetric
+        me.transform(Matrix.Translation((x_of(side), 0, 0)) @ Matrix.Scale(-1, 4, (1, 0, 0)) @ Matrix.Translation((-x_of(side), 0, 0)))
+        me.flip_normals()
+    # bake material colours into a vertex colour layer, then drop the materials
+    col = me.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
+    vert_col = {}
+    for p in me.polygons:
+        mat = me.materials[p.material_index]
+        bsdf = mat.node_tree.nodes.get("Principled BSDF")
+        c = tuple(bsdf.inputs["Base Color"].default_value)
+        for vi in p.vertices:
+            vert_col.setdefault(vi, c)
+    for i, d in enumerate(col.data):
+        d.color = vert_col.get(i, (1, 1, 1, 1))
+    me.materials.clear()
+    for p in me.polygons:
+        p.use_smooth = False
+    ob.name = f"Trainer.{side}"
+    vg = ob.vertex_groups.new(name=f"foot.{side}")
+    vg.add(list(range(len(me.vertices))), 1.0, "REPLACE")
+    return ob
+
+
+def x_of(side):
+    return (-1 if side == "L" else 1) * 0.095
+
+
+for side, sx in (("L", -1), ("R", 1)):
+    import_trainer(side, sx)
 
 # ----------------------------------------------------------------------------- one skinned mesh
 parts = [o for o in scene.objects if o.type == "MESH"]

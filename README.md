@@ -23,6 +23,7 @@ npm run build      # fetch data + build to dist/
 - Character: built and animated in Blender from `art/character/build.py`. Rebuild with
   `blender -b -P art/character/build.py -- public/models/mustafa.glb`
 - Desk lamp and speaker: [Kenney Furniture Kit](https://kenney.nl/assets/furniture-kit) (CC0)
+- Sneakers: ["Trainer" by jeremy](https://poly.pizza/m/cs7k_ENAZjQ), licensed [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/)
 
 ## Credits
 Book covers via Open Library; anime art via MyAnimeList and AniList; game art via Steam.
