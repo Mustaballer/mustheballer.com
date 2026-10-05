@@ -102,8 +102,8 @@ export const experience: Quest[] = [
   },
   {
     role: "Production Engineering Fellow",
-    company: "MLH Fellowship",
-    location: "Remote · Meta Open Source",
+    company: "Meta Fellowship",
+    location: "Remote · with MLH",
     start: "May 2022",
     end: "Aug 2022",
     rank: "B",
