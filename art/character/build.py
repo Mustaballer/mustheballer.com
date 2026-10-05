@@ -496,6 +496,21 @@ for pb in arm.pose.bones:
     pb.rotation_euler = (0, 0, 0)
     pb.location = (0, 0, 0)
 
+# merge parts that move together (same bone + material) into one mesh: ~60 objects -> a handful of draw calls
+groups = {}
+for ob in [o for o in scene.objects if o.type == "MESH"]:
+    groups.setdefault((ob.parent_bone, ob.data.materials[0].name), []).append(ob)
+for (bone, mat), obs in groups.items():
+    if len(obs) < 2:
+        continue
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in obs:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = obs[0]
+    bpy.ops.object.join()
+    obs[0].name = f"{bone}.{mat}"
+print("MESHES", len([o for o in scene.objects if o.type == "MESH"]))
+
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.export_scene.gltf(
     filepath=OUT,

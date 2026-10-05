@@ -10,7 +10,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { toToon } from "./toon";
 
 const URL = "/models/mustafa.glb";
-const ANIM_FPS = 12; // stepped, like hand-drawn animation
 const STRETCH_EVERY = 18; // seconds of typing between stretches
 
 export function Avatar({ look }: { look: boolean }) {
@@ -21,6 +20,7 @@ export function Avatar({ look }: { look: boolean }) {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh) return;
       mesh.castShadow = true;
+      mesh.frustumCulled = false; // rigid parts move with bones; skip per-part culling checks
       mesh.receiveShadow = true;
       mesh.material = toToon(mesh.material as THREE.Material);
     });
@@ -72,16 +72,8 @@ export function Avatar({ look }: { look: boolean }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actions]);
 
-  // advance the mixer in 12 fps steps
-  const acc = useRef(0);
-  useFrame((_, dt) => {
-    acc.current += dt;
-    const step = 1 / ANIM_FPS;
-    if (acc.current >= step) {
-      mixer.update(acc.current);
-      acc.current = 0;
-    }
-  });
+  // advance the mixer every frame (capped so a slow frame doesn't jump the pose)
+  useFrame((_, dt) => mixer.update(Math.min(dt, 1 / 20)));
 
   // Blender units → room: scale 1.12 with the floor at y=0
   return <primitive object={model} scale={1.12} position={[0, -0.23, 0]} />;
